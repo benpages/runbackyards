@@ -44,7 +44,7 @@
 				padding: 0.75rem 2rem;
 				display: flex;
 				align-items: center;
-				gap: 1.5rem;
+				gap: 1rem;
 				flex-wrap: wrap;
 			}
 			.controls label {
@@ -65,6 +65,27 @@
 			.controls select:focus {
 				outline: 2px solid #c0392b;
 				outline-offset: 1px;
+			}
+
+			.quick-btns {
+				display: flex;
+				gap: 5px;
+				margin-left: auto;
+			}
+			.qbtn {
+				font-size: 0.78rem;
+				padding: 0.3rem 0.8rem;
+				border: 1px solid #ddd;
+				border-radius: 20px;
+				background: #fafafa;
+				cursor: pointer;
+				color: #555;
+				transition: background 0.12s, border-color 0.12s, color 0.12s;
+				white-space: nowrap;
+			}
+			.qbtn:hover {
+				background: #efefef;
+				border-color: #bbb;
 			}
 
 			.status {
@@ -157,14 +178,12 @@
 				background: #f0f0f0;
 			}
 			.leg-item.hidden {
-				opacity: 0.3;
+				opacity: 0.35;
 			}
 			.leg-item.hidden .leg-name {
 				text-decoration: line-through;
 			}
 			.leg-swatch {
-				width: 26px;
-				height: 0;
 				flex-shrink: 0;
 			}
 			.leg-name {
@@ -177,12 +196,6 @@
 				position: relative;
 				width: 100%;
 				height: 420px;
-			}
-
-			.night-note {
-				font-size: 0.72rem;
-				color: #aaa;
-				margin-top: 0.75rem;
 			}
 
 			footer {
@@ -200,7 +213,10 @@
 					padding-right: 1rem;
 				}
 				.chart-wrap {
-					height: 280px;
+					height: 300px;
+				}
+				.quick-btns {
+					margin-left: 0;
 				}
 			}
 		</style>
@@ -208,19 +224,17 @@
 	<body>
 		<header>
 			<h1>Backyard Ultra — Pacing Analysis</h1>
-			<p>Loop finish times by time of day · All runners</p>
+			<p>Lap finish time by loop number · Click a name to toggle</p>
 		</header>
 
 		<div class="controls">
 			<label for="raceSelect">Race</label>
 			<select id="raceSelect"></select>
-			<label for="catFilter" style="margin-left: 1rem">Category</label>
-			<select id="catFilter">
-				<option value="all">All runners</option>
-				<option value="top5">Top 5 only</option>
-				<option value="mid-packer">Mid-packers only</option>
-				<option value="early_dnf">Early DNFs only</option>
-			</select>
+			<div class="quick-btns">
+				<button class="qbtn" id="btnTop3">Top 3</button>
+				<button class="qbtn" id="btnAll">Show all</button>
+				<button class="qbtn" id="btnNone">Hide all</button>
+			</div>
 		</div>
 
 		<div id="status" class="status">Loading race data…</div>
@@ -228,30 +242,24 @@
 		<main id="main" style="display: none">
 			<div class="stats" id="statsRow"></div>
 			<div class="card">
-				<div class="card-title">Lap finish time (min) · by time of day</div>
+				<div class="card-title">Lap finish time (min) · by loop number</div>
 				<div id="legend"></div>
 				<div class="chart-wrap">
 					<canvas
 						id="chart"
 						role="img"
-						aria-label="Line chart of lap pace by time of day for all runners in the selected race."
+						aria-label="Line chart of lap finish time by loop number."
 					></canvas>
 				</div>
-				<p class="night-note">
-					Shaded bands = estimated night (9 pm – 6 am). Start time configured
-					per race.
-				</p>
 			</div>
 		</main>
 
-		<footer>
-			Data sourced live from raceresult.com · backyards.run
-		</footer>
+		<footer>Data sourced live from raceresult.com · backyards.run</footer>
 
 		<!-- ─── CONFIGURATION ──────────────────────────────────────────────────────── -->
 		<script>
 			// ★ Add races here. eventId and apiKey come from the raceresult.com URL
-			// when you open a race's results page in your browser's network inspector.
+			// visible in your browser's network inspector when you open a race's results page.
 			const RACES = [
 				{
 					id: "G1M_2026",
@@ -260,9 +268,7 @@
 					apiKey: "f545f563e8d28831fb09508cd63b1365",
 					listname: "Lists|Detail List",
 					page: "details1",
-					startHour: 12, // race start in 24h local time (12 = noon)
 				},
-				// Add more races here:
 				// {
 				//   id: "LastSoul_2026",
 				//   label: "Last Soul Standing 2026",
@@ -270,7 +276,6 @@
 				//   apiKey: "...",
 				//   listname: "Lists|Detail List",
 				//   page: "details1",
-				//   startHour: 9,
 				// },
 			];
 
@@ -300,7 +305,7 @@
 		<script>
 			// ── Helpers ────────────────────────────────────────────────────────────────────
 
-			// Convert "MM:SS" or "MM:SS:00" to decimal minutes
+			// "MM:SS" or "MM:SS:00" → decimal minutes
 			function toLapMin(t) {
 				if (!t) return null;
 				const parts = t.split(":").map(Number);
@@ -308,51 +313,19 @@
 				return parts[0] + parts[1] / 60;
 			}
 
-			// Time-of-day label for a given lap number
-			function tod(lapNum, startHour) {
-				const h = (startHour + lapNum - 1) % 24;
-				if (h === 0) return "12am";
-				if (h < 12) return h + "am";
-				if (h === 12) return "12pm";
-				return h - 12 + "pm";
-			}
-
-			// Night shading: returns [[xMin, xMax], ...] for 9pm–6am bands
-			function nightBands(startHour, maxLap) {
-				const bands = [];
-				let open = null;
-				for (let i = 1; i <= maxLap + 1; i++) {
-					const h = (startHour + i - 1) % 24;
-					const night = h >= 21 || h < 6;
-					if (night && open === null) open = i - 0.5;
-					if (!night && open !== null) {
-						bands.push([open, i - 0.5]);
-						open = null;
-					}
-				}
-				if (open !== null) bands.push([open, maxLap + 0.5]);
-				return bands;
+			function fmtMin(m) {
+				const mins = Math.floor(m);
+				const secs = Math.round((m - mins) * 60);
+				return `${mins}:${String(secs).padStart(2, "0")}`;
 			}
 
 			// ── raceresult API parsing ─────────────────────────────────────────────────────
 
-			/**
-			 * Parse the "data" object from the raceresult API response into a flat array
-			 * of row objects compatible with the rest of the rendering code.
-			 *
-			 * API key format:
-			 *   "#1_Roy, Dylan /// 14 Laps /// Total Time: 11:45:52"
-			 * API lap row format:
-			 *   [col1, bib, flagImg, "Lap1", "CP1_MM:SS", "Finish_MM:SS", "Rest_MM:SS"]
-			 */
 			function parseRaceresultData(apiData, raceConfig) {
 				const rows = [];
-
 				Object.entries(apiData).forEach(([key, lapRows]) => {
-					// ── Athlete name ──────────────────────────────────────────────────────
-					// Strip "#N_" prefix, take everything before " /// "
+					// key: "#N_LastName, FirstName /// N Laps /// Total Time: HH:MM:SS"
 					const namePart = key.split(" /// ")[0].replace(/^#\d+_/, "").trim();
-					// raceresult uses "LastName, FirstName" — convert to "LastName FirstName"
 					const commaIdx = namePart.indexOf(", ");
 					const athleteName =
 						commaIdx !== -1
@@ -361,46 +334,31 @@
 								namePart.substring(commaIdx + 2)
 							: namePart;
 
-					// ── Total laps from key ───────────────────────────────────────────────
 					const lapMatch = key.match(/(\d+) Laps?/i);
 					const totalLaps = lapMatch ? parseInt(lapMatch[1]) : lapRows.length;
 
-					// ── Per-lap rows ──────────────────────────────────────────────────────
 					lapRows.forEach((row) => {
-						// Some rows in the response are sub-headers (row[0] === "1") — skip them
 						if (!Array.isArray(row) || row.length < 7) return;
-
-						const lapLabel = row[3]; // "Lap1", "Lap2", …
+						const lapLabel = row[3];
 						if (!lapLabel || !lapLabel.startsWith("Lap")) return;
-
-						const finishTime = row[5]; // "MM:SS"
-						const restTime = row[6]; // "MM:SS"
-
 						rows.push({
 							athlete: athleteName,
 							race: raceConfig.id,
 							total_laps: totalLaps,
 							lap: lapLabel,
-							finish_time: finishTime,
-							rest_time: restTime,
-							category: null, // filled in by assignCategories()
+							finish_time: row[5],
+							rest_time: row[6],
+							category: null,
 						});
 					});
 				});
-
 				return rows;
 			}
 
-			/**
-			 * Auto-assign runner categories based on total laps:
-			 *   top5      → top 5 finishers
-			 *   early_dnf → bottom ~25% (min 1)
-			 *   mid-packer→ everyone else
-			 */
+			// Top 5 by total laps = "top5", everyone else = "other"
 			function assignCategories(rows) {
 				const athleteTotals = {};
 				rows.forEach((r) => {
-					// keep max in case of duplicates
 					if (
 						!(r.athlete in athleteTotals) ||
 						r.total_laps > athleteTotals[r.athlete]
@@ -408,220 +366,199 @@
 						athleteTotals[r.athlete] = r.total_laps;
 					}
 				});
-
 				const sorted = Object.entries(athleteTotals).sort(
 					([, a], [, b]) => b - a,
 				);
-				const n = sorted.length;
-				const dnfCutoff = n - Math.max(1, Math.round(n * 0.25));
-
 				const categories = {};
 				sorted.forEach(([name], i) => {
-					if (i < 5) categories[name] = "top5";
-					else if (i >= dnfCutoff) categories[name] = "early_dnf";
-					else categories[name] = "mid-packer";
+					categories[name] = i < 5 ? "top5" : "other";
 				});
-
 				rows.forEach((r) => {
-					r.category = categories[r.athlete] || "mid-packer";
+					r.category = categories[r.athlete] ?? "other";
 				});
 			}
 
-			// ── State ──────────────────────────────────────────────────────────────────────
+			// ── Module state ───────────────────────────────────────────────────────────────
 			let allRows = [];
 			let chart = null;
-			let visibility = {};
+			let currentDatasets = []; // datasets array synced with chart
+			let globalMaxLap = 0; // max laps across ALL runners in current race
 
 			// ── DOM refs ───────────────────────────────────────────────────────────────────
 			const statusEl = document.getElementById("status");
 			const mainEl = document.getElementById("main");
 			const raceSelect = document.getElementById("raceSelect");
-			const catFilter = document.getElementById("catFilter");
 
 			Chart.register(window["chartjs-plugin-annotation"]);
 
-			// ── Populate race selector from config ─────────────────────────────────────────
+			// ── Populate race selector ─────────────────────────────────────────────────────
 			raceSelect.innerHTML = RACES.map(
 				(r) => `<option value="${r.id}">${r.label}</option>`,
 			).join("");
 
-			// ── Fetch & parse one race from raceresult ─────────────────────────────────────
+			// ── Fetch one race from raceresult ─────────────────────────────────────────────
 			async function loadRace(raceConfig) {
 				statusEl.textContent = `Loading ${raceConfig.label}…`;
 				statusEl.className = "status";
 				statusEl.style.display = "block";
 				mainEl.style.display = "none";
 
-				const listname = encodeURIComponent(raceConfig.listname);
-				const url = `https://my4.raceresult.com/${raceConfig.eventId}/${raceConfig.page}/list?key=${raceConfig.apiKey}&listname=${listname}&page=${raceConfig.page}`;
+				const url = `https://my4.raceresult.com/${raceConfig.eventId}/${raceConfig.page}/list?key=${raceConfig.apiKey}&listname=${encodeURIComponent(raceConfig.listname)}&page=${raceConfig.page}`;
 
 				try {
 					const res = await fetch(url);
 					if (!res.ok) throw new Error("HTTP " + res.status);
 					const json = await res.json();
-
 					if (!json.data)
-						throw new Error(
-							"Unexpected API response — 'data' field missing. The listname or page parameter may be wrong.",
-						);
+						throw new Error("'data' field missing — check listname / page config");
 
 					const raceRows = parseRaceresultData(json.data, raceConfig);
 					if (!raceRows.length)
 						throw new Error(
-							"API returned data but no lap rows could be parsed. Check the listname setting.",
+							"No lap rows parsed — check listname / page config",
 						);
 
 					assignCategories(raceRows);
-
-					// Merge: drop old rows for this race, add fresh ones
 					allRows = allRows
 						.filter((r) => r.race !== raceConfig.id)
 						.concat(raceRows);
-
-					renderChart();
+					renderChart(raceConfig.id);
 				} catch (e) {
 					let msg = `Could not load ${raceConfig.label}: ${e.message}.`;
-					if (
-						e.message === "Failed to fetch" ||
-						e.message.toLowerCase().includes("cors")
-					) {
+					if (e.message === "Failed to fetch")
 						msg +=
-							" This is likely a CORS restriction — open the page from backyards.run (not a local file) and try again.";
-					}
+							" Possible CORS issue — open from backyards.run, not a local file.";
 					statusEl.textContent = msg;
 					statusEl.className = "status error";
 				}
 			}
 
-			// ── Render ─────────────────────────────────────────────────────────────────────
-			function renderChart() {
-				const raceId = raceSelect.value;
-				const cat = catFilter.value;
-				const raceConfig = RACES.find((r) => r.id === raceId);
-				const startHour = raceConfig ? raceConfig.startHour : 12;
+			// ── Visibility helpers ─────────────────────────────────────────────────────────
 
-				const rows = allRows.filter(
-					(r) => r.race === raceId && (cat === "all" || r.category === cat),
+			// Recalculate x-axis max from currently visible runners and update chart
+			function applyVisibleRange() {
+				if (!chart) return;
+				let max = 0;
+				currentDatasets.forEach((ds, i) => {
+					if (chart.isDatasetVisible(i)) max = Math.max(max, ds.totalLaps);
+				});
+				if (max === 0) max = globalMaxLap;
+				// Chart.js 4 category scale: max = label string
+				chart.options.scales.x.max = "L" + max;
+				chart.update("none");
+			}
+
+			// Apply visibility to all datasets via predicate, then sync legend + range
+			function setVisibility(predicate) {
+				if (!chart) return;
+				currentDatasets.forEach((ds, i) => {
+					chart.setDatasetVisibility(i, predicate(ds, i));
+				});
+				applyVisibleRange();
+				syncLegendItems();
+			}
+
+			// Keep legend pill states in sync with chart visibility
+			function syncLegendItems() {
+				document.querySelectorAll(".leg-item[data-idx]").forEach((item) => {
+					const idx = parseInt(item.dataset.idx, 10);
+					item.classList.toggle("hidden", !chart.isDatasetVisible(idx));
+				});
+			}
+
+			// ── Quick-select buttons ───────────────────────────────────────────────────────
+			document
+				.getElementById("btnTop3")
+				.addEventListener("click", () =>
+					setVisibility((ds, i) => i < 3),
 				);
+			document
+				.getElementById("btnAll")
+				.addEventListener("click", () => setVisibility(() => true));
+			document
+				.getElementById("btnNone")
+				.addEventListener("click", () => setVisibility(() => false));
 
-				if (!rows.length) {
-					statusEl.textContent = "No data for selected filters.";
-					statusEl.className = "status error";
-					statusEl.style.display = "block";
-					mainEl.style.display = "none";
-					return;
-				}
-				statusEl.style.display = "none";
-				mainEl.style.display = "block";
+			// ── Render ─────────────────────────────────────────────────────────────────────
+			function renderChart(raceId) {
+				const rows = allRows.filter((r) => r.race === raceId);
+				if (!rows.length) return;
 
 				// Build per-athlete data
 				const athleteMap = {};
 				rows.forEach((r) => {
-					const key = r.athlete;
-					if (!athleteMap[key])
-						athleteMap[key] = {
+					if (!athleteMap[r.athlete])
+						athleteMap[r.athlete] = {
 							category: r.category,
 							total: +r.total_laps,
 							laps: {},
 						};
-					const lapNum = parseInt((r.lap || "").replace(/\D/g, ""), 10);
-					if (!isNaN(lapNum))
-						athleteMap[key].laps[lapNum] = toLapMin(r.finish_time);
+					const n = parseInt((r.lap || "").replace(/\D/g, ""), 10);
+					if (!isNaN(n))
+						athleteMap[r.athlete].laps[n] = toLapMin(r.finish_time);
 				});
 
-				// Sort: top5 → mid-packer → early_dnf; within group by total laps desc
-				const CAT_ORDER = { top5: 0, "mid-packer": 1, early_dnf: 2 };
+				// Sort: top5 first (by laps desc), then other (by laps desc)
 				const sorted = Object.entries(athleteMap).sort(([, a], [, b]) => {
-					const cmp =
-						(CAT_ORDER[a.category] ?? 9) - (CAT_ORDER[b.category] ?? 9);
-					return cmp !== 0 ? cmp : b.total - a.total;
+					const cmpCat = (a.category === "top5" ? 0 : 1) - (b.category === "top5" ? 0 : 1);
+					return cmpCat !== 0 ? cmpCat : b.total - a.total;
 				});
 
-				const maxLap = Math.max(...sorted.map(([, a]) => a.total));
+				globalMaxLap = Math.max(...sorted.map(([, a]) => a.total));
+
+				// x-axis labels: L1, L2, … L<globalMaxLap>
 				const xLabels = Array.from(
-					{ length: maxLap },
-					(_, i) => `L${i + 1} ${tod(i + 1, startHour)}`,
+					{ length: globalMaxLap },
+					(_, i) => `L${i + 1}`,
 				);
 
-				// Datasets
-				const datasets = sorted.map(([name, athlete], i) => {
+				// Build datasets
+				currentDatasets = sorted.map(([name, athlete], i) => {
 					const style = PALETTE[i % PALETTE.length];
-					const data = Array.from(
-						{ length: maxLap },
-						(_, j) => athlete.laps[j + 1] ?? null,
-					);
-					// Names come in as "LastName FirstName" — show last name only
-					const shortName = name.split(" ")[0];
 					return {
-						label: `${shortName} (${athlete.total})`,
+						label: `${name.split(" ")[0]} (${athlete.total})`,
 						fullName: name,
 						category: athlete.category,
-						data,
+						totalLaps: athlete.total,
+						data: Array.from(
+							{ length: globalMaxLap },
+							(_, j) => athlete.laps[j + 1] ?? null,
+						),
 						borderColor: style.color,
 						backgroundColor: "transparent",
 						borderWidth: 2,
-						pointRadius: 0,
+						pointRadius: 3,
+						pointHoverRadius: 5,
 						tension: 0.3,
 						borderDash: style.dash,
 						spanGaps: false,
 					};
 				});
 
-				// Stats cards
-				const totalRunners = sorted.length;
-				const maxLaps = Math.max(...sorted.map(([, a]) => a.total));
-				const winner = sorted.find(([, a]) => a.total === maxLaps);
-				const allTimes = rows
-					.map((r) => toLapMin(r.finish_time))
-					.filter(Boolean);
-				const avgTime =
-					allTimes.reduce((a, b) => a + b, 0) / allTimes.length;
-
-				function fmtMin(m) {
-					const mins = Math.floor(m);
-					const secs = Math.round((m - mins) * 60);
-					return `${mins}:${String(secs).padStart(2, "0")}`;
-				}
+				// Stats
+				const maxLaps = globalMaxLap;
+				const winner = sorted[0];
+				const allTimes = rows.map((r) => toLapMin(r.finish_time)).filter(Boolean);
+				const avgTime = allTimes.reduce((a, b) => a + b, 0) / allTimes.length;
 
 				document.getElementById("statsRow").innerHTML = `
-	<div class="stat"><div class="stat-label">Runners</div><div class="stat-value">${totalRunners}</div></div>
+	<div class="stat"><div class="stat-label">Runners</div><div class="stat-value">${sorted.length}</div></div>
 	<div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${maxLaps}</div><div class="stat-sub">${winner ? winner[0].split(" ")[0] : ""}</div></div>
 	<div class="stat"><div class="stat-label">Avg lap (all)</div><div class="stat-value">${fmtMin(avgTime)}</div></div>
 	<div class="stat"><div class="stat-label">Race duration</div><div class="stat-value">${maxLaps}h</div><div class="stat-sub">~${(maxLaps / 24).toFixed(1)} days</div></div>
 `;
 
-				// Night shading annotations
-				const annotations = {};
-				nightBands(startHour, maxLap).forEach(([s, e], i) => {
-					annotations["night" + i] = {
-						type: "box",
-						xMin: s,
-						xMax: e,
-						yMin: 38,
-						yMax: 62,
-						backgroundColor: "rgba(20,30,90,0.07)",
-						borderWidth: 0,
-					};
-					const mid = Math.round((s + e) / 2);
-					if (mid < maxLap)
-						annotations["nightLabel" + i] = {
-							type: "label",
-							xValue: mid,
-							yValue: 61.3,
-							content: `Night ${i + 1}`,
-							font: { size: 9 },
-							color: "rgba(20,40,120,0.4)",
-						};
-				});
+				// x-axis tick step
+				const step =
+					globalMaxLap > 60 ? 10 : globalMaxLap > 30 ? 5 : globalMaxLap > 15 ? 2 : 1;
 
-				// Chart
 				const textColor = "#999";
 				const gridColor = "rgba(0,0,0,0.06)";
 
 				if (chart) chart.destroy();
 				chart = new Chart(document.getElementById("chart"), {
 					type: "line",
-					data: { labels: xLabels, datasets },
+					data: { labels: xLabels, datasets: currentDatasets },
 					options: {
 						responsive: true,
 						maintainAspectRatio: false,
@@ -629,14 +566,13 @@
 						interaction: { mode: "index", intersect: false },
 						plugins: {
 							legend: { display: false },
-							annotation: { annotations },
+							annotation: { annotations: {} },
 							tooltip: {
 								callbacks: {
-									title: (ctx) =>
-										`Lap ${ctx[0].dataIndex + 1} · ${xLabels[ctx[0].dataIndex].split(" ")[1]}`,
+									title: (ctx) => `Loop ${ctx[0].dataIndex + 1}`,
 									label: (ctx) =>
 										ctx.parsed.y != null
-											? ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} min`
+											? ` ${ctx.dataset.label}: ${fmtMin(ctx.parsed.y)}`
 											: null,
 									filter: (item) => item.parsed.y != null,
 								},
@@ -644,14 +580,17 @@
 						},
 						scales: {
 							x: {
+								min: "L1",
+								max: "L3", // overridden after default visibility is applied
 								ticks: {
 									color: textColor,
 									font: { size: 10 },
-									maxRotation: 45,
+									maxRotation: 0,
 									autoSkip: false,
 									callback(val, i) {
-										const h = (startHour + i) % 24;
-										return [0, 6, 12, 18].includes(h) ? xLabels[i] : "";
+										return (i + 1) % step === 0 || i === 0
+											? xLabels[i]
+											: "";
 									},
 								},
 								grid: { color: gridColor },
@@ -676,43 +615,46 @@
 					},
 				});
 
-				buildLegend(datasets);
+				buildLegend();
+
+				// Default: show top 3 only
+				setVisibility((ds, i) => i < 3);
+
+				statusEl.style.display = "none";
+				mainEl.style.display = "block";
 			}
 
-			function buildLegend(datasets) {
+			// ── Legend ─────────────────────────────────────────────────────────────────────
+			function buildLegend() {
 				const legendEl = document.getElementById("legend");
 				legendEl.innerHTML = "";
 
 				const groups = [
 					{ key: "top5", label: "Top 5" },
-					{ key: "mid-packer", label: "Mid-packers" },
-					{ key: "early_dnf", label: "Early DNF" },
+					{ key: "other", label: "Others" },
 				];
 
 				groups.forEach((group) => {
-					const groupDatasets = datasets.filter(
-						(d) => d.category === group.key,
-					);
-					if (!groupDatasets.length) return;
+					const groupDs = currentDatasets.filter((d) => d.category === group.key);
+					if (!groupDs.length) return;
 
 					const groupLabel = document.createElement("div");
 					groupLabel.className = "leg-group-label";
 					groupLabel.textContent = group.label;
 					legendEl.appendChild(groupLabel);
 
-					groupDatasets.forEach((ds) => {
-						const idx = datasets.indexOf(ds);
+					groupDs.forEach((ds) => {
+						const idx = currentDatasets.indexOf(ds);
 						const item = document.createElement("div");
 						item.className = "leg-item";
-						if (visibility[ds.fullName] === false) item.classList.add("hidden");
+						item.dataset.idx = idx;
 
-						// Canvas swatch showing line colour + dash pattern
+						// Canvas swatch
 						const sw = document.createElement("canvas");
 						sw.width = 26;
 						sw.height = 14;
 						sw.className = "leg-swatch";
-						sw.style.width = "26px";
-						sw.style.height = "14px";
+						sw.style.cssText = "width:26px;height:14px;display:block";
 						const sc = sw.getContext("2d");
 						sc.strokeStyle = ds.borderColor;
 						sc.lineWidth = 2.5;
@@ -734,27 +676,20 @@
 						item.addEventListener("click", () => {
 							const isVisible = chart.isDatasetVisible(idx);
 							chart.setDatasetVisibility(idx, !isVisible);
-							chart.update();
 							item.classList.toggle("hidden", isVisible);
+							applyVisibleRange();
 						});
 					});
 				});
 			}
 
 			// ── Init ───────────────────────────────────────────────────────────────────────
-			function init() {
-				raceSelect.addEventListener("change", () => {
-					const raceId = raceSelect.value;
-					const raceConfig = RACES.find((r) => r.id === raceId);
-					if (raceConfig) loadRace(raceConfig);
-				});
-				catFilter.addEventListener("change", renderChart);
+			raceSelect.addEventListener("change", () => {
+				const cfg = RACES.find((r) => r.id === raceSelect.value);
+				if (cfg) loadRace(cfg);
+			});
 
-				// Load the first race automatically
-				if (RACES.length > 0) loadRace(RACES[0]);
-			}
-
-			init();
+			if (RACES.length > 0) loadRace(RACES[0]);
 		</script>
 	</body>
 </html>
