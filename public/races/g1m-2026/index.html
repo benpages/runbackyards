@@ -22,16 +22,39 @@
     </svg>
     <span class="brand-wordmark">
       <span class="brand-b">Backyards</span>
-      <span class="brand-d">.run</span>
     </span>
   </a>
   <span class="sep">/</span>
-  <span class="current">Go One More Ultra 2026</span>
+  <span class="current">Go One More Ultra 2026 — Results &amp; Pacing Analysis | backyards.run</span>
   <div class="nav-right">
-    <a href="/bigs-2025">Big's 2025 →</a>
-    <a href="/">Pace Tool →</a>
+    <a href="/pace-tool/">Pace Tool</a>
+    <details class="nav-dropdown">
+      <summary>Races</summary>
+      <div class="nav-dropdown-menu">
+        <a href="/races/bigs-2025/">Big's 2025</a>
+        <a href="/races/g1m-2026/">Go One More 2026</a>
+      </div>
+    </details>
   </div>
 </nav>
+
+<script>
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    document
+      .querySelectorAll(".site-nav .nav-dropdown[open]")
+      .forEach((dropdown) => {
+        dropdown.open = false;
+        dropdown
+            .querySelector("summary")
+            ?
+            .focus();
+      });
+  });
+</script>
     
 <div class="race-hero">
 	<div class="race-event">Go One More Ultra &nbsp;·&nbsp; 2026</div>
@@ -737,6 +760,7 @@
 					},
 					y: {
 						beginAtZero: true,
+						max: Math.max(...data) + 1,
 						ticks: {
 							color: "#999",
 							font: {

@@ -1,97 +1,74 @@
 ---
 layout: base.njk
-title: "Go One More Ultra 2026 — Results & Pacing Analysis | backyards.run"
-description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145 runners, 73 loops. Won by Mark Dowdle. Interactive charts powered by backyards.run."
 ---
 
-<div class="race-hero">
-	<div class="race-event">Go One More Ultra &nbsp;·&nbsp; 2026</div>
-	<h1>Results &amp; Analysis</h1>
-	<p class="race-tagline">4.167-mile loop &nbsp;·&nbsp; Last one standing wins &nbsp;·&nbsp; Start: 12 pm</p>
-	<div class="hero-stats">
-		<div>
-			<div class="hstat-val winner-val">Mark Dowdle</div>
-			<div class="hstat-label">Winner</div>
-		</div>
-		<div>
-			<div class="hstat-val">73</div>
-			<div class="hstat-label">Winning loops</div>
-		</div>
-		<div>
-			<div class="hstat-val">~304 mi</div>
-			<div class="hstat-label">Winning distance</div>
-		</div>
-		<div>
-			<div class="hstat-val">145</div>
-			<div class="hstat-label">Starters</div>
-		</div>
-	</div>
+<div class="controls">
+	<label for="raceSelect">Race</label>
+	<select id="raceSelect"></select>
 </div>
-
-<!-- ── Static description (indexed by Google) ─────────────────────────────── -->
-<p class="race-desc">
-			The Go One More Ultra 2026 brought together 145 runners in the backyard ultra format — a 4.167-mile loop that must be completed within one hour, repeated until only one runner remains. Mark Dowdle outlasted the field, completing 73 loops and covering over 304 miles across 73 hours. Below is a full breakdown of lap pacing and DNF distribution across the race.
-		</p>
 
 <div id="status" class="status">Loading race data…</div>
 
-<main id="main" style="display:none">
-
-	<!-- Dynamic stats row -->
+<main id="main" style="display: none">
 	<div class="stats" id="statsRow"></div>
-
-	<!-- ── Section 1: Pace Analysis ─────────────────────────────────────────── -->
-	<div class="section">
-		<div class="section-header">
-			<div>
-				<div class="section-title">Lap-by-Lap Pace</div>
-				<div class="section-desc">Finish time per loop · top 3 shown by default · click a name to toggle</div>
+	<div class="card">
+		<div class="card-title">Lap finish time (min) · by loop number</div>
+		<div class="legend-bar">
+			<input
+						type="search"
+						id="runnerSearch"
+						placeholder="Find a runner…"
+						autocomplete="off"
+					/>
+			<div class="quick-btns">
+				<button class="qbtn" id="btnTop3">Top 3</button>
+				<button class="qbtn" id="btnAll">Show all</button>
+				<button class="qbtn" id="btnNone">Hide all</button>
 			</div>
 		</div>
-		<div class="card">
-			<div class="legend-bar">
-				<input type="search" id="runnerSearch" placeholder="Find a runner…" autocomplete="off"/>
-				<div class="quick-btns">
-					<button class="qbtn" id="btnTop3">Top 3</button>
-					<button class="qbtn" id="btnAll">Show all</button>
-					<button class="qbtn" id="btnNone">Hide all</button>
-				</div>
-			</div>
-			<div id="legend"></div>
-			<div class="chart-wrap">
-				<canvas id="paceChart" role="img" aria-label="Line chart of lap finish time by loop number."></canvas>
-			</div>
+		<div id="legend"></div>
+		<div class="chart-wrap" style="margin-top: 1rem">
+			<canvas id="chart" role="img" aria-label="Line chart of lap finish time by loop number."></canvas>
 		</div>
 	</div>
-
-	<!-- ── Section 2: DNFs by Loop ──────────────────────────────────────────── -->
-	<div class="section">
-		<div class="section-header">
-			<div>
-				<div class="section-title">DNFs by Loop</div>
-				<div class="section-desc">Number of runners who completed their final loop at each point in the race</div>
-			</div>
-		</div>
-		<div class="card">
-			<div class="chart-wrap dnf-chart-wrap">
-				<canvas id="dnfChart" role="img" aria-label="Bar chart showing how many runners stopped after each loop."></canvas>
-			</div>
-		</div>
-	</div>
-
 </main>
 
-<!-- ── Race config ─────────────────────────────────────────────────────────── -->
+<!-- ─── CONFIGURATION ──────────────────────────────────────────────────────── -->
 <script>
-	const RACE = {
-		id: "G1M_2026",
-		eventId: "390956",
-		host: "my4",
-		apiKey: "f545f563e8d28831fb09508cd63b1365",
-		listname: "Lists|Detail List",
-		page: "details1",
-		startHour: 12
-	};
+	const RACES = [
+		{
+			id: "G1M_2026",
+			label: "Go One More 2026",
+			eventId: "390956",
+			host: "my4",
+			apiKey: "f545f563e8d28831fb09508cd63b1365",
+			listname: "Lists|Detail List",
+			page: "details1",
+			startHour: 12
+		}, {
+			id: "Bigs_2025",
+			label: "Big's Backyard Ultra 2025",
+			eventId: "364272",
+			host: "my2",
+			apiKey: "e35ba6322adb153e157d76e69096f692",
+			listname: "Result Lists|Lap Details",
+			page: "results",
+			startHour: 7, // 7:00 AM Central Time
+			extraParams: "&contest=0&r=all&l=0"
+		},
+		// Template for new races:
+		// {
+		//   id: "RaceName_YYYY",
+		//   label: "Race Display Name YYYY",
+		//   eventId: "XXXXX",        from raceresult URL
+		//   host: "my4",             subdomain (my2, my4, etc.) — check network inspector
+		//   apiKey: "...",
+		//   listname: "...",         from network inspector
+		//   page: "...",
+		//   startHour: 9,            optional — enables night bands + time-of-day tooltips
+		//   extraParams: "",         optional — any extra query params needed
+		// },
+	];
 
 	const PALETTE = [
 		{
@@ -142,13 +119,14 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		}
 	];
 </script>
+<!-- ─────────────────────────────────────────────────────────────────────────── -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script>
 	// ── Helpers ────────────────────────────────────────────────────────────────────
 
+	// "MM:SS" or "MM:SS:00" → decimal minutes
 	function toLapMin(t) {
 		if (!t) 
 			return null;
@@ -166,6 +144,8 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		return `${mins}:${String(secs).padStart(2, "0")}`;
 	}
 
+	// Time-of-day string for a given lap number + race start hour
+	// e.g. lapNum=1, startHour=12 → "12 pm"  |  lapNum=10 → "9 pm"
 	function todStr(lapNum, startHour) {
 		const h = (startHour + lapNum - 1) % 24;
 		if (h === 0) 
@@ -177,6 +157,7 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		return `${h - 12} pm`;
 	}
 
+	// Returns [[xMin, xMax], …] index ranges for 9 pm – 6 am bands
 	function nightBands(startHour, maxLap) {
 		const bands = [];
 		let open = null;
@@ -184,7 +165,7 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 			const h = (startHour + i - 1) % 24;
 			const isNight = h >= 21 || h < 6;
 			if (isNight && open === null) 
-				open = i - 1.5;
+				open = i - 1.5; // 0-based index, leading edge
 			if (!isNight && open !== null) {
 				bands.push([
 					open, i - 1.5
@@ -199,6 +180,7 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		return bands;
 	}
 
+	// "LastName FirstName" → "FirstName LastName"
 	function fullDisplayName(stored) {
 		const parts = stored
 			.trim()
@@ -210,40 +192,52 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 			.join(" ") + " " + parts[0];
 	}
 
-	// ── Parser ─────────────────────────────────────────────────────────────────────
+	// ── raceresult parsing ─────────────────────────────────────────────────────────
 
-	function parseRaceresultData(apiData) {
+	function parseRaceresultData(apiData, raceConfig) {
 		const rows = [];
+
 		Object
 			.entries(apiData)
 			.forEach(([key, lapRows]) => {
 				if (!Array.isArray(lapRows)) 
 					return;
+				
 				let athleteName,
 					totalLaps;
 
 				if (key.includes(" /// ")) {
+					// ── G1M / spaced-separator format ─────────────────────────────────────
+					// Key: "#N_LastName, FirstName / N Laps / Total Time: HH:MM:SS"
 					const namePart = key
 						.split(" /// ")[0]
 						.replace(/^#\d+_/, "")
 						.trim();
-					const ci = namePart.indexOf(", ");
-					athleteName = ci !== -1
-						? namePart.substring(0, ci) + " " + namePart.substring(ci + 2)
+					const commaIdx = namePart.indexOf(", ");
+					// Normalise to "LastName FirstName" for consistent display logic
+					athleteName = commaIdx !== -1
+						? namePart.substring(0, commaIdx) + " " + namePart.substring(commaIdx + 2)
 						: namePart;
 					const m = key.match(/(\d+) Laps?/i);
 					totalLaps = m
 						? parseInt(m[1])
 						: lapRows.length;
 				} else {
+					// ── Big's / compact format ─────────────────────────────────────────────
+					// Key: "#N_bib///FirstName LastName///NLaps"
 					const parts = key.split("///");
-					const dn = (parts[1] || "").trim();
-					const np = dn.split(" ");
-					athleteName = np.length >= 2
-						? np[np.length - 1] + " " + np
+					const displayName = (parts[1] || "").trim(); // "Phil Gore"
+					// Normalise to "LastName FirstName" so shortName = first word = last name
+					const nameParts = displayName.split(" ");
+					if (nameParts.length >= 2) {
+						const last = nameParts[nameParts.length - 1];
+						const first = nameParts
 							.slice(0, -1)
-							.join(" ")
-						: dn;
+							.join(" ");
+						athleteName = `${last} ${first}`; // "Gore Phil"
+					} else {
+						athleteName = displayName;
+					}
 					const m = (parts[2] || "").match(/(\d+)/);
 					totalLaps = m
 						? parseInt(m[1])
@@ -256,20 +250,25 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 					let lapNum,
 						finishTime,
 						restTime;
+
 					if (row.length >= 7 && String(row[3]).startsWith("Lap")) {
+						// G1M row: [col, bib, flag, "LapN", cp_MM:SS, finish_MM:SS, rest_MM:SS]
 						lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
 						finishTime = row[5];
 						restTime = row[6];
 					} else if (row.length >= 6) {
+						// Big's row: [flag, bib, lapNum, cumulative_HH:MM:SS, split_MM:SS, rest_MM:SS]
 						lapNum = parseInt(row[2], 10);
 						finishTime = row[4];
 						restTime = row[5];
 					} else {
 						return;
 					}
+
 					if (!isNaN(lapNum) && finishTime) {
 						rows.push({
 							athlete: athleteName,
+							race: raceConfig.id,
 							total_laps: totalLaps,
 							lap: "Lap" + lapNum,
 							finish_time: finishTime,
@@ -278,27 +277,39 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 					}
 				});
 			});
+
 		return rows;
 	}
 
-	// ── State ──────────────────────────────────────────────────────────────────────
+	// ── Module state ───────────────────────────────────────────────────────────────
 	let allRows = [];
-	let paceChart = null;
-	let dnfChart = null;
+	let chart = null;
 	let currentDatasets = [];
 	let globalMaxLap = 0;
-	const LEGEND_INITIAL = 15;
 
 	const statusEl = document.getElementById("status");
 	const mainEl = document.getElementById("main");
+	const raceSelect = document.getElementById("raceSelect");
 	const searchInput = document.getElementById("runnerSearch");
 
 	Chart.register(window["chartjs-plugin-annotation"]);
 
+	raceSelect.innerHTML = RACES
+		.map((r) => `<option value="${r.id}">${r.label}</option>`,)
+		.join("");
+
 	// ── Fetch ──────────────────────────────────────────────────────────────────────
-	async function loadRace() {
-		const extra = RACE.extraParams || "";
-		const url = `https://${RACE.host}.raceresult.com/${RACE.eventId}/${RACE.page}/list?key=${RACE.apiKey}&listname=${encodeURIComponent(RACE.listname)}&page=${RACE.page}${extra}`;
+
+	async function loadRace(raceConfig) {
+		statusEl.textContent = `Loading ${raceConfig.label}…`;
+		statusEl.className = "status";
+		statusEl.style.display = "block";
+		mainEl.style.display = "none";
+		searchInput.value = "";
+
+		const host = raceConfig.host || "my4";
+		const extra = raceConfig.extraParams || "";
+		const url = `https://${host}.raceresult.com/${raceConfig.eventId}/${raceConfig.page}/list?key=${raceConfig.apiKey}&listname=${encodeURIComponent(raceConfig.listname)}&page=${raceConfig.page}${extra}`;
 		try {
 			const res = await fetch(url);
 			if (!res.ok) 
@@ -306,41 +317,47 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 			const json = await res.json();
 			if (!json.data) 
 				throw new Error("'data' field missing");
-			allRows = parseRaceresultData(json.data);
-			if (!allRows.length) 
+			
+			const raceRows = parseRaceresultData(json.data, raceConfig);
+			if (!raceRows.length) 
 				throw new Error("No lap rows parsed");
-			renderPaceChart();
-			renderDNFChart();
-			statusEl.style.display = "none";
-			mainEl.style.display = "block";
+			
+			allRows = allRows
+				.filter((r) => r.race !== raceConfig.id)
+				.concat(raceRows);
+			renderChart(raceConfig.id);
 		} catch (e) {
-			let msg = `Could not load data: ${e.message}.`;
+			let msg = `Could not load ${raceConfig.label}: ${e.message}.`;
 			if (e.message === "Failed to fetch") 
-				msg += " Possible CORS issue — open from backyards.run.";
+				msg += " Possible CORS issue — open from backyards.run, not a local file.";
 			statusEl.textContent = msg;
 			statusEl.className = "status error";
 		}
 	}
 
 	// ── Visibility helpers ─────────────────────────────────────────────────────────
+
 	function applyVisibleRange() {
-		if (!paceChart) 
+		if (!chart) 
 			return;
 		let max = 0;
 		currentDatasets.forEach((ds, i) => {
-			if (paceChart.isDatasetVisible(i)) 
+			if (chart.isDatasetVisible(i)) 
 				max = Math.max(max, ds.totalLaps);
 			}
 		);
-		paceChart.options.scales.x.max = "L" + (
-		max || globalMaxLap);
-		paceChart.update("none");
+		if (max === 0) 
+			max = globalMaxLap;
+		chart.options.scales.x.max = "L" + max;
+		chart.update("none");
 	}
 
 	function setVisibility(predicate) {
-		if (!paceChart) 
+		if (!chart) 
 			return;
-		currentDatasets.forEach((ds, i) => paceChart.setDatasetVisibility(i, predicate(ds, i)));
+		currentDatasets.forEach((ds, i) => {
+			chart.setDatasetVisibility(i, predicate(ds, i));
+		});
 		applyVisibleRange();
 		syncLegendItems();
 	}
@@ -350,7 +367,7 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 			.querySelectorAll(".leg-item[data-idx]")
 			.forEach((item) => {
 				const idx = parseInt(item.dataset.idx, 10);
-				const visible = paceChart.isDatasetVisible(idx);
+				const visible = chart.isDatasetVisible(idx);
 				item
 					.classList
 					.toggle("on", visible);
@@ -360,6 +377,7 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 			});
 	}
 
+	// ── Quick buttons ──────────────────────────────────────────────────────────────
 	document
 		.getElementById("btnTop3")
 		.addEventListener("click", () => setVisibility((ds, i) => i < 3));
@@ -370,33 +388,42 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		.getElementById("btnNone")
 		.addEventListener("click", () => setVisibility(() => false));
 
+	// ── Search ─────────────────────────────────────────────────────────────────────
+	const LEGEND_INITIAL = 15;
+
 	searchInput.addEventListener("input", function () {
 		const term = this
 			.value
 			.toLowerCase()
 			.trim();
-		const btn = document.getElementById("showMoreBtn");
+		const showMoreBtn = document.getElementById("showMoreBtn");
+
 		if (term) {
-			if (btn) 
-				btn.style.display = "none";
+			// While searching: reveal all pills, hide the "show more" button
+			if (showMoreBtn) 
+				showMoreBtn.style.display = "none";
 			document
 				.querySelectorAll(".leg-item[data-idx]")
 				.forEach((item) => {
-					item.style.display = (item.dataset.name || "").includes(term)
+					const name = item.dataset.name || "";
+					item.style.display = name.includes(term)
 						? ""
 						: "none";
 				});
 		} else {
-			if (btn) {
-				btn.style.display = "";
+			// Cleared: restore overflow state
+			if (showMoreBtn) {
+				showMoreBtn.style.display = "";
 				document
 					.querySelectorAll(".leg-item[data-idx]")
 					.forEach((item) => {
-						item.style.display = parseInt(item.dataset.idx, 10) >= LEGEND_INITIAL
+						const idx = parseInt(item.dataset.idx, 10);
+						item.style.display = idx >= LEGEND_INITIAL
 							? "none"
 							: "";
 					});
 			} else {
+				// Show more was already clicked — show everything
 				document
 					.querySelectorAll(".leg-item[data-idx]")
 					.forEach((item) => {
@@ -406,10 +433,16 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		}
 	});
 
-	// ── Pace chart ─────────────────────────────────────────────────────────────────
-	function renderPaceChart() {
+	// ── Render ─────────────────────────────────────────────────────────────────────
+	function renderChart(raceId) {
+		const raceConfig = RACES.find((r) => r.id === raceId);
+		const rows = allRows.filter((r) => r.race === raceId);
+		if (!rows.length) 
+			return;
+		
+		// Build per-athlete map
 		const athleteMap = {};
-		allRows.forEach((r) => {
+		rows.forEach((r) => {
 			if (!athleteMap[r.athlete]) 
 				athleteMap[r.athlete] = {
 					total: + r.total_laps,
@@ -421,11 +454,13 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 			}
 		);
 
+		// Sort by total laps descending
 		const sorted = Object
 			.entries(athleteMap)
 			.sort(([
 				, a
-			], [, b]) => b.total - a.total);
+			], [, b]) => b.total - a.total,);
+
 		globalMaxLap = Math.max(...sorted.map(([, a]) => a.total));
 		const xLabels = Array.from({
 			length: globalMaxLap
@@ -441,12 +476,12 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 				totalLaps: athlete.total,
 				data: Array.from({
 					length: globalMaxLap
-				}, (_, j) => athlete.laps[j + 1] ?? null),
+				}, (_, j) => athlete.laps[j + 1] ?? null,),
 				borderColor: style.color,
 				backgroundColor: "transparent",
 				borderWidth: 2,
-				pointRadius: 0,
-				pointHoverRadius: 5,
+				pointRadius: 0, // smooth line — no dots
+				pointHoverRadius: 5, // dots appear on hover only
 				tension: 0.3,
 				borderDash: style.dash,
 				spanGaps: false
@@ -457,23 +492,35 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		const winnerName = sorted[0]
 			? fullDisplayName(sorted[0][0])
 			: "";
-		const allTimes = allRows
+		const allTimes = rows
 			.map((r) => toLapMin(r.finish_time))
 			.filter(Boolean);
 		const avgTime = allTimes.reduce((a, b) => a + b, 0) / allTimes.length;
+
 		document
 			.getElementById("statsRow")
 			.innerHTML = `
 	<div class="stat"><div class="stat-label">Runners</div><div class="stat-value">${sorted.length}</div></div>
-	<div class="stat"><div class="stat-label">Winning loops</div><div class="stat-value">${globalMaxLap}</div><div class="stat-sub">${winnerName}</div></div>
+	<div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${globalMaxLap}</div><div class="stat-sub">${winnerName}</div></div>
 	<div class="stat"><div class="stat-label">Avg lap (all)</div><div class="stat-value">${fmtMin(avgTime)}</div></div>
 	<div class="stat"><div class="stat-label">Race duration</div><div class="stat-value">${globalMaxLap}h</div><div class="stat-sub">~${ (globalMaxLap / 24).toFixed(1)} days</div></div>
 `;
 
-		// Night bands
+		const step = globalMaxLap > 60
+			? 10
+			: globalMaxLap > 30
+				? 5
+				: globalMaxLap > 15
+					? 2
+					: 1;
+		const textColor = "#999";
+		const gridColor = "rgba(0,0,0,0.06)";
+
+		// Night bands — only when startHour is configured for this race
 		const annotations = {};
-		if (RACE.startHour !== undefined) {
-			nightBands(RACE.startHour, globalMaxLap).forEach(([
+		const hasStartTime = raceConfig && raceConfig.startHour !== undefined;
+		if (hasStartTime) {
+			nightBands(raceConfig.startHour, globalMaxLap).forEach(([
 				s, e
 			], i) => {
 				annotations["night" + i] = {
@@ -486,7 +533,7 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 					borderWidth: 0
 				};
 				const mid = Math.round((s + e) / 2);
-				if (mid < globalMaxLap - 1) 
+				if (mid < globalMaxLap - 1) {
 					annotations["nightLabel" + i] = {
 						type: "label",
 						xValue: mid,
@@ -497,22 +544,13 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 						},
 						color: "rgba(20,40,120,0.35)"
 					};
+				}
 			});
 		}
 
-		const step = globalMaxLap > 60
-			? 10
-			: globalMaxLap > 30
-				? 5
-				: globalMaxLap > 15
-					? 2
-					: 1;
-		const tc = "#999",
-			gc = "rgba(0,0,0,0.06)";
-
-		if (paceChart) 
-			paceChart.destroy();
-		paceChart = new Chart(document.getElementById("paceChart"), {
+		if (chart) 
+			chart.destroy();
+		chart = new Chart(document.getElementById("chart"), {
 			type: "line",
 			data: {
 				labels: xLabels,
@@ -537,9 +575,10 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 						callbacks: {
 							title: (ctx) => {
 								const lap = ctx[0].dataIndex + 1;
-								return RACE.startHour !== undefined
-									? `Loop ${lap} · ${todStr(lap, RACE.startHour)}`
-									: `Loop ${lap}`;
+								if (hasStartTime) {
+									return `Loop ${lap} · ${todStr(lap, raceConfig.startHour)}`;
+								}
+								return `Loop ${lap}`;
 							},
 							label: (ctx) => ctx.parsed.y != null
 								? ` ${ctx.dataset.label}: ${fmtMin(ctx.parsed.y)}`
@@ -551,9 +590,9 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 				scales: {
 					x: {
 						min: "L1",
-						max: "L3",
+						max: "L3", // updated immediately by setVisibility below
 						ticks: {
-							color: tc,
+							color: textColor,
 							font: {
 								size: 10
 							},
@@ -566,7 +605,7 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 							}
 						},
 						grid: {
-							color: gc
+							color: gridColor
 						}
 					},
 					y: {
@@ -575,20 +614,20 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 						title: {
 							display: true,
 							text: "Lap finish time (min)",
-							color: tc,
+							color: textColor,
 							font: {
 								size: 11
 							}
 						},
 						ticks: {
-							color: tc,
+							color: textColor,
 							font: {
 								size: 11
 							},
 							callback: (v) => v + " min"
 						},
 						grid: {
-							color: gc
+							color: gridColor
 						}
 					}
 				}
@@ -596,147 +635,30 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		});
 
 		buildLegend();
+
+		// Default: show top 3
 		setVisibility((ds, i) => i < 3);
-	}
 
-	// ── DNF chart ──────────────────────────────────────────────────────────────────
-	function renderDNFChart() {
-		const athleteTotals = {};
-		allRows.forEach((r) => {
-			athleteTotals[r.athlete] = Math.max(athleteTotals[r.athlete] || 0, + 1 + r.total_laps);
-		});
-
-		const maxLap = Math.max(...Object.values(athleteTotals));
-		const counts = {};
-		Object
-			.values(athleteTotals)
-			.forEach((n) => {
-				counts[n] = (counts[n] || 0) + 1;
-			});
-
-		const labels = Array.from({
-			length: maxLap
-		}, (_, i) => `L${i + 1}`);
-		const data = labels.map((_, i) => counts[i + 1] || 0);
-		const colors = data.map(
-			(_, i) => i + 1 === maxLap
-			? "#C0392B"
-			: "rgba(26,26,26,0.75)");
-
-		const step = maxLap > 60
-			? 10
-			: maxLap > 30
-				? 5
-				: 1;
-
-		if (dnfChart) 
-			dnfChart.destroy();
-		dnfChart = new Chart(document.getElementById("dnfChart"), {
-			type: "bar",
-			plugins: [ChartDataLabels],
-			data: {
-				labels,
-				datasets: [
-					{
-						data,
-						backgroundColor: colors,
-						borderRadius: 2,
-						borderSkipped: false
-					}
-				]
-			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false,
-				animation: false,
-				plugins: {
-					legend: {
-						display: false
-					},
-					datalabels: {
-						anchor: "end",
-						align: "top",
-						color: "#777",
-						font: {
-							size: 9,
-							weight: "600"
-						},
-						formatter: (v) => v === 0
-							? ""
-							: v
-					},
-					tooltip: {
-						callbacks: {
-							title: (ctx) => `Loop ${ctx[0].dataIndex + 1}` + (
-								RACE.startHour !== undefined
-								? ` · ${todStr(ctx[0].dataIndex + 1, RACE.startHour)}`
-								: ""),
-							label: (ctx) => {
-								const n = ctx.parsed.y;
-								if (n === 0) 
-									return null;
-								return ctx.dataIndex + 1 === maxLap
-									? ` ${n} runner${n > 1
-										? "s"
-										: ""} won the race`
-									: ` ${n} runner${n > 1
-										? "s"
-										: ""} finished their race here`;
-							},
-							filter: (item) => item.parsed.y > 0
-						}
-					}
-				},
-				scales: {
-					x: {
-						grid: {
-							display: false
-						},
-						ticks: {
-							color: "#999",
-							font: {
-								size: 9
-							},
-							maxRotation: 0,
-							autoSkip: false,
-							callback(val, i) {
-								return (i + 1) % step === 0 || i === 0
-									? labels[i]
-									: "";
-							}
-						}
-					},
-					y: {
-						beginAtZero: true,
-						max: Math.max(...data) + 1,
-						ticks: {
-							color: "#999",
-							font: {
-								size: 10
-							},
-							stepSize: 1
-						},
-						grid: {
-							color: "rgba(0,0,0,0.06)"
-						}
-					}
-				}
-			}
-		});
+		statusEl.style.display = "none";
+		mainEl.style.display = "block";
 	}
 
 	// ── Legend ─────────────────────────────────────────────────────────────────────
 	function buildLegend() {
 		const legendEl = document.getElementById("legend");
 		legendEl.innerHTML = "";
+
 		currentDatasets.forEach((ds, idx) => {
 			const item = document.createElement("div");
 			item.className = "leg-item";
 			item.dataset.idx = idx;
 			item.dataset.name = (ds.fullName + " " + ds.label).toLowerCase();
+
+			// Collapse runners beyond the initial count
 			if (idx >= LEGEND_INITIAL) 
 				item.style.display = "none";
 			
+			// Canvas swatch
 			const sw = document.createElement("canvas");
 			sw.width = 24;
 			sw.height = 12;
@@ -759,13 +681,14 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 			item.appendChild(sw);
 			item.appendChild(name);
 			legendEl.appendChild(item);
+
 			item
 				.style
 				.setProperty("border-left-color", ds.borderColor);
 
 			item.addEventListener("click", () => {
-				const isVisible = paceChart.isDatasetVisible(idx);
-				paceChart.setDatasetVisibility(idx, !isVisible);
+				const isVisible = chart.isDatasetVisible(idx);
+				chart.setDatasetVisibility(idx, !isVisible);
 				item
 					.classList
 					.toggle("on", !isVisible);
@@ -776,6 +699,7 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 			});
 		});
 
+		// "Show more" button if there are hidden runners
 		if (currentDatasets.length > LEGEND_INITIAL) {
 			const more = document.createElement("button");
 			more.className = "show-more-btn";
@@ -793,5 +717,16 @@ description: "Lap-by-lap pacing and DNF analysis for Go One More Ultra 2026. 145
 		}
 	}
 
-	loadRace();
+	// ── Init ───────────────────────────────────────────────────────────────────────
+	raceSelect.addEventListener("change", () => {
+		const cfg = RACES.find((r) => r.id === raceSelect.value);
+		if (cfg) 
+			loadRace(cfg);
+		}
+	);
+
+	if (RACES.length > 0) 
+		loadRace(RACES[0]);
 </script>
+</body>
+</html>

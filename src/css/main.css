@@ -14,9 +14,299 @@ body {
 	min-height: 100vh;
 }
 
+/* Old pace-tool styles */
+
+<style > * {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-family:
+		"Inter",
+		-apple-system,
+		BlinkMacSystemFont,
+		sans-serif;
+	background: #edeae4;
+	color: #1a1a1a;
+	min-height: 100vh;
+}
+
+/* ── Brand / Nav ───────────────────────────────────────────────────────── */
+header {
+	background: #141414;
+	color: #fff;
+	padding: 0.9rem 2rem;
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+	flex-wrap: wrap;
+}
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 0.55rem;
+	text-decoration: none;
+	color: inherit;
+	flex-shrink: 0;
+}
+.brand-wordmark {
+	display: flex;
+	align-items: baseline;
+}
+.brand-b {
+	font-size: 1rem;
+	font-weight: 800;
+	letter-spacing: -0.025em;
+	color: #fff;
+}
+.brand-d {
+	font-size: 1rem;
+	font-weight: 300;
+	letter-spacing: -0.01em;
+	color: #777;
+}
+.header-divider {
+	color: #333;
+	font-size: 0.9rem;
+}
+.header-page {
+	font-size: 0.8rem;
+	color: #888;
+	font-weight: 400;
+	letter-spacing: 0.01em;
+}
+
+.controls {
+	background: #fff;
+	border-bottom: 1px solid #e5e5e5;
+	padding: 0.75rem 2rem;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+.controls label {
+	font-size: 0.8rem;
+	color: #666;
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+.controls select {
+	font-size: 0.9rem;
+	padding: 0.35rem 0.65rem;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background: #f7f4ef;
+	cursor: pointer;
+}
+.controls select:focus {
+	outline: 2px solid #c0392b;
+	outline-offset: 1px;
+}
+
+.quick-btns {
+	display: flex;
+	gap: 5px;
+}
+.qbtn {
+	font-size: 0.78rem;
+	padding: 0.3rem 0.8rem;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	background: #f7f4ef;
+	cursor: pointer;
+	color: #555;
+	transition:
+		background 0.12s,
+		border-color 0.12s,
+		color 0.12s;
+	white-space: nowrap;
+}
+.qbtn:hover {
+	background: #efefef;
+	border-color: #bbb;
+}
+
+.status {
+	padding: 3rem 2rem;
+	text-align: center;
+	color: #888;
+	font-size: 0.9rem;
+}
+.status.error {
+	color: #c0392b;
+}
+
+main {
+	padding: 1.5rem 2rem;
+}
+
+.stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 10px;
+	margin-bottom: 1.5rem;
+}
+.stat {
+	background: #fff;
+	border-radius: 8px;
+	border: 1px solid #eee;
+	padding: 0.85rem 1rem;
+}
+.stat-label {
+	font-size: 0.72rem;
+	color: #888;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin-bottom: 4px;
+}
+.stat-value {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #1a1a1a;
+}
+.stat-sub {
+	font-size: 0.75rem;
+	color: #aaa;
+	margin-top: 2px;
+}
+
+.card {
+	background: #fff;
+	border-radius: 10px;
+	border: 1px solid #eee;
+	padding: 1.25rem 1.5rem;
+}
+.card-title {
+	font-size: 0.8rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: #888;
+	margin-bottom: 1rem;
+}
+
+/* ── Legend search + pills ───────────────────────────────── */
+.legend-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin-bottom: 0.85rem;
+	flex-wrap: wrap;
+}
+#runnerSearch {
+	flex: 0 0 auto;
+	width: 200px;
+	padding: 0.35rem 0.9rem;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	font-size: 0.82rem;
+	color: #333;
+	background: #f7f4ef;
+	outline: none;
+	transition: border-color 0.15s;
+}
+#runnerSearch:focus {
+	border-color: #c0392b;
+	background: #fff;
+}
+#runnerSearch::placeholder {
+	color: #bbb;
+}
+
+#legend {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+.leg-item {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	padding: 5px 10px;
+	border-radius: 6px;
+	border: 1px solid #e0e0e0;
+	user-select: none;
+	background: #fff;
+	transition:
+		opacity 0.15s,
+		border-color 0.15s;
+}
+.leg-item:hover {
+	border-color: #bbb;
+	background: #f7f7f7;
+}
+/* Hidden = runner not on chart */
+.leg-item.off {
+	opacity: 0.45;
+}
+/* Visible = runner shown on chart — colored left border */
+.leg-item.on {
+	border-left-width: 3px;
+	padding-left: 8px;
+}
+.leg-swatch {
+	flex-shrink: 0;
+	display: block;
+}
+.leg-name {
+	font-size: 0.78rem;
+	color: #333;
+	white-space: nowrap;
+}
+
+.show-more-btn {
+	font-size: 0.75rem;
+	padding: 5px 12px;
+	border-radius: 6px;
+	border: 1px dashed #ccc;
+	background: #f7f4ef;
+	color: #888;
+	cursor: pointer;
+	white-space: nowrap;
+	align-self: center;
+}
+.show-more-btn:hover {
+	background: #f0f0f0;
+	border-color: #aaa;
+	color: #444;
+}
+
+.chart-wrap {
+	position: relative;
+	width: 100%;
+	height: 420px;
+}
+
+footer {
+	text-align: center;
+	padding: 2rem;
+	font-size: 0.75rem;
+	color: #bbb;
+}
+
+@media (max-width: 600px) {
+	header,
+	.controls,
+	main {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+	.chart-wrap {
+		height: 300px;
+	}
+	#runnerSearch {
+		width: 100%;
+	}
+}
+
 /* ── Nav ───────────────────────────────────────────────────────────────── */
 .site-nav {
-	background: #141414;
+	background: #151712;
 	padding: 0.75rem 2rem;
 	display: flex;
 	align-items: center;
@@ -41,12 +331,7 @@ body {
 	letter-spacing: -0.025em;
 	color: #fff;
 }
-.brand-d {
-	font-size: 0.95rem;
-	font-weight: 300;
-	letter-spacing: -0.01em;
-	color: #666;
-}
+
 .site-nav .sep {
 	color: #333;
 	font-size: 0.8rem;
@@ -59,15 +344,55 @@ body {
 .site-nav .nav-right {
 	margin-left: auto;
 	display: flex;
+	align-items: center;
 	gap: 1.25rem;
 }
-.site-nav .nav-right a {
+.site-nav .nav-right a,
+.site-nav .nav-dropdown summary {
 	color: #777;
 	text-decoration: none;
 	font-size: 0.8rem;
 }
-.site-nav .nav-right a:hover {
+.site-nav .nav-right a:hover,
+.site-nav .nav-dropdown summary:hover {
 	color: #fff;
+}
+.site-nav .nav-dropdown {
+	position: relative;
+}
+.site-nav .nav-dropdown summary {
+	cursor: pointer;
+	list-style: none;
+}
+.site-nav .nav-dropdown summary::-webkit-details-marker {
+	display: none;
+}
+.site-nav .nav-dropdown summary::after {
+	content: "▾";
+	font-size: 0.65rem;
+	margin-left: 0.35rem;
+}
+.site-nav .nav-dropdown-menu {
+	background: #151712;
+	border: 1px solid #2d3027;
+	border-radius: 8px;
+	box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+	display: grid;
+	gap: 0.2rem;
+	min-width: 170px;
+	padding: 0.45rem;
+	position: absolute;
+	right: 0;
+	top: calc(100% + 0.6rem);
+	z-index: 10;
+}
+.site-nav .nav-dropdown-menu a {
+	border-radius: 6px;
+	padding: 0.45rem 0.55rem;
+	white-space: nowrap;
+}
+.site-nav .nav-dropdown-menu a:hover {
+	background: #20231b;
 }
 
 /* ── Hero ──────────────────────────────────────────────────────────────── */
