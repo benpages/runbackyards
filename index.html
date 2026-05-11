@@ -70,7 +70,6 @@
 			.quick-btns {
 				display: flex;
 				gap: 5px;
-				margin-left: auto;
 			}
 			.qbtn {
 				font-size: 0.78rem;
@@ -151,6 +150,7 @@
 			.legend-bar {
 				display: flex;
 				align-items: center;
+				justify-content: space-between;
 				gap: 0.75rem;
 				margin-bottom: 0.85rem;
 				flex-wrap: wrap;
@@ -215,6 +215,23 @@
 				white-space: nowrap;
 			}
 
+			.show-more-btn {
+				font-size: 0.75rem;
+				padding: 5px 12px;
+				border-radius: 6px;
+				border: 1px dashed #ccc;
+				background: #fafafa;
+				color: #888;
+				cursor: pointer;
+				white-space: nowrap;
+				align-self: center;
+			}
+			.show-more-btn:hover {
+				background: #f0f0f0;
+				border-color: #aaa;
+				color: #444;
+			}
+
 			.chart-wrap {
 				position: relative;
 				width: 100%;
@@ -238,9 +255,6 @@
 				.chart-wrap {
 					height: 300px;
 				}
-				.quick-btns {
-					margin-left: 0;
-				}
 				#runnerSearch {
 					width: 100%;
 				}
@@ -256,11 +270,6 @@
 		<div class="controls">
 			<label for="raceSelect">Race</label>
 			<select id="raceSelect"></select>
-			<div class="quick-btns">
-				<button class="qbtn" id="btnTop3">Top 3</button>
-				<button class="qbtn" id="btnAll">Show all</button>
-				<button class="qbtn" id="btnNone">Hide all</button>
-			</div>
 		</div>
 
 		<div id="status" class="status">Loading race data…</div>
@@ -276,6 +285,11 @@
 						placeholder="Find a runner…"
 						autocomplete="off"
 					/>
+					<div class="quick-btns">
+						<button class="qbtn" id="btnTop3">Top 3</button>
+						<button class="qbtn" id="btnAll">Show all</button>
+						<button class="qbtn" id="btnNone">Hide all</button>
+					</div>
 				</div>
 				<div id="legend"></div>
 				<div class="chart-wrap" style="margin-top: 1rem">
@@ -500,13 +514,34 @@
 			document.getElementById("btnNone").addEventListener("click", () => setVisibility(() => false));
 
 			// ── Search ─────────────────────────────────────────────────────────────────────
+			const LEGEND_INITIAL = 15;
+
 			searchInput.addEventListener("input", function () {
 				const term = this.value.toLowerCase().trim();
-				document.querySelectorAll(".leg-item[data-idx]").forEach((item) => {
-					const name = item.dataset.name || "";
-					item.style.display =
-						term === "" || name.includes(term) ? "" : "none";
-				});
+				const showMoreBtn = document.getElementById("showMoreBtn");
+
+				if (term) {
+					// While searching: reveal all pills, hide the "show more" button
+					if (showMoreBtn) showMoreBtn.style.display = "none";
+					document.querySelectorAll(".leg-item[data-idx]").forEach((item) => {
+						const name = item.dataset.name || "";
+						item.style.display = name.includes(term) ? "" : "none";
+					});
+				} else {
+					// Cleared: restore overflow state
+					if (showMoreBtn) {
+						showMoreBtn.style.display = "";
+						document.querySelectorAll(".leg-item[data-idx]").forEach((item) => {
+							const idx = parseInt(item.dataset.idx, 10);
+							item.style.display = idx >= LEGEND_INITIAL ? "none" : "";
+						});
+					} else {
+						// Show more was already clicked — show everything
+						document.querySelectorAll(".leg-item[data-idx]").forEach((item) => {
+							item.style.display = "";
+						});
+					}
+				}
 			});
 
 			// ── Render ─────────────────────────────────────────────────────────────────────
@@ -680,10 +715,12 @@
 					const item = document.createElement("div");
 					item.className = "leg-item";
 					item.dataset.idx = idx;
-					// Search key: full name + label (lowercase for quick matching)
 					item.dataset.name = (ds.fullName + " " + ds.label).toLowerCase();
 
-					// Canvas swatch (line + dash preview)
+					// Collapse runners beyond the initial count
+					if (idx >= LEGEND_INITIAL) item.style.display = "none";
+
+					// Canvas swatch
 					const sw = document.createElement("canvas");
 					sw.width = 24;
 					sw.height = 12;
@@ -706,7 +743,6 @@
 					item.appendChild(name);
 					legendEl.appendChild(item);
 
-					// Colored left border matches runner colour when active
 					item.style.setProperty("border-left-color", ds.borderColor);
 
 					item.addEventListener("click", () => {
@@ -717,6 +753,21 @@
 						applyVisibleRange();
 					});
 				});
+
+				// "Show more" button if there are hidden runners
+				if (currentDatasets.length > LEGEND_INITIAL) {
+					const more = document.createElement("button");
+					more.className = "show-more-btn";
+					more.id = "showMoreBtn";
+					more.textContent = `+${currentDatasets.length - LEGEND_INITIAL} more runners`;
+					more.addEventListener("click", () => {
+						document.querySelectorAll(".leg-item[data-idx]").forEach((el) => {
+							el.style.display = "";
+						});
+						more.remove();
+					});
+					legendEl.appendChild(more);
+				}
 			}
 
 			// ── Init ───────────────────────────────────────────────────────────────────────
