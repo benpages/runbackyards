@@ -147,44 +147,67 @@
 				margin-bottom: 1rem;
 			}
 
+			/* ── Legend search + pills ───────────────────────────────── */
+			.legend-bar {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				margin-bottom: 0.85rem;
+				flex-wrap: wrap;
+			}
+			#runnerSearch {
+				flex: 0 0 auto;
+				width: 200px;
+				padding: 0.35rem 0.9rem;
+				border: 1px solid #ddd;
+				border-radius: 20px;
+				font-size: 0.82rem;
+				color: #333;
+				background: #fafafa;
+				outline: none;
+				transition: border-color 0.15s;
+			}
+			#runnerSearch:focus {
+				border-color: #c0392b;
+				background: #fff;
+			}
+			#runnerSearch::placeholder {
+				color: #bbb;
+			}
+
 			#legend {
 				display: flex;
-				gap: 8px;
+				gap: 6px;
 				flex-wrap: wrap;
-				margin-bottom: 1rem;
-			}
-			.leg-group-label {
-				width: 100%;
-				font-size: 0.7rem;
-				color: #bbb;
-				text-transform: uppercase;
-				letter-spacing: 0.06em;
-				padding-top: 4px;
 			}
 			.leg-item {
 				display: flex;
 				align-items: center;
 				gap: 6px;
 				cursor: pointer;
-				padding: 4px 10px;
+				padding: 5px 10px;
 				border-radius: 6px;
-				border: 1px solid #e5e5e5;
+				border: 1px solid #e0e0e0;
 				user-select: none;
-				transition: opacity 0.15s;
-				background: #fafafa;
+				background: #fff;
+				transition: opacity 0.15s, border-color 0.15s;
 			}
 			.leg-item:hover {
-				border-color: #ccc;
-				background: #f0f0f0;
+				border-color: #bbb;
+				background: #f7f7f7;
 			}
-			.leg-item.hidden {
-				opacity: 0.35;
+			/* Hidden = runner not on chart */
+			.leg-item.off {
+				opacity: 0.45;
 			}
-			.leg-item.hidden .leg-name {
-				text-decoration: line-through;
+			/* Visible = runner shown on chart — colored left border */
+			.leg-item.on {
+				border-left-width: 3px;
+				padding-left: 8px;
 			}
 			.leg-swatch {
 				flex-shrink: 0;
+				display: block;
 			}
 			.leg-name {
 				font-size: 0.78rem;
@@ -218,13 +241,16 @@
 				.quick-btns {
 					margin-left: 0;
 				}
+				#runnerSearch {
+					width: 100%;
+				}
 			}
 		</style>
 	</head>
 	<body>
 		<header>
 			<h1>Backyard Ultra — Pacing Analysis</h1>
-			<p>Lap finish time by loop number · Click a name to toggle</p>
+			<p>Lap finish time by loop · Click a name to toggle</p>
 		</header>
 
 		<div class="controls">
@@ -243,13 +269,17 @@
 			<div class="stats" id="statsRow"></div>
 			<div class="card">
 				<div class="card-title">Lap finish time (min) · by loop number</div>
+				<div class="legend-bar">
+					<input
+						type="search"
+						id="runnerSearch"
+						placeholder="Find a runner…"
+						autocomplete="off"
+					/>
+				</div>
 				<div id="legend"></div>
-				<div class="chart-wrap">
-					<canvas
-						id="chart"
-						role="img"
-						aria-label="Line chart of lap finish time by loop number."
-					></canvas>
+				<div class="chart-wrap" style="margin-top: 1rem">
+					<canvas id="chart" role="img" aria-label="Line chart of lap finish time by loop number."></canvas>
 				</div>
 			</div>
 		</main>
@@ -258,8 +288,6 @@
 
 		<!-- ─── CONFIGURATION ──────────────────────────────────────────────────────── -->
 		<script>
-			// ★ Add races here. eventId and apiKey come from the raceresult.com URL
-			// visible in your browser's network inspector when you open a race's results page.
 			const RACES = [
 				{
 					id: "G1M_2026",
@@ -268,6 +296,7 @@
 					apiKey: "f545f563e8d28831fb09508cd63b1365",
 					listname: "Lists|Detail List",
 					page: "details1",
+					startHour: 12, // ← 24h local time. Add this to any race to enable night bands + time-of-day tooltips.
 				},
 				// {
 				//   id: "LastSoul_2026",
@@ -276,10 +305,10 @@
 				//   apiKey: "...",
 				//   listname: "Lists|Detail List",
 				//   page: "details1",
+				//   // no startHour → night bands won't show for this race
 				// },
 			];
 
-			// ★ Colour palette — cycles through for each runner
 			const PALETTE = [
 				{ color: "#C0392B", dash: [] },
 				{ color: "#922B21", dash: [6, 3] },
@@ -319,7 +348,41 @@
 				return `${mins}:${String(secs).padStart(2, "0")}`;
 			}
 
-			// ── raceresult API parsing ─────────────────────────────────────────────────────
+			// Time-of-day string for a given lap number + race start hour
+			// e.g. lapNum=1, startHour=12 → "12 pm"  |  lapNum=10 → "9 pm"
+			function todStr(lapNum, startHour) {
+				const h = (startHour + lapNum - 1) % 24;
+				if (h === 0) return "12 am";
+				if (h < 12) return `${h} am`;
+				if (h === 12) return "12 pm";
+				return `${h - 12} pm`;
+			}
+
+			// Returns [[xMin, xMax], …] index ranges for 9 pm – 6 am bands
+			function nightBands(startHour, maxLap) {
+				const bands = [];
+				let open = null;
+				for (let i = 1; i <= maxLap + 1; i++) {
+					const h = (startHour + i - 1) % 24;
+					const isNight = h >= 21 || h < 6;
+					if (isNight && open === null) open = i - 1.5; // 0-based index, leading edge
+					if (!isNight && open !== null) {
+						bands.push([open, i - 1.5]);
+						open = null;
+					}
+				}
+				if (open !== null) bands.push([open, maxLap - 0.5]);
+				return bands;
+			}
+
+			// "LastName FirstName" → "FirstName LastName"
+			function fullDisplayName(stored) {
+				const parts = stored.trim().split(" ");
+				if (parts.length < 2) return stored;
+				return parts.slice(1).join(" ") + " " + parts[0];
+			}
+
+			// ── raceresult parsing ─────────────────────────────────────────────────────────
 
 			function parseRaceresultData(apiData, raceConfig) {
 				const rows = [];
@@ -327,11 +390,10 @@
 					// key: "#N_LastName, FirstName /// N Laps /// Total Time: HH:MM:SS"
 					const namePart = key.split(" /// ")[0].replace(/^#\d+_/, "").trim();
 					const commaIdx = namePart.indexOf(", ");
+					// Store as "LastName FirstName" internally
 					const athleteName =
 						commaIdx !== -1
-							? namePart.substring(0, commaIdx) +
-								" " +
-								namePart.substring(commaIdx + 2)
+							? namePart.substring(0, commaIdx) + " " + namePart.substring(commaIdx + 2)
 							: namePart;
 
 					const lapMatch = key.match(/(\d+) Laps?/i);
@@ -348,86 +410,54 @@
 							lap: lapLabel,
 							finish_time: row[5],
 							rest_time: row[6],
-							category: null,
 						});
 					});
 				});
 				return rows;
 			}
 
-			// Top 5 by total laps = "top5", everyone else = "other"
-			function assignCategories(rows) {
-				const athleteTotals = {};
-				rows.forEach((r) => {
-					if (
-						!(r.athlete in athleteTotals) ||
-						r.total_laps > athleteTotals[r.athlete]
-					) {
-						athleteTotals[r.athlete] = r.total_laps;
-					}
-				});
-				const sorted = Object.entries(athleteTotals).sort(
-					([, a], [, b]) => b - a,
-				);
-				const categories = {};
-				sorted.forEach(([name], i) => {
-					categories[name] = i < 5 ? "top5" : "other";
-				});
-				rows.forEach((r) => {
-					r.category = categories[r.athlete] ?? "other";
-				});
-			}
-
 			// ── Module state ───────────────────────────────────────────────────────────────
 			let allRows = [];
 			let chart = null;
-			let currentDatasets = []; // datasets array synced with chart
-			let globalMaxLap = 0; // max laps across ALL runners in current race
+			let currentDatasets = [];
+			let globalMaxLap = 0;
 
-			// ── DOM refs ───────────────────────────────────────────────────────────────────
 			const statusEl = document.getElementById("status");
 			const mainEl = document.getElementById("main");
 			const raceSelect = document.getElementById("raceSelect");
+			const searchInput = document.getElementById("runnerSearch");
 
 			Chart.register(window["chartjs-plugin-annotation"]);
 
-			// ── Populate race selector ─────────────────────────────────────────────────────
 			raceSelect.innerHTML = RACES.map(
 				(r) => `<option value="${r.id}">${r.label}</option>`,
 			).join("");
 
-			// ── Fetch one race from raceresult ─────────────────────────────────────────────
+			// ── Fetch ──────────────────────────────────────────────────────────────────────
+
 			async function loadRace(raceConfig) {
 				statusEl.textContent = `Loading ${raceConfig.label}…`;
 				statusEl.className = "status";
 				statusEl.style.display = "block";
 				mainEl.style.display = "none";
+				searchInput.value = "";
 
 				const url = `https://my4.raceresult.com/${raceConfig.eventId}/${raceConfig.page}/list?key=${raceConfig.apiKey}&listname=${encodeURIComponent(raceConfig.listname)}&page=${raceConfig.page}`;
-
 				try {
 					const res = await fetch(url);
 					if (!res.ok) throw new Error("HTTP " + res.status);
 					const json = await res.json();
-					if (!json.data)
-						throw new Error("'data' field missing — check listname / page config");
+					if (!json.data) throw new Error("'data' field missing");
 
 					const raceRows = parseRaceresultData(json.data, raceConfig);
-					if (!raceRows.length)
-						throw new Error(
-							"No lap rows parsed — check listname / page config",
-						);
+					if (!raceRows.length) throw new Error("No lap rows parsed");
 
-					assignCategories(raceRows);
-					allRows = allRows
-						.filter((r) => r.race !== raceConfig.id)
-						.concat(raceRows);
+					allRows = allRows.filter((r) => r.race !== raceConfig.id).concat(raceRows);
 					renderChart(raceConfig.id);
 				} catch (e) {
 					let msg = `Could not load ${raceConfig.label}: ${e.message}.`;
 					if (e.message === "Failed to fetch")
-						msg +=
-							" Possible CORS issue — open from backyards.run, not a local file.";
+						msg += " Possible CORS issue — open from backyards.run, not a local file.";
 					statusEl.textContent = msg;
 					statusEl.className = "status error";
 				}
@@ -435,7 +465,6 @@
 
 			// ── Visibility helpers ─────────────────────────────────────────────────────────
 
-			// Recalculate x-axis max from currently visible runners and update chart
 			function applyVisibleRange() {
 				if (!chart) return;
 				let max = 0;
@@ -443,12 +472,10 @@
 					if (chart.isDatasetVisible(i)) max = Math.max(max, ds.totalLaps);
 				});
 				if (max === 0) max = globalMaxLap;
-				// Chart.js 4 category scale: max = label string
 				chart.options.scales.x.max = "L" + max;
 				chart.update("none");
 			}
 
-			// Apply visibility to all datasets via predicate, then sync legend + range
 			function setVisibility(predicate) {
 				if (!chart) return;
 				currentDatasets.forEach((ds, i) => {
@@ -458,67 +485,58 @@
 				syncLegendItems();
 			}
 
-			// Keep legend pill states in sync with chart visibility
 			function syncLegendItems() {
 				document.querySelectorAll(".leg-item[data-idx]").forEach((item) => {
 					const idx = parseInt(item.dataset.idx, 10);
-					item.classList.toggle("hidden", !chart.isDatasetVisible(idx));
+					const visible = chart.isDatasetVisible(idx);
+					item.classList.toggle("on", visible);
+					item.classList.toggle("off", !visible);
 				});
 			}
 
-			// ── Quick-select buttons ───────────────────────────────────────────────────────
-			document
-				.getElementById("btnTop3")
-				.addEventListener("click", () =>
-					setVisibility((ds, i) => i < 3),
-				);
-			document
-				.getElementById("btnAll")
-				.addEventListener("click", () => setVisibility(() => true));
-			document
-				.getElementById("btnNone")
-				.addEventListener("click", () => setVisibility(() => false));
+			// ── Quick buttons ──────────────────────────────────────────────────────────────
+			document.getElementById("btnTop3").addEventListener("click", () => setVisibility((ds, i) => i < 3));
+			document.getElementById("btnAll").addEventListener("click", () => setVisibility(() => true));
+			document.getElementById("btnNone").addEventListener("click", () => setVisibility(() => false));
+
+			// ── Search ─────────────────────────────────────────────────────────────────────
+			searchInput.addEventListener("input", function () {
+				const term = this.value.toLowerCase().trim();
+				document.querySelectorAll(".leg-item[data-idx]").forEach((item) => {
+					const name = item.dataset.name || "";
+					item.style.display =
+						term === "" || name.includes(term) ? "" : "none";
+				});
+			});
 
 			// ── Render ─────────────────────────────────────────────────────────────────────
 			function renderChart(raceId) {
+				const raceConfig = RACES.find((r) => r.id === raceId);
 				const rows = allRows.filter((r) => r.race === raceId);
 				if (!rows.length) return;
 
-				// Build per-athlete data
+				// Build per-athlete map
 				const athleteMap = {};
 				rows.forEach((r) => {
 					if (!athleteMap[r.athlete])
-						athleteMap[r.athlete] = {
-							category: r.category,
-							total: +r.total_laps,
-							laps: {},
-						};
+						athleteMap[r.athlete] = { total: +r.total_laps, laps: {} };
 					const n = parseInt((r.lap || "").replace(/\D/g, ""), 10);
-					if (!isNaN(n))
-						athleteMap[r.athlete].laps[n] = toLapMin(r.finish_time);
+					if (!isNaN(n)) athleteMap[r.athlete].laps[n] = toLapMin(r.finish_time);
 				});
 
-				// Sort: top5 first (by laps desc), then other (by laps desc)
-				const sorted = Object.entries(athleteMap).sort(([, a], [, b]) => {
-					const cmpCat = (a.category === "top5" ? 0 : 1) - (b.category === "top5" ? 0 : 1);
-					return cmpCat !== 0 ? cmpCat : b.total - a.total;
-				});
-
-				globalMaxLap = Math.max(...sorted.map(([, a]) => a.total));
-
-				// x-axis labels: L1, L2, … L<globalMaxLap>
-				const xLabels = Array.from(
-					{ length: globalMaxLap },
-					(_, i) => `L${i + 1}`,
+				// Sort by total laps descending
+				const sorted = Object.entries(athleteMap).sort(
+					([, a], [, b]) => b.total - a.total,
 				);
 
-				// Build datasets
+				globalMaxLap = Math.max(...sorted.map(([, a]) => a.total));
+				const xLabels = Array.from({ length: globalMaxLap }, (_, i) => `L${i + 1}`);
+
 				currentDatasets = sorted.map(([name, athlete], i) => {
 					const style = PALETTE[i % PALETTE.length];
 					return {
-						label: `${name.split(" ")[0]} (${athlete.total})`,
+						label: name.split(" ")[0] + " (" + athlete.total + ")",
 						fullName: name,
-						category: athlete.category,
 						totalLaps: athlete.total,
 						data: Array.from(
 							{ length: globalMaxLap },
@@ -527,8 +545,8 @@
 						borderColor: style.color,
 						backgroundColor: "transparent",
 						borderWidth: 2,
-						pointRadius: 3,
-						pointHoverRadius: 5,
+						pointRadius: 0,        // smooth line — no dots
+						pointHoverRadius: 5,   // dots appear on hover only
 						tension: 0.3,
 						borderDash: style.dash,
 						spanGaps: false,
@@ -536,24 +554,49 @@
 				});
 
 				// Stats
-				const maxLaps = globalMaxLap;
-				const winner = sorted[0];
+				const winnerName = sorted[0] ? fullDisplayName(sorted[0][0]) : "";
 				const allTimes = rows.map((r) => toLapMin(r.finish_time)).filter(Boolean);
 				const avgTime = allTimes.reduce((a, b) => a + b, 0) / allTimes.length;
 
 				document.getElementById("statsRow").innerHTML = `
 	<div class="stat"><div class="stat-label">Runners</div><div class="stat-value">${sorted.length}</div></div>
-	<div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${maxLaps}</div><div class="stat-sub">${winner ? winner[0].split(" ")[0] : ""}</div></div>
+	<div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${globalMaxLap}</div><div class="stat-sub">${winnerName}</div></div>
 	<div class="stat"><div class="stat-label">Avg lap (all)</div><div class="stat-value">${fmtMin(avgTime)}</div></div>
-	<div class="stat"><div class="stat-label">Race duration</div><div class="stat-value">${maxLaps}h</div><div class="stat-sub">~${(maxLaps / 24).toFixed(1)} days</div></div>
+	<div class="stat"><div class="stat-label">Race duration</div><div class="stat-value">${globalMaxLap}h</div><div class="stat-sub">~${(globalMaxLap / 24).toFixed(1)} days</div></div>
 `;
 
-				// x-axis tick step
 				const step =
 					globalMaxLap > 60 ? 10 : globalMaxLap > 30 ? 5 : globalMaxLap > 15 ? 2 : 1;
-
 				const textColor = "#999";
 				const gridColor = "rgba(0,0,0,0.06)";
+
+				// Night bands — only when startHour is configured for this race
+				const annotations = {};
+				const hasStartTime = raceConfig && raceConfig.startHour !== undefined;
+				if (hasStartTime) {
+					nightBands(raceConfig.startHour, globalMaxLap).forEach(([s, e], i) => {
+						annotations["night" + i] = {
+							type: "box",
+							xMin: s,
+							xMax: e,
+							yMin: 38,
+							yMax: 62,
+							backgroundColor: "rgba(20,30,90,0.07)",
+							borderWidth: 0,
+						};
+						const mid = Math.round((s + e) / 2);
+						if (mid < globalMaxLap - 1) {
+							annotations["nightLabel" + i] = {
+								type: "label",
+								xValue: mid,
+								yValue: 61.3,
+								content: `Night ${i + 1}`,
+								font: { size: 9 },
+								color: "rgba(20,40,120,0.35)",
+							};
+						}
+					});
+				}
 
 				if (chart) chart.destroy();
 				chart = new Chart(document.getElementById("chart"), {
@@ -566,10 +609,16 @@
 						interaction: { mode: "index", intersect: false },
 						plugins: {
 							legend: { display: false },
-							annotation: { annotations: {} },
+							annotation: { annotations },
 							tooltip: {
 								callbacks: {
-									title: (ctx) => `Loop ${ctx[0].dataIndex + 1}`,
+									title: (ctx) => {
+										const lap = ctx[0].dataIndex + 1;
+										if (hasStartTime) {
+											return `Loop ${lap} · ${todStr(lap, raceConfig.startHour)}`;
+										}
+										return `Loop ${lap}`;
+									},
 									label: (ctx) =>
 										ctx.parsed.y != null
 											? ` ${ctx.dataset.label}: ${fmtMin(ctx.parsed.y)}`
@@ -581,16 +630,14 @@
 						scales: {
 							x: {
 								min: "L1",
-								max: "L3", // overridden after default visibility is applied
+								max: "L3", // updated immediately by setVisibility below
 								ticks: {
 									color: textColor,
 									font: { size: 10 },
 									maxRotation: 0,
 									autoSkip: false,
 									callback(val, i) {
-										return (i + 1) % step === 0 || i === 0
-											? xLabels[i]
-											: "";
+										return (i + 1) % step === 0 || i === 0 ? xLabels[i] : "";
 									},
 								},
 								grid: { color: gridColor },
@@ -617,7 +664,7 @@
 
 				buildLegend();
 
-				// Default: show top 3 only
+				// Default: show top 3
 				setVisibility((ds, i) => i < 3);
 
 				statusEl.style.display = "none";
@@ -629,56 +676,45 @@
 				const legendEl = document.getElementById("legend");
 				legendEl.innerHTML = "";
 
-				const groups = [
-					{ key: "top5", label: "Top 5" },
-					{ key: "other", label: "Others" },
-				];
+				currentDatasets.forEach((ds, idx) => {
+					const item = document.createElement("div");
+					item.className = "leg-item";
+					item.dataset.idx = idx;
+					// Search key: full name + label (lowercase for quick matching)
+					item.dataset.name = (ds.fullName + " " + ds.label).toLowerCase();
 
-				groups.forEach((group) => {
-					const groupDs = currentDatasets.filter((d) => d.category === group.key);
-					if (!groupDs.length) return;
+					// Canvas swatch (line + dash preview)
+					const sw = document.createElement("canvas");
+					sw.width = 24;
+					sw.height = 12;
+					sw.className = "leg-swatch";
+					sw.style.cssText = "width:24px;height:12px";
+					const sc = sw.getContext("2d");
+					sc.strokeStyle = ds.borderColor;
+					sc.lineWidth = 2.5;
+					if (ds.borderDash && ds.borderDash.length) sc.setLineDash(ds.borderDash);
+					sc.beginPath();
+					sc.moveTo(0, 6);
+					sc.lineTo(24, 6);
+					sc.stroke();
 
-					const groupLabel = document.createElement("div");
-					groupLabel.className = "leg-group-label";
-					groupLabel.textContent = group.label;
-					legendEl.appendChild(groupLabel);
+					const name = document.createElement("span");
+					name.className = "leg-name";
+					name.textContent = ds.label;
 
-					groupDs.forEach((ds) => {
-						const idx = currentDatasets.indexOf(ds);
-						const item = document.createElement("div");
-						item.className = "leg-item";
-						item.dataset.idx = idx;
+					item.appendChild(sw);
+					item.appendChild(name);
+					legendEl.appendChild(item);
 
-						// Canvas swatch
-						const sw = document.createElement("canvas");
-						sw.width = 26;
-						sw.height = 14;
-						sw.className = "leg-swatch";
-						sw.style.cssText = "width:26px;height:14px;display:block";
-						const sc = sw.getContext("2d");
-						sc.strokeStyle = ds.borderColor;
-						sc.lineWidth = 2.5;
-						if (ds.borderDash && ds.borderDash.length)
-							sc.setLineDash(ds.borderDash);
-						sc.beginPath();
-						sc.moveTo(0, 7);
-						sc.lineTo(26, 7);
-						sc.stroke();
+					// Colored left border matches runner colour when active
+					item.style.setProperty("border-left-color", ds.borderColor);
 
-						const name = document.createElement("span");
-						name.className = "leg-name";
-						name.textContent = ds.label;
-
-						item.appendChild(sw);
-						item.appendChild(name);
-						legendEl.appendChild(item);
-
-						item.addEventListener("click", () => {
-							const isVisible = chart.isDatasetVisible(idx);
-							chart.setDatasetVisibility(idx, !isVisible);
-							item.classList.toggle("hidden", isVisible);
-							applyVisibleRange();
-						});
+					item.addEventListener("click", () => {
+						const isVisible = chart.isDatasetVisible(idx);
+						chart.setDatasetVisibility(idx, !isVisible);
+						item.classList.toggle("on", !isVisible);
+						item.classList.toggle("off", isVisible);
+						applyVisibleRange();
 					});
 				});
 			}
