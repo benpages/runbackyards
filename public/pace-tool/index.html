@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Pace Analysis — backyards.run</title>
-    <meta name="description" content="Compare lap pacing across backyard ultra races. Interactive lap-by-lap pace chart powered by live raceresult.com data."/>
-    <meta property="og:title" content="Pace Analysis — backyards.run"/>
-    <meta property="og:description" content="Compare lap pacing across backyard ultra races. Interactive lap-by-lap pace chart powered by live raceresult.com data."/>
+    <title>Splits — backyards.run</title>
+    <meta name="description" content="Compare lap-by-lap splits across backyard ultra races. See who pushed, who faded, and how the field moved over 100+ loops."/>
+    <meta property="og:title" content="Splits — backyards.run"/>
+    <meta property="og:description" content="Compare lap-by-lap splits across backyard ultra races. See who pushed, who faded, and how the field moved over 100+ loops."/>
     <meta property="og:url" content="https://backyards.run/pace-tool/"/>
     <meta property="og:type" content="website"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="/css/main.css"/>
   </head>
   <body>
@@ -21,15 +21,16 @@
       <path d="M16.11 7.78 A6.5 6.5 0 1 1 14.18 5.02" stroke="white" stroke-width="4" stroke-linecap="butt"/>
     </svg>
     <span class="brand-wordmark">
-      <span class="brand-b">Backyards</span><span class="brand-d">.run</span>
+      <span class="brand-b">BACKYARDS</span>
+      <span class="brand-d" style="padding-left:0.25em;">.run</span>
     </span>
   </a>
   
-  <span class="sep">/</span>
-  <span class="current">Pace Analysis</span>
+    <span class="sep">/</span>
+    <span class="current">Splits</span>
   
   <div class="nav-right">
-    <a href="/pace-tool/">Pace Tool</a>
+    <a href="/pace-tool/">Splits</a>
     <details class="nav-dropdown">
       <summary>Races</summary>
       <div class="nav-dropdown-menu">
@@ -57,7 +58,6 @@
       });
   });
 </script>
-
     
 <div class="controls">
 	<label for="raceSelect">Race</label>
@@ -78,7 +78,7 @@
 						autocomplete="off"
 					/>
 			<div class="quick-btns">
-				<button class="qbtn" id="btnTop3">Top 3</button>
+				<button class="qbtn" id="btnTop2">Top 2</button>
 				<button class="qbtn" id="btnAll">Show all</button>
 				<button class="qbtn" id="btnNone">Hide all</button>
 			</div>

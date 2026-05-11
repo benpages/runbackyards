@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>backyards.run — Backyard Ultra Analysis</title>
-    <meta name="description" content="Live race analysis for backyard ultras. Lap-by-lap pacing charts, DNF breakdowns, and tools for the last-one-standing format."/>
-    <meta property="og:title" content="backyards.run — Backyard Ultra Analysis"/>
-    <meta property="og:description" content="Live race analysis for backyard ultras. Lap-by-lap pacing charts, DNF breakdowns, and tools for the last-one-standing format."/>
+    <title>backyards.run — The Home of Backyard Ultra</title>
+    <meta name="description" content="Race analysis, lap charts, and community for the backyard ultra format. The sport that doesn&#39;t stop until it has to."/>
+    <meta property="og:title" content="backyards.run — The Home of Backyard Ultra"/>
+    <meta property="og:description" content="Race analysis, lap charts, and community for the backyard ultra format. The sport that doesn&#39;t stop until it has to."/>
     <meta property="og:url" content="https://backyards.run/"/>
     <meta property="og:type" content="website"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="/css/main.css"/>
   </head>
   <body>
@@ -21,12 +21,13 @@
       <path d="M16.11 7.78 A6.5 6.5 0 1 1 14.18 5.02" stroke="white" stroke-width="4" stroke-linecap="butt"/>
     </svg>
     <span class="brand-wordmark">
-      <span class="brand-b">Backyards</span><span class="brand-d">.run</span>
+      <span class="brand-b">BACKYARDS</span>
+      <span class="brand-d" style="padding-left:0.25em;">.run</span>
     </span>
   </a>
   
   <div class="nav-right">
-    <a href="/pace-tool/">Pace Tool</a>
+    <a href="/pace-tool/">Splits</a>
     <details class="nav-dropdown">
       <summary>Races</summary>
       <div class="nav-dropdown-menu">
@@ -54,264 +55,444 @@
       });
   });
 </script>
-
     
-<div class="home-hero">
-	<div class="home-hero-inner">
-		<p class="home-eyebrow">Backyard Ultra Analysis</p>
-		<h1 class="home-h1">Data for the last one standing.</h1>
-		<p class="home-sub">Live lap pacing, DNF breakdowns, and race tools for backyard ultras — powered by real results data.</p>
-		<div class="home-races">
-			<a href="/races/bigs-2025/" class="race-card">
-				<span class="race-card-label">Big's Backyard Ultra</span>
-				<span class="race-card-detail">October 2025 · Bell Buckle, TN</span>
-				<span class="race-card-winner">Phil Gore · 114 loops</span>
-			</a>
-			<a href="/races/g1m-2026/" class="race-card">
-				<span class="race-card-label">Go One More Ultra</span>
-				<span class="race-card-detail">2026</span>
-				<span class="race-card-winner">Mark Dowdle · 73 loops</span>
-			</a>
+<!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+<section class="h-hero">
+	<div class="h-hero-inner">
+		<p class="eyebrow">Backyard Ultra</p>
+		<h1 class="display h-headline">
+			<span class="h-line1">The loop</span>
+			<span class="h-line2">is the race.</span>
+		</h1>
+		<p class="h-sub">4.167 miles. Every hour. Until one remains.<br>BACKYARDS tracks every loop.</p>
+		<div class="h-ctas">
+			<a href="/races/bigs-2025/" class="cta-primary">Big's Backyard Ultra 2025 →</a>
+			<a href="/pace-tool/" class="cta-ghost">Compare splits →</a>
 		</div>
 	</div>
-</div>
+	<div class="h-format-bar">
+		<div class="h-format-item">
+			<span class="h-format-num">4.167</span>
+			<span class="h-format-label">miles per loop</span>
+		</div>
+		<div class="h-format-div"></div>
+		<div class="h-format-item">
+			<span class="h-format-num">1</span>
+			<span class="h-format-label">hour per loop</span>
+		</div>
+		<div class="h-format-div"></div>
+		<div class="h-format-item">
+			<span class="h-format-num">1</span>
+			<span class="h-format-label">winner. ever.</span>
+		</div>
+		<div class="h-format-div"></div>
+		<div class="h-format-item">
+			<span class="h-format-num">∞</span>
+			<span class="h-format-label">loops to go</span>
+		</div>
+	</div>
+</section>
 
-<div class="home-body">
+<!-- ── Races ─────────────────────────────────────────────────────────────── -->
+<section class="h-races">
+	<div class="h-races-inner">
+		<p class="eyebrow" style="margin-bottom: 2rem;">Races</p>
+		<div class="h-race-grid">
 
-	<div class="home-about">
-		<h2>What is this?</h2>
-		<p>Backyard ultras are a last-one-standing format: runners complete a 4.167-mile loop every hour, around the clock, until only one remains. The winner is whoever finishes a loop that no one else completes.</p>
-		<p>backyards.run pulls live results from raceresult.com and turns them into interactive charts — lap-by-lap pace lines, DNF distribution bars, and multi-race comparisons. No spreadsheets, no PDFs.</p>
-		<a href="/pace-tool/" class="home-tool-link">Try the multi-race pace tool →</a>
+			<a href="/races/bigs-2025/" class="h-race-card">
+				<div class="h-race-top">
+					<div>
+						<p class="h-race-eyebrow">October 2025 · Bell Buckle, TN</p>
+						<h2 class="display h-race-name">Big's<br>Backyard<br>Ultra</h2>
+					</div>
+					<span class="h-race-arrow">→</span>
+				</div>
+				<div class="h-race-stats">
+					<div class="h-race-stat">
+						<span class="h-race-num">114</span>
+						<span class="h-race-slabel">loops</span>
+					</div>
+					<div class="h-race-stat">
+						<span class="h-race-num">475<span class="h-race-unit">mi</span></span>
+						<span class="h-race-slabel">winning distance</span>
+					</div>
+					<div class="h-race-stat winner-stat">
+						<span class="h-race-num">Phil Gore</span>
+						<span class="h-race-slabel">winner</span>
+					</div>
+				</div>
+				<div class="h-race-note">Lap-by-lap pacing · DNF breakdown · Live data</div>
+			</a>
+
+			<a href="/races/g1m-2026/" class="h-race-card h-race-card--dim">
+				<div class="h-race-top">
+					<div>
+						<p class="h-race-eyebrow">April 10, 2026 · Liberty Hill, TX</p>
+						<h2 class="display h-race-name">Go One<br>More<br>Ultra</h2>
+					</div>
+					<span class="h-race-arrow">→</span>
+				</div>
+				<div class="h-race-stats">
+					<div class="h-race-stat">
+						<span class="h-race-num">73</span>
+						<span class="h-race-slabel">loops</span>
+					</div>
+					<div class="h-race-stat">
+						<span class="h-race-num">304<span class="h-race-unit">mi</span></span>
+						<span class="h-race-slabel">winning distance</span>
+					</div>
+					<div class="h-race-stat winner-stat">
+						<span class="h-race-num">Mark Dowdle</span>
+						<span class="h-race-slabel">winner</span>
+					</div>
+				</div>
+				<div class="h-race-note">Lap-by-lap pacing · DNF breakdown · Live data</div>
+			</a>
+
+		</div>
+	</div>
+</section>
+
+<!-- ── About + signup ─────────────────────────────────────────────────────── -->
+<section class="h-bottom">
+	<div class="h-about">
+		<p class="eyebrow" style="margin-bottom: 1.25rem;">What is this</p>
+		<h2 class="display h-about-h2">Built for<br>the obsessed.</h2>
+		<p class="h-about-body">Backyard ultra is unlike anything else in endurance sport. One loop, 4.167 miles, every hour on the hour, until only one runner crosses the start line and nobody else does. The format creates a specific kind of athlete: patient, stubborn, calculating. A race experience that standard results pages don't capture.</p>
+		<p class="h-about-body">BACKYARDS pulls live data from raceresult.com and turns it into something you can actually read. Lap pacing trends, DNF distribution, multi-race comparisons. For spectators tracking a friend across 72 hours. For athletes studying the field. For anyone who's looked at a results page and wanted more.</p>
+		<a href="/pace-tool/" class="h-about-link">Compare splits across races →</a>
 	</div>
 
-	<div class="home-signup">
-		<h2>Stay in the loop</h2>
-		<p>New race analyses and tools as they launch. No spam — just data.</p>
+	<div class="h-signup">
+		<p class="eyebrow" style="margin-bottom: 1.25rem;">Stay in the loop</p>
+		<h2 class="display h-signup-h2">Every loop<br>counts.</h2>
+		<p class="h-signup-body">New race analyses and tools as they land. One email when something real is ready.</p>
 		<form
 			name="waitlist"
 			method="POST"
 			data-netlify="true"
 			netlify-honeypot="bot-field"
-			class="signup-form"
+			class="h-signup-form"
 		>
 			<input type="hidden" name="form-name" value="waitlist" />
-			<p class="signup-honeypot">
-				<label>Don't fill this out: <input name="bot-field" /></label>
-			</p>
-			<div class="signup-row">
-				<input
-					type="email"
-					name="email"
-					placeholder="your@email.com"
-					required
-					autocomplete="email"
-					class="signup-input"
-				/>
-				<button type="submit" class="signup-btn">Notify me</button>
-			</div>
+			<p style="display:none"><label>Skip this: <input name="bot-field" /></label></p>
+			<input
+				type="email"
+				name="email"
+				placeholder="your@email.com"
+				required
+				autocomplete="email"
+				class="h-signup-input"
+			/>
+			<button type="submit" class="h-signup-btn">Notify me</button>
 		</form>
+		<p class="h-signup-note">More races coming. More tools coming.<br>This is the beginning.</p>
 	</div>
-
-</div>
+</section>
 
 <style>
-/* ── Home hero ─────────────────────────────────────────────────────────── */
-.home-hero {
-	background: #1a1a1a;
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+.h-hero {
+	background: #0f0f0f;
 	color: #fff;
-	padding: 4rem 2rem 3.5rem;
 }
-.home-hero-inner {
-	max-width: 680px;
+.h-hero-inner {
+	padding: 5rem 3rem 4rem;
+	max-width: 820px;
 }
-.home-eyebrow {
-	font-size: 0.75rem;
-	font-weight: 600;
-	text-transform: uppercase;
-	letter-spacing: 0.12em;
-	color: #C0392B;
-	margin-bottom: 0.75rem;
+.h-headline {
+	font-size: clamp(5rem, 14vw, 10rem);
+	color: #fff;
+	margin: 1rem 0 1.75rem;
 }
-.home-h1 {
-	font-size: clamp(2rem, 5vw, 3.2rem);
-	font-weight: 800;
-	letter-spacing: -0.03em;
-	line-height: 1.08;
-	margin-bottom: 1rem;
+.h-line1 {
+	display: block;
+	color: #fff;
 }
-.home-sub {
-	font-size: 1rem;
-	color: #888;
-	line-height: 1.6;
-	max-width: 520px;
+.h-line2 {
+	display: block;
+	color: #c0392b;
+}
+.h-sub {
+	font-size: 1.05rem;
+	color: #aaa;
+	line-height: 1.65;
+	max-width: 480px;
 	margin-bottom: 2.5rem;
 }
-
-/* ── Race cards ────────────────────────────────────────────────────────── */
-.home-races {
+.h-ctas {
 	display: flex;
-	gap: 0.75rem;
+	align-items: center;
+	gap: 1.5rem;
 	flex-wrap: wrap;
 }
-.race-card {
+.cta-primary {
+	display: inline-block;
+	padding: 0.7rem 1.5rem;
+	background: #c0392b;
+	color: #fff;
+	text-decoration: none;
+	font-size: 0.88rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	border-radius: 6px;
+	transition: background 0.15s;
+}
+.cta-primary:hover { background: #a93226; }
+.cta-ghost {
+	color: #aaa;
+	text-decoration: none;
+	font-size: 0.88rem;
+	font-weight: 500;
+	transition: color 0.15s;
+}
+.cta-ghost:hover { color: #fff; }
+
+/* ── Format bar ────────────────────────────────────────────────────────── */
+.h-format-bar {
+	border-top: 1px solid #1e1e1e;
+	padding: 1.5rem 3rem;
+	display: flex;
+	align-items: center;
+	gap: 0;
+	flex-wrap: wrap;
+}
+.h-format-item {
 	display: flex;
 	flex-direction: column;
-	gap: 0.25rem;
-	padding: 0.9rem 1.25rem;
-	background: #242424;
-	border: 1px solid #333;
-	border-radius: 10px;
-	text-decoration: none;
-	transition: border-color 0.15s, background 0.15s;
-	min-width: 200px;
+	gap: 0.2rem;
+	padding: 0.5rem 2rem 0.5rem 0;
 }
-.race-card:hover {
-	border-color: #C0392B;
-	background: #2a1a1a;
-}
-.race-card-label {
-	font-size: 0.85rem;
-	font-weight: 700;
+.h-format-num {
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 900;
+	font-size: 2rem;
 	color: #fff;
-	letter-spacing: -0.01em;
+	line-height: 1;
+	letter-spacing: -0.02em;
 }
-.race-card-detail {
-	font-size: 0.72rem;
-	color: #555;
+.h-format-label {
+	font-size: 0.68rem;
+	color: #888;
 	text-transform: uppercase;
-	letter-spacing: 0.06em;
+	letter-spacing: 0.1em;
 }
-.race-card-winner {
-	font-size: 0.8rem;
-	color: #C0392B;
-	font-weight: 500;
-	margin-top: 0.15rem;
+.h-format-div {
+	width: 1px;
+	height: 2rem;
+	background: #222;
+	margin: 0 2rem 0 0;
+	flex-shrink: 0;
 }
 
-/* ── Home body ─────────────────────────────────────────────────────────── */
-.home-body {
+/* ── Races ─────────────────────────────────────────────────────────────── */
+.h-races {
+	background: #EDEAE4;
+	padding: 4rem 0;
+}
+.h-races-inner {
+	padding: 0 3rem;
+}
+.h-race-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 0;
-	max-width: 900px;
-	margin: 0 auto;
-	padding: 3rem 2rem 4rem;
+	gap: 1.5rem;
 }
-
-/* ── About ─────────────────────────────────────────────────────────────── */
-.home-about {
-	padding-right: 3rem;
-	border-right: 1px solid #E8E4DE;
-}
-.home-about h2,
-.home-signup h2 {
-	font-size: 1rem;
-	font-weight: 700;
-	letter-spacing: -0.01em;
-	margin-bottom: 0.85rem;
-}
-.home-about p {
-	font-size: 0.88rem;
-	color: #555;
-	line-height: 1.7;
-	margin-bottom: 0.75rem;
-}
-.home-tool-link {
-	display: inline-block;
-	margin-top: 0.5rem;
-	font-size: 0.82rem;
-	font-weight: 600;
-	color: #C0392B;
-	text-decoration: none;
-}
-.home-tool-link:hover {
-	text-decoration: underline;
-}
-
-/* ── Signup ────────────────────────────────────────────────────────────── */
-.home-signup {
-	padding-left: 3rem;
-}
-.home-signup p {
-	font-size: 0.88rem;
-	color: #555;
-	line-height: 1.7;
-	margin-bottom: 1.25rem;
-}
-.signup-form {
+.h-race-card {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
+	gap: 2rem;
+	padding: 2rem;
+	background: #1a1a1a;
+	border-radius: 12px;
+	text-decoration: none;
+	transition: transform 0.2s, box-shadow 0.2s;
+	position: relative;
+	overflow: hidden;
 }
-.signup-honeypot {
-	display: none;
+.h-race-card::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(135deg, rgba(192,57,43,0.08) 0%, transparent 60%);
+	opacity: 0;
+	transition: opacity 0.2s;
 }
-.signup-row {
+.h-race-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.2); }
+.h-race-card:hover::before { opacity: 1; }
+.h-race-card--dim { background: #151515; }
+.h-race-top {
 	display: flex;
-	gap: 0.5rem;
+	justify-content: space-between;
+	align-items: flex-start;
 }
-.signup-input {
-	flex: 1;
-	padding: 0.55rem 1rem;
-	border: 1px solid #D5D0C8;
-	border-radius: 8px;
-	font-size: 0.88rem;
+.h-race-eyebrow {
+	font-size: 0.68rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: #999;
+	margin-bottom: 0.75rem;
+}
+.h-race-name {
+	font-size: clamp(2.2rem, 4vw, 3rem);
+	color: #fff;
+	line-height: 0.92;
+}
+.h-race-arrow {
+	font-size: 1.25rem;
+	color: #888;
+	transition: color 0.15s, transform 0.15s;
+}
+.h-race-card:hover .h-race-arrow {
+	color: #c0392b;
+	transform: translateX(4px);
+}
+.h-race-stats {
+	display: flex;
+	gap: 2rem;
+	flex-wrap: wrap;
+}
+.h-race-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+}
+.h-race-num {
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 800;
+	font-size: 1.8rem;
+	color: #fff;
+	line-height: 1;
+	letter-spacing: -0.01em;
+}
+.h-race-unit {
+	font-size: 1rem;
+	font-weight: 600;
+	margin-left: 0.1rem;
+}
+.h-race-slabel {
+	font-size: 0.65rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: #999;
+}
+.winner-stat .h-race-num {
+	font-size: 1.1rem;
+	font-family: "Inter", sans-serif;
+	font-weight: 700;
+	color: #c0392b;
+	font-style: normal;
+}
+.h-race-note {
+	font-size: 0.7rem;
+	color: #888;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	border-top: 1px solid #2a2a2a;
+	padding-top: 1.25rem;
+}
+
+/* ── About + signup ────────────────────────────────────────────────────── */
+.h-bottom {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	background: #0f0f0f;
+}
+.h-about {
+	padding: 5rem 3rem 5rem;
+	border-right: 1px solid #1e1e1e;
+}
+.h-about-h2 {
+	font-size: clamp(3rem, 5vw, 4.5rem);
+	color: #fff;
+	margin-bottom: 2rem;
+}
+.h-about-body {
+	font-size: 0.9rem;
+	color: #bbb;
+	line-height: 1.75;
+	margin-bottom: 1rem;
+	max-width: 460px;
+}
+.h-about-link {
+	display: inline-block;
+	margin-top: 1rem;
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: #c0392b;
+	text-decoration: none;
+}
+.h-about-link:hover { text-decoration: underline; }
+
+.h-signup {
+	padding: 5rem 3rem 5rem;
+}
+.h-signup-h2 {
+	font-size: clamp(3rem, 5vw, 4.5rem);
+	color: #fff;
+	margin-bottom: 1.5rem;
+}
+.h-signup-body {
+	font-size: 0.9rem;
+	color: #aaa;
+	line-height: 1.65;
+	margin-bottom: 2rem;
+	max-width: 360px;
+}
+.h-signup-form {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	max-width: 360px;
+}
+.h-signup-input {
+	padding: 0.75rem 1rem;
+	border: 1px solid #222;
+	border-radius: 6px;
+	font-size: 0.9rem;
 	font-family: inherit;
-	background: #F7F4EF;
-	color: #1a1a1a;
+	background: #161616;
+	color: #fff;
 	outline: none;
 	transition: border-color 0.15s;
 }
-.signup-input:focus {
-	border-color: #C0392B;
-	background: #fff;
-}
-.signup-input::placeholder {
-	color: #bbb;
-}
-.signup-btn {
-	padding: 0.55rem 1.25rem;
-	background: #C0392B;
+.h-signup-input:focus { border-color: #c0392b; }
+.h-signup-input::placeholder { color: #777; }
+.h-signup-btn {
+	padding: 0.75rem 1rem;
+	background: #c0392b;
 	color: #fff;
 	border: none;
-	border-radius: 8px;
-	font-size: 0.88rem;
-	font-weight: 600;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 700;
 	font-family: inherit;
 	cursor: pointer;
-	white-space: nowrap;
+	letter-spacing: 0.02em;
 	transition: background 0.15s;
 }
-.signup-btn:hover {
-	background: #a93226;
+.h-signup-btn:hover { background: #a93226; }
+.h-signup-note {
+	font-size: 0.75rem;
+	color: #888;
+	line-height: 1.6;
+	margin-top: 0.5rem;
 }
 
 /* ── Responsive ────────────────────────────────────────────────────────── */
-@media (max-width: 640px) {
-	.home-hero {
-		padding: 2.5rem 1rem 2.5rem;
-	}
-	.home-body {
-		grid-template-columns: 1fr;
-		padding: 2rem 1rem 3rem;
-	}
-	.home-about {
-		padding-right: 0;
-		border-right: none;
-		border-bottom: 1px solid #E8E4DE;
-		padding-bottom: 2rem;
-		margin-bottom: 2rem;
-	}
-	.home-signup {
-		padding-left: 0;
-	}
-	.signup-row {
-		flex-direction: column;
-	}
-	.signup-btn {
-		width: 100%;
-	}
+@media (max-width: 780px) {
+	.h-hero-inner { padding: 3.5rem 1.5rem 2.5rem; }
+	.h-format-bar { padding: 1.25rem 1.5rem; gap: 0; }
+	.h-format-item { padding-right: 1.25rem; }
+	.h-format-div { margin-right: 1.25rem; }
+	.h-races-inner { padding: 0 1.5rem; }
+	.h-race-grid { grid-template-columns: 1fr; }
+	.h-bottom { grid-template-columns: 1fr; }
+	.h-about { padding: 3.5rem 1.5rem 3rem; border-right: none; border-bottom: 1px solid #1e1e1e; }
+	.h-signup { padding: 3rem 1.5rem 4rem; }
+	.h-about-body { max-width: 100%; }
+	.h-signup-form, .h-signup-body { max-width: 100%; }
 }
 </style>
 

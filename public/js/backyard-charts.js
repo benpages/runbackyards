@@ -584,6 +584,13 @@
 			searchInput,
 		});
 
+		const btnTop = document.getElementById("btnTop2");
+		const btnAll = document.getElementById("btnAll");
+		const btnNone = document.getElementById("btnNone");
+		if (btnTop) btnTop.addEventListener("click", () => legend.setVisibility((_d, i) => i < 2));
+		if (btnAll) btnAll.addEventListener("click", () => legend.setVisibility(() => true));
+		if (btnNone) btnNone.addEventListener("click", () => legend.setVisibility(() => false));
+
 		function render(rows, race) {
 			const paceData = buildPaceData(rows);
 			currentDatasets = paceData.datasets;
@@ -605,7 +612,7 @@
 			}));
 
 			legend.buildLegend();
-			legend.setVisibility((_dataset, index) => index < 3);
+			legend.setVisibility((_dataset, index) => index < 2);
 		}
 
 		return { render };

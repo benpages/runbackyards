@@ -17,14 +17,32 @@ body {
 	min-height: 100vh;
 }
 
+/* ── Typography ────────────────────────────────────────────────────────── */
+.display {
+	font-family: "Barlow Condensed", sans-serif;
+	font-style: italic;
+	font-weight: 900;
+	letter-spacing: -0.02em;
+	line-height: 0.95;
+	text-transform: uppercase;
+}
+.eyebrow {
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: #c0392b;
+}
+
 /* ── Brand / Nav ───────────────────────────────────────────────────────── */
 .site-nav {
 	background: #141414;
-	padding: 0.75rem 2rem;
+	padding: 0.9rem 2rem;
 	display: flex;
 	align-items: center;
 	gap: 0.75rem;
 	flex-wrap: wrap;
+	border-bottom: 1px solid #1e1e1e;
 }
 .brand {
 	display: flex;
@@ -48,11 +66,11 @@ body {
 	font-size: 0.95rem;
 	font-weight: 300;
 	letter-spacing: -0.01em;
-	color: #666;
+	color: #888;
 	font-style: italic;
 }
 .site-nav .sep {
-	color: #333;
+	color: #555;
 	font-size: 0.8rem;
 }
 .site-nav .current {
@@ -68,9 +86,10 @@ body {
 }
 .site-nav .nav-right a,
 .site-nav .nav-dropdown summary {
-	color: #777;
+	color: #aaa;
 	text-decoration: none;
-	font-size: 0.8rem;
+	font-size: 0.85rem;
+	font-weight: 500;
 }
 .site-nav .nav-right a:hover,
 .site-nav .nav-dropdown summary:hover {
@@ -196,7 +215,7 @@ main {
 }
 .stat-label {
 	font-size: 0.72rem;
-	color: #888;
+	color: #555;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 	margin-bottom: 4px;
@@ -208,7 +227,7 @@ main {
 }
 .stat-sub {
 	font-size: 0.75rem;
-	color: #aaa;
+	color: #666;
 	margin-top: 2px;
 }
 
@@ -231,7 +250,7 @@ main {
 }
 .section-desc {
 	font-size: 0.8rem;
-	color: #999;
+	color: #555;
 	margin-top: 2px;
 }
 
@@ -247,7 +266,7 @@ main {
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
-	color: #888;
+	color: #555;
 	margin-bottom: 1rem;
 }
 
@@ -350,7 +369,7 @@ main {
 	border-radius: 6px;
 	border: 1px dashed #c8c4bc;
 	background: #f7f4ef;
-	color: #888;
+	color: #555;
 	cursor: pointer;
 	white-space: nowrap;
 	align-self: center;
@@ -387,15 +406,18 @@ main {
 	margin-bottom: 0.5rem;
 }
 .race-hero h1 {
-	font-size: clamp(1.8rem, 4vw, 2.8rem);
-	font-weight: 700;
-	letter-spacing: -0.02em;
-	line-height: 1.1;
-	margin-bottom: 0.75rem;
+	font-family: "Barlow Condensed", sans-serif;
+	font-style: italic;
+	font-weight: 900;
+	text-transform: uppercase;
+	font-size: clamp(2.8rem, 6vw, 4.5rem);
+	letter-spacing: -0.01em;
+	line-height: 0.95;
+	margin-bottom: 1.25rem;
 }
 .race-tagline {
 	font-size: 0.9rem;
-	color: #888;
+	color: #999;
 	margin-bottom: 2rem;
 }
 .hero-stats {
@@ -404,14 +426,16 @@ main {
 	flex-wrap: wrap;
 }
 .hstat-val {
-	font-size: 1.8rem;
-	font-weight: 700;
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 800;
+	font-size: 2.2rem;
 	line-height: 1;
 	color: #fff;
+	letter-spacing: -0.01em;
 }
 .hstat-label {
 	font-size: 0.7rem;
-	color: #666;
+	color: #999;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 	margin-top: 4px;
@@ -436,12 +460,12 @@ footer {
 	text-align: center;
 	padding: 2rem;
 	font-size: 0.75rem;
-	color: #bbb;
+	color: #555;
 	border-top: 1px solid #e8e4de;
 	background: #f7f4ef;
 }
 footer a {
-	color: #999;
+	color: #444;
 	text-decoration: none;
 }
 footer a:hover {

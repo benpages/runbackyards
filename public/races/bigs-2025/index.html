@@ -11,7 +11,7 @@
     <meta property="og:type" content="website"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="/css/main.css"/>
   </head>
   <body>
@@ -21,15 +21,16 @@
       <path d="M16.11 7.78 A6.5 6.5 0 1 1 14.18 5.02" stroke="white" stroke-width="4" stroke-linecap="butt"/>
     </svg>
     <span class="brand-wordmark">
-      <span class="brand-b">Backyards</span><span class="brand-d">.run</span>
+      <span class="brand-b">BACKYARDS</span>
+      <span class="brand-d" style="padding-left:0.25em;">.run</span>
     </span>
   </a>
   
-  <span class="sep">/</span>
-  <span class="current">Big&#39;s Backyard Ultra 2025</span>
+    <span class="sep">/</span>
+    <span class="current">Big&#39;s Backyard Ultra 2025</span>
   
   <div class="nav-right">
-    <a href="/pace-tool/">Pace Tool</a>
+    <a href="/pace-tool/">Splits</a>
     <details class="nav-dropdown">
       <summary>Races</summary>
       <div class="nav-dropdown-menu">
@@ -57,11 +58,10 @@
       });
   });
 </script>
-
     <!-- ── Hero ───────────────────────────────────────────────────────────────── -->
 <div class="race-hero">
-	<div class="race-event">Big's Backyard Ultra &nbsp;·&nbsp; October 18, 2025 &nbsp;·&nbsp; Bell Buckle, TN</div>
-	<h1>Results &amp; Analysis</h1>
+	<p class="race-event">October 18, 2025 &nbsp;·&nbsp; Bell Buckle, TN</p>
+	<h1>Big's Backyard<br>Ultra 2025</h1>
 	<p class="race-tagline">4.167-mile loop &nbsp;·&nbsp; Trail by day, road by night &nbsp;·&nbsp; Start: 7 am</p>
 	<div class="hero-stats">
 		<div>
@@ -85,7 +85,7 @@
 
 <!-- ── Static description (indexed by Google) ─────────────────────────────── -->
 <p class="race-desc">
-			Big's Backyard Ultra 2025, held October 18 at Lazarus Lake's farm in Bell Buckle, Tennessee, is one of the most prestigious backyard ultras in the world. Runners complete a 4.167-mile loop every hour — trail during daylight, road at night — until only one remains. Phil Gore claimed victory with 114 loops, covering over 475 miles across nearly five days. Below is a full breakdown of lap pacing and DNF distribution throughout the race.
+			Big's Backyard Ultra 2025, held October 18 at Lazarus Lake's farm in Bell Buckle, Tennessee, is one of the most prestigious backyard ultras in the world. Runners complete a 4.167-mile loop every hour (trail during daylight, road at night) until only one remains. Phil Gore claimed victory with 114 loops, covering over 475 miles across nearly five days. Below is a full lap pacing and DNF breakdown.
 		</p>
 
 <div id="status" class="status">Loading race data…</div>
@@ -97,14 +97,14 @@
 		<div class="section-header">
 			<div>
 				<div class="section-title">Lap-by-Lap Pace</div>
-				<div class="section-desc">Finish time per loop · top 3 shown by default · click a name to toggle</div>
+				<div class="section-desc">Finish time per loop · top 2 shown by default · click a name to toggle</div>
 			</div>
 		</div>
 		<div class="card">
 			<div class="legend-bar">
 				<input type="search" id="runnerSearch" placeholder="Find a runner…" autocomplete="off"/>
 				<div class="quick-btns">
-					<button class="qbtn" id="btnTop3">Top 3</button>
+					<button class="qbtn" id="btnTop2">Top 2</button>
 					<button class="qbtn" id="btnAll">Show all</button>
 					<button class="qbtn" id="btnNone">Hide all</button>
 				</div>

@@ -38,7 +38,8 @@ public/               — Eleventy output (gitignored)
 - **Cards / inputs / pills:** `#F7F4EF` background, `#E8E4DE` border
 - **Nav:** `#141414` dark background
 - **Accent / winner:** `#C0392B` red
-- **Font:** Inter (Google Fonts), weights 300–800
+- **Display font:** Barlow Condensed (Google Fonts), weights 700–900, italic — used for hero headlines and race card titles via `.display` class (`font-style: italic; font-weight: 900; text-transform: uppercase`)
+- **Body font:** Inter (Google Fonts), weights 300–800
 - **Logo mark:** SVG arc on 20×20 viewBox, center (10,10), r=6.5, stroke-width=4, stroke-linecap=butt. Gap spans ~40°–70° from 12 o'clock (upper-right, ~1–2 o'clock). Path: `<path d="M16.11 7.78 A6.5 6.5 0 1 1 14.18 5.02" stroke="white" stroke-width="4" stroke-linecap="butt"/>` — 330° arc, flat ends at the gap.
 - **Wordmark:** `<span class="brand-b">Backyards</span><span class="brand-d">.run</span>` — bold + light weight
 
@@ -59,7 +60,7 @@ Parser auto-detects format by `key.includes(" /// ")`.
 
 ## Race configs
 ```js
-// Go One More Ultra 2026
+// Go One More Ultra 2026 — April 10, 2026, Liberty Hill, TX
 { id: "G1M_2026", label: "Go One More 2026", eventId: "390956",
   host: "my4", apiKey: "f545f563e8d28831fb09508cd63b1365",
   listname: "Lists|Detail List", page: "details1", startHour: 12 }
