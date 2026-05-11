@@ -213,9 +213,7 @@
 
 		<div class="controls">
 			<label for="raceSelect">Race</label>
-			<select id="raceSelect">
-				<option value="">Loading…</option>
-			</select>
+			<select id="raceSelect"></select>
 			<label for="catFilter" style="margin-left: 1rem">Category</label>
 			<select id="catFilter">
 				<option value="all">All runners</option>
@@ -225,7 +223,7 @@
 			</select>
 		</div>
 
-		<div id="status" class="status">Loading data from Google Sheets…</div>
+		<div id="status" class="status">Loading race data…</div>
 
 		<main id="main" style="display: none">
 			<div class="stats" id="statsRow"></div>
@@ -241,32 +239,42 @@
 				</div>
 				<p class="night-note">
 					Shaded bands = estimated night (9 pm – 6 am). Start time configured
-					per race below.
+					per race.
 				</p>
 			</div>
 		</main>
 
 		<footer>
-			Data sourced from race results · Chart updates live from Google Sheets
+			Data sourced live from raceresult.com · backyards.run
 		</footer>
 
 		<!-- ─── CONFIGURATION ──────────────────────────────────────────────────────── -->
 		<script>
-			// ★ STEP 1: Replace this URL with your published Google Sheet CSV link
-			// In Google Sheets: File → Share → Publish to web → CSV → copy link
-			const SHEET_URL =
-				"https://docs.google.com/spreadsheets/d/e/2PACX-1vRosb-GLOpktIPco4mSBXUV4_Q9LQukqfSoH9R_Ky1nQbnEr_D1H3CYHcaIs3FlstyUTJ8mo1k1c3rg/pub?gid=0&single=true&output=csv";
+			// ★ Add races here. eventId and apiKey come from the raceresult.com URL
+			// when you open a race's results page in your browser's network inspector.
+			const RACES = [
+				{
+					id: "G1M_2026",
+					label: "Go One More 2026",
+					eventId: "390956",
+					apiKey: "f545f563e8d28831fb09508cd63b1365",
+					listname: "Lists|Detail List",
+					page: "details1",
+					startHour: 12, // race start in 24h local time (12 = noon)
+				},
+				// Add more races here:
+				// {
+				//   id: "LastSoul_2026",
+				//   label: "Last Soul Standing 2026",
+				//   eventId: "XXXXX",
+				//   apiKey: "...",
+				//   listname: "Lists|Detail List",
+				//   page: "details1",
+				//   startHour: 9,
+				// },
+			];
 
-			// ★ STEP 2: Add race start hours here as you add more races
-			// Key = exact race name from your "race" column, value = hour in 24h (e.g. 12 = noon)
-			const RACE_START_HOURS = {
-				G1M_2026: 12, // Go One More 2026 — starts at noon
-				// "LastSoul_2026": 9,
-				// "Sydney_2026": 8,
-			};
-
-			// ★ STEP 3 (optional): Customise the colour palette for runners
-			// Colors cycle through this list; dashes alternate for extra distinction
+			// ★ Colour palette — cycles through for each runner
 			const PALETTE = [
 				{ color: "#C0392B", dash: [] },
 				{ color: "#922B21", dash: [6, 3] },
@@ -290,35 +298,17 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
 		<script>
-			// ── CSV helpers ────────────────────────────────────────────────────────────────
-			function parseCSV(text) {
-				const lines = text.trim().split("\n");
-				const headers = lines[0]
-					.split(",")
-					.map((h) => h.trim().replace(/^"|"$/g, ""));
-				return lines.slice(1).map((line) => {
-					const vals = line
-						.split(",")
-						.map((v) => v.trim().replace(/^"|"$/g, ""));
-					const obj = {};
-					headers.forEach((h, i) => (obj[h] = vals[i] || ""));
-					return obj;
-				});
-			}
+			// ── Helpers ────────────────────────────────────────────────────────────────────
 
-			function parseMins(t) {
-				if (!t) return null;
-				const parts = t.split(":").map(Number);
-				return parts[0] + parts[1] / 60 + (parts[2] ? parts[2] / 3600 : 0);
-			}
-
+			// Convert "MM:SS" or "MM:SS:00" to decimal minutes
 			function toLapMin(t) {
-				// handles "MM:SS:00" or "MM:SS" — always treat first segment as minutes
 				if (!t) return null;
 				const parts = t.split(":").map(Number);
+				if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return null;
 				return parts[0] + parts[1] / 60;
 			}
 
+			// Time-of-day label for a given lap number
 			function tod(lapNum, startHour) {
 				const h = (startHour + lapNum - 1) % 24;
 				if (h === 0) return "12am";
@@ -327,6 +317,7 @@
 				return h - 12 + "pm";
 			}
 
+			// Night shading: returns [[xMin, xMax], ...] for 9pm–6am bands
 			function nightBands(startHour, maxLap) {
 				const bands = [];
 				let open = null;
@@ -343,12 +334,105 @@
 				return bands;
 			}
 
+			// ── raceresult API parsing ─────────────────────────────────────────────────────
+
+			/**
+			 * Parse the "data" object from the raceresult API response into a flat array
+			 * of row objects compatible with the rest of the rendering code.
+			 *
+			 * API key format:
+			 *   "#1_Roy, Dylan /// 14 Laps /// Total Time: 11:45:52"
+			 * API lap row format:
+			 *   [col1, bib, flagImg, "Lap1", "CP1_MM:SS", "Finish_MM:SS", "Rest_MM:SS"]
+			 */
+			function parseRaceresultData(apiData, raceConfig) {
+				const rows = [];
+
+				Object.entries(apiData).forEach(([key, lapRows]) => {
+					// ── Athlete name ──────────────────────────────────────────────────────
+					// Strip "#N_" prefix, take everything before " /// "
+					const namePart = key.split(" /// ")[0].replace(/^#\d+_/, "").trim();
+					// raceresult uses "LastName, FirstName" — convert to "LastName FirstName"
+					const commaIdx = namePart.indexOf(", ");
+					const athleteName =
+						commaIdx !== -1
+							? namePart.substring(0, commaIdx) +
+								" " +
+								namePart.substring(commaIdx + 2)
+							: namePart;
+
+					// ── Total laps from key ───────────────────────────────────────────────
+					const lapMatch = key.match(/(\d+) Laps?/i);
+					const totalLaps = lapMatch ? parseInt(lapMatch[1]) : lapRows.length;
+
+					// ── Per-lap rows ──────────────────────────────────────────────────────
+					lapRows.forEach((row) => {
+						// Some rows in the response are sub-headers (row[0] === "1") — skip them
+						if (!Array.isArray(row) || row.length < 7) return;
+
+						const lapLabel = row[3]; // "Lap1", "Lap2", …
+						if (!lapLabel || !lapLabel.startsWith("Lap")) return;
+
+						const finishTime = row[5]; // "MM:SS"
+						const restTime = row[6]; // "MM:SS"
+
+						rows.push({
+							athlete: athleteName,
+							race: raceConfig.id,
+							total_laps: totalLaps,
+							lap: lapLabel,
+							finish_time: finishTime,
+							rest_time: restTime,
+							category: null, // filled in by assignCategories()
+						});
+					});
+				});
+
+				return rows;
+			}
+
+			/**
+			 * Auto-assign runner categories based on total laps:
+			 *   top5      → top 5 finishers
+			 *   early_dnf → bottom ~25% (min 1)
+			 *   mid-packer→ everyone else
+			 */
+			function assignCategories(rows) {
+				const athleteTotals = {};
+				rows.forEach((r) => {
+					// keep max in case of duplicates
+					if (
+						!(r.athlete in athleteTotals) ||
+						r.total_laps > athleteTotals[r.athlete]
+					) {
+						athleteTotals[r.athlete] = r.total_laps;
+					}
+				});
+
+				const sorted = Object.entries(athleteTotals).sort(
+					([, a], [, b]) => b - a,
+				);
+				const n = sorted.length;
+				const dnfCutoff = n - Math.max(1, Math.round(n * 0.25));
+
+				const categories = {};
+				sorted.forEach(([name], i) => {
+					if (i < 5) categories[name] = "top5";
+					else if (i >= dnfCutoff) categories[name] = "early_dnf";
+					else categories[name] = "mid-packer";
+				});
+
+				rows.forEach((r) => {
+					r.category = categories[r.athlete] || "mid-packer";
+				});
+			}
+
 			// ── State ──────────────────────────────────────────────────────────────────────
 			let allRows = [];
 			let chart = null;
 			let visibility = {};
 
-			// ── Boot ───────────────────────────────────────────────────────────────────────
+			// ── DOM refs ───────────────────────────────────────────────────────────────────
 			const statusEl = document.getElementById("status");
 			const mainEl = document.getElementById("main");
 			const raceSelect = document.getElementById("raceSelect");
@@ -356,45 +440,68 @@
 
 			Chart.register(window["chartjs-plugin-annotation"]);
 
-			async function loadData() {
-				if (!SHEET_URL || SHEET_URL === "YOUR_GOOGLE_SHEET_CSV_URL_HERE") {
-					statusEl.textContent =
-						"⚠️ No Sheet URL set yet. Open the HTML file and replace YOUR_GOOGLE_SHEET_CSV_URL_HERE with your published Google Sheet CSV link.";
-					statusEl.className = "status error";
-					return;
-				}
+			// ── Populate race selector from config ─────────────────────────────────────────
+			raceSelect.innerHTML = RACES.map(
+				(r) => `<option value="${r.id}">${r.label}</option>`,
+			).join("");
+
+			// ── Fetch & parse one race from raceresult ─────────────────────────────────────
+			async function loadRace(raceConfig) {
+				statusEl.textContent = `Loading ${raceConfig.label}…`;
+				statusEl.className = "status";
+				statusEl.style.display = "block";
+				mainEl.style.display = "none";
+
+				const listname = encodeURIComponent(raceConfig.listname);
+				const url = `https://my4.raceresult.com/${raceConfig.eventId}/${raceConfig.page}/list?key=${raceConfig.apiKey}&listname=${listname}&page=${raceConfig.page}`;
+
 				try {
-					const res = await fetch(SHEET_URL);
+					const res = await fetch(url);
 					if (!res.ok) throw new Error("HTTP " + res.status);
-					const text = await res.text();
-					allRows = parseCSV(text);
-					init();
+					const json = await res.json();
+
+					if (!json.data)
+						throw new Error(
+							"Unexpected API response — 'data' field missing. The listname or page parameter may be wrong.",
+						);
+
+					const raceRows = parseRaceresultData(json.data, raceConfig);
+					if (!raceRows.length)
+						throw new Error(
+							"API returned data but no lap rows could be parsed. Check the listname setting.",
+						);
+
+					assignCategories(raceRows);
+
+					// Merge: drop old rows for this race, add fresh ones
+					allRows = allRows
+						.filter((r) => r.race !== raceConfig.id)
+						.concat(raceRows);
+
+					renderChart();
 				} catch (e) {
-					statusEl.textContent =
-						"Could not load data: " +
-						e.message +
-						". Make sure your Sheet is published to the web as CSV and the URL is correct.";
+					let msg = `Could not load ${raceConfig.label}: ${e.message}.`;
+					if (
+						e.message === "Failed to fetch" ||
+						e.message.toLowerCase().includes("cors")
+					) {
+						msg +=
+							" This is likely a CORS restriction — open the page from backyards.run (not a local file) and try again.";
+					}
+					statusEl.textContent = msg;
 					statusEl.className = "status error";
 				}
 			}
 
-			function init() {
-				const races = [...new Set(allRows.map((r) => r.race))]
-					.filter(Boolean)
-					.sort();
-				raceSelect.innerHTML = races
-					.map((r) => `<option value="${r}">${r.replace(/_/g, " ")}</option>`)
-					.join("");
-				raceSelect.addEventListener("change", renderChart);
-				catFilter.addEventListener("change", renderChart);
-				renderChart();
-			}
-
+			// ── Render ─────────────────────────────────────────────────────────────────────
 			function renderChart() {
-				const race = raceSelect.value;
+				const raceId = raceSelect.value;
 				const cat = catFilter.value;
+				const raceConfig = RACES.find((r) => r.id === raceId);
+				const startHour = raceConfig ? raceConfig.startHour : 12;
+
 				const rows = allRows.filter(
-					(r) => r.race === race && (cat === "all" || r.category === cat),
+					(r) => r.race === raceId && (cat === "all" || r.category === cat),
 				);
 
 				if (!rows.length) {
@@ -408,7 +515,6 @@
 				mainEl.style.display = "block";
 
 				// Build per-athlete data
-				const startHour = RACE_START_HOURS[race] ?? 12;
 				const athleteMap = {};
 				rows.forEach((r) => {
 					const key = r.athlete;
@@ -423,7 +529,7 @@
 						athleteMap[key].laps[lapNum] = toLapMin(r.finish_time);
 				});
 
-				// Sort: top5 first, then mid-packer, then early_dnf; within group sort by total_laps desc
+				// Sort: top5 → mid-packer → early_dnf; within group by total laps desc
 				const CAT_ORDER = { top5: 0, "mid-packer": 1, early_dnf: 2 };
 				const sorted = Object.entries(athleteMap).sort(([, a], [, b]) => {
 					const cmp =
@@ -444,6 +550,7 @@
 						{ length: maxLap },
 						(_, j) => athlete.laps[j + 1] ?? null,
 					);
+					// Names come in as "LastName FirstName" — show last name only
 					const shortName = name.split(" ")[0];
 					return {
 						label: `${shortName} (${athlete.total})`,
@@ -460,14 +567,15 @@
 					};
 				});
 
-				// Stats
+				// Stats cards
 				const totalRunners = sorted.length;
 				const maxLaps = Math.max(...sorted.map(([, a]) => a.total));
 				const winner = sorted.find(([, a]) => a.total === maxLaps);
 				const allTimes = rows
 					.map((r) => toLapMin(r.finish_time))
 					.filter(Boolean);
-				const avgTime = allTimes.reduce((a, b) => a + b, 0) / allTimes.length;
+				const avgTime =
+					allTimes.reduce((a, b) => a + b, 0) / allTimes.length;
 
 				function fmtMin(m) {
 					const mins = Math.floor(m);
@@ -476,13 +584,13 @@
 				}
 
 				document.getElementById("statsRow").innerHTML = `
-    <div class="stat"><div class="stat-label">Runners</div><div class="stat-value">${totalRunners}</div></div>
-    <div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${maxLaps}</div><div class="stat-sub">${winner ? winner[0].split(" ")[0] : ""}</div></div>
-    <div class="stat"><div class="stat-label">Avg lap (all)</div><div class="stat-value">${fmtMin(avgTime)}</div></div>
-    <div class="stat"><div class="stat-label">Race duration</div><div class="stat-value">${maxLaps}h</div><div class="stat-sub">~${(maxLaps / 24).toFixed(1)} days</div></div>
-  `;
+	<div class="stat"><div class="stat-label">Runners</div><div class="stat-value">${totalRunners}</div></div>
+	<div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${maxLaps}</div><div class="stat-sub">${winner ? winner[0].split(" ")[0] : ""}</div></div>
+	<div class="stat"><div class="stat-label">Avg lap (all)</div><div class="stat-value">${fmtMin(avgTime)}</div></div>
+	<div class="stat"><div class="stat-label">Race duration</div><div class="stat-value">${maxLaps}h</div><div class="stat-sub">~${(maxLaps / 24).toFixed(1)} days</div></div>
+`;
 
-				// Night annotations
+				// Night shading annotations
 				const annotations = {};
 				nightBands(startHour, maxLap).forEach(([s, e], i) => {
 					annotations["night" + i] = {
@@ -568,7 +676,6 @@
 					},
 				});
 
-				// Legend
 				buildLegend(datasets);
 			}
 
@@ -599,7 +706,7 @@
 						item.className = "leg-item";
 						if (visibility[ds.fullName] === false) item.classList.add("hidden");
 
-						// Swatch (canvas for dashes)
+						// Canvas swatch showing line colour + dash pattern
 						const sw = document.createElement("canvas");
 						sw.width = 26;
 						sw.height = 14;
@@ -609,7 +716,8 @@
 						const sc = sw.getContext("2d");
 						sc.strokeStyle = ds.borderColor;
 						sc.lineWidth = 2.5;
-						if (ds.borderDash.length) sc.setLineDash(ds.borderDash);
+						if (ds.borderDash && ds.borderDash.length)
+							sc.setLineDash(ds.borderDash);
 						sc.beginPath();
 						sc.moveTo(0, 7);
 						sc.lineTo(26, 7);
@@ -633,7 +741,20 @@
 				});
 			}
 
-			loadData();
+			// ── Init ───────────────────────────────────────────────────────────────────────
+			function init() {
+				raceSelect.addEventListener("change", () => {
+					const raceId = raceSelect.value;
+					const raceConfig = RACES.find((r) => r.id === raceId);
+					if (raceConfig) loadRace(raceConfig);
+				});
+				catFilter.addEventListener("change", renderChart);
+
+				// Load the first race automatically
+				if (RACES.length > 0) loadRace(RACES[0]);
+			}
+
+			init();
 		</script>
 	</body>
 </html>
