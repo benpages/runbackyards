@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backyard Ultra — Pacing Analysis</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+
+    header { background: #1a1a1a; color: #fff; padding: 1.5rem 2rem; display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+    header h1 { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.01em; }
+    header p  { font-size: 0.85rem; color: #aaa; }
+
+    .controls { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 0.75rem 2rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+    .controls label { font-size: 0.8rem; color: #666; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+    .controls select { font-size: 0.9rem; padding: 0.35rem 0.65rem; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; cursor: pointer; }
+    .controls select:focus { outline: 2px solid #C0392B; outline-offset: 1px; }
+
+    .status { padding: 3rem 2rem; text-align: center; color: #888; font-size: 0.9rem; }
+    .status.error { color: #C0392B; }
+
+    main { padding: 1.5rem 2rem; }
+
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+    .stat { background: #fff; border-radius: 8px; border: 1px solid #eee; padding: 0.85rem 1rem; }
+    .stat-label { font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .stat-value { font-size: 1.5rem; font-weight: 600; color: #1a1a1a; }
+    .stat-sub { font-size: 0.75rem; color: #aaa; margin-top: 2px; }
+
+    .card { background: #fff; border-radius: 10px; border: 1px solid #eee; padding: 1.25rem 1.5rem; }
+    .card-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 1rem; }
+
+    #legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+    .leg-group-label { width: 100%; font-size: 0.7rem; color: #bbb; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 4px; }
+    .leg-item { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 10px; border-radius: 6px; border: 1px solid #e5e5e5; user-select: none; transition: opacity 0.15s; background: #fafafa; }
+    .leg-item:hover { border-color: #ccc; background: #f0f0f0; }
+    .leg-item.hidden { opacity: 0.3; }
+    .leg-item.hidden .leg-name { text-decoration: line-through; }
+    .leg-swatch { width: 26px; height: 0; flex-shrink: 0; }
+    .leg-name { font-size: 0.78rem; color: #333; white-space: nowrap; }
+
+    .chart-wrap { position: relative; width: 100%; height: 420px; }
+
+    .night-note { font-size: 0.72rem; color: #aaa; margin-top: 0.75rem; }
+
+    footer { text-align: center; padding: 2rem; font-size: 0.75rem; color: #bbb; }
+
+    @media (max-width: 600px) {
+      header, .controls, main { padding-left: 1rem; padding-right: 1rem; }
+      .chart-wrap { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Backyard Ultra — Pacing Analysis</h1>
+  <p>Loop finish times by time of day · All runners</p>
+</header>
+
+<div class="controls">
+  <label for="raceSelect">Race</label>
+  <select id="raceSelect"><option value="">Loading…</option></select>
+  <label for="catFilter" style="margin-left:1rem;">Category</label>
+  <select id="catFilter">
+    <option value="all">All runners</option>
+    <option value="top5">Top 5 only</option>
+    <option value="mid-packer">Mid-packers only</option>
+    <option value="early_dnf">Early DNFs only</option>
+  </select>
+</div>
+
+<div id="status" class="status">Loading data from Google Sheets…</div>
+
+<main id="main" style="display:none">
+  <div class="stats" id="statsRow"></div>
+  <div class="card">
+    <div class="card-title">Lap finish time (min) · by time of day</div>
+    <div id="legend"></div>
+    <div class="chart-wrap"><canvas id="chart" role="img" aria-label="Line chart of lap pace by time of day for all runners in the selected race."></canvas></div>
+    <p class="night-note">Shaded bands = estimated night (9 pm – 6 am). Start time configured per race below.</p>
+  </div>
+</main>
+
+<footer>Data sourced from race results · Chart updates live from Google Sheets</footer>
+
+<!-- ─── CONFIGURATION ──────────────────────────────────────────────────────── -->
+<script>
+  // ★ STEP 1: Replace this URL with your published Google Sheet CSV link
+  // In Google Sheets: File → Share → Publish to web → CSV → copy link
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRosb-GLOpktIPco4mSBXUV4_Q9LQukqfSoH9R_Ky1nQbnEr_D1H3CYHcaIs3FlstyUTJ8mo1k1c3rg/pub?gid=0&single=true&output=csv";
+
+  // ★ STEP 2: Add race start hours here as you add more races
+  // Key = exact race name from your "race" column, value = hour in 24h (e.g. 12 = noon)
+  const RACE_START_HOURS = {
+    "G1M_2026": 12,   // Go One More 2026 — starts at noon
+    // "LastSoul_2026": 9,
+    // "Sydney_2026": 8,
+  };
+
+  // ★ STEP 3 (optional): Customise the colour palette for runners
+  // Colors cycle through this list; dashes alternate for extra distinction
+  const PALETTE = [
+    { color: "#C0392B", dash: [] },
+    { color: "#922B21", dash: [6,3] },
+    { color: "#1A5276", dash: [] },
+    { color: "#2471A3", dash: [5,3] },
+    { color: "#D35400", dash: [] },
+    { color: "#1E8449", dash: [4,2] },
+    { color: "#117A65", dash: [] },
+    { color: "#0E6655", dash: [6,2] },
+    { color: "#7D3C98", dash: [] },
+    { color: "#6C3483", dash: [4,2] },
+    { color: "#4A235A", dash: [2,2] },
+    { color: "#B7950B", dash: [] },
+    { color: "#935116", dash: [5,2] },
+    { color: "#616A6B", dash: [] },
+    { color: "#2C3E50", dash: [3,3] },
+  ];
+</script>
+<!-- ─────────────────────────────────────────────────────────────────────────── -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<script>
+// ── CSV helpers ────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
+  return lines.slice(1).map(line => {
+    const vals = line.split(",").map(v => v.trim().replace(/^"|"$/g, ""));
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = vals[i] || "");
+    return obj;
+  });
+}
+
+function parseMins(t) {
+  if (!t) return null;
+  const parts = t.split(":").map(Number);
+  return parts[0] + parts[1] / 60 + (parts[2] ? parts[2] / 3600 : 0);
+}
+
+function toLapMin(t) {
+  // handles "MM:SS:00" or "MM:SS" — always treat first segment as minutes
+  if (!t) return null;
+  const parts = t.split(":").map(Number);
+  return parts[0] + parts[1] / 60;
+}
+
+function tod(lapNum, startHour) {
+  const h = (startHour + lapNum - 1) % 24;
+  if (h === 0) return "12am";
+  if (h < 12) return h + "am";
+  if (h === 12) return "12pm";
+  return (h - 12) + "pm";
+}
+
+function nightBands(startHour, maxLap) {
+  const bands = [];
+  let open = null;
+  for (let i = 1; i <= maxLap + 1; i++) {
+    const h = (startHour + i - 1) % 24;
+    const night = h >= 21 || h < 6;
+    if (night && open === null) open = i - 0.5;
+    if (!night && open !== null) { bands.push([open, i - 0.5]); open = null; }
+  }
+  if (open !== null) bands.push([open, maxLap + 0.5]);
+  return bands;
+}
+
+// ── State ──────────────────────────────────────────────────────────────────────
+let allRows = [];
+let chart = null;
+let visibility = {};
+
+// ── Boot ───────────────────────────────────────────────────────────────────────
+const statusEl  = document.getElementById("status");
+const mainEl    = document.getElementById("main");
+const raceSelect = document.getElementById("raceSelect");
+const catFilter  = document.getElementById("catFilter");
+
+Chart.register(window["chartjs-plugin-annotation"]);
+
+async function loadData() {
+  if (!SHEET_URL || SHEET_URL === "YOUR_GOOGLE_SHEET_CSV_URL_HERE") {
+    statusEl.textContent = "⚠️ No Sheet URL set yet. Open the HTML file and replace YOUR_GOOGLE_SHEET_CSV_URL_HERE with your published Google Sheet CSV link.";
+    statusEl.className = "status error";
+    return;
+  }
+  try {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    allRows = parseCSV(text);
+    init();
+  } catch (e) {
+    statusEl.textContent = "Could not load data: " + e.message + ". Make sure your Sheet is published to the web as CSV and the URL is correct.";
+    statusEl.className = "status error";
+  }
+}
+
+function init() {
+  const races = [...new Set(allRows.map(r => r.race))].filter(Boolean).sort();
+  raceSelect.innerHTML = races.map(r => `<option value="${r}">${r.replace(/_/g," ")}</option>`).join("");
+  raceSelect.addEventListener("change", renderChart);
+  catFilter.addEventListener("change", renderChart);
+  renderChart();
+}
+
+function renderChart() {
+  const race = raceSelect.value;
+  const cat  = catFilter.value;
+  const rows = allRows.filter(r => r.race === race && (cat === "all" || r.category === cat));
+
+  if (!rows.length) {
+    statusEl.textContent = "No data for selected filters.";
+    statusEl.className   = "status error";
+    statusEl.style.display = "block";
+    mainEl.style.display   = "none";
+    return;
+  }
+  statusEl.style.display = "none";
+  mainEl.style.display   = "block";
+
+  // Build per-athlete data
+  const startHour = RACE_START_HOURS[race] ?? 12;
+  const athleteMap = {};
+  rows.forEach(r => {
+    const key = r.athlete;
+    if (!athleteMap[key]) athleteMap[key] = { category: r.category, total: +r.total_laps, laps: {} };
+    const lapNum = parseInt((r.lap || "").replace(/\D/g, ""), 10);
+    if (!isNaN(lapNum)) athleteMap[key].laps[lapNum] = toLapMin(r.finish_time);
+  });
+
+  // Sort: top5 first, then mid-packer, then early_dnf; within group sort by total_laps desc
+  const CAT_ORDER = { top5: 0, "mid-packer": 1, early_dnf: 2 };
+  const sorted = Object.entries(athleteMap).sort(([,a],[,b]) => {
+    const cmp = (CAT_ORDER[a.category]??9) - (CAT_ORDER[b.category]??9);
+    return cmp !== 0 ? cmp : b.total - a.total;
+  });
+
+  const maxLap = Math.max(...sorted.map(([,a]) => a.total));
+  const xLabels = Array.from({ length: maxLap }, (_, i) => `L${i+1} ${tod(i+1, startHour)}`);
+
+  // Datasets
+  const datasets = sorted.map(([name, athlete], i) => {
+    const style = PALETTE[i % PALETTE.length];
+    const data  = Array.from({ length: maxLap }, (_, j) => athlete.laps[j+1] ?? null);
+    const shortName = name.split(" ").slice(-1)[0];
+    return {
+      label: `${shortName} (${athlete.total})`,
+      fullName: name,
+      category: athlete.category,
+      data,
+      borderColor: style.color,
+      backgroundColor: "transparent",
+      borderWidth: 2,
+      pointRadius: 0,
+      tension: 0.3,
+      borderDash: style.dash,
+      spanGaps: false,
+    };
+  });
+
+  // Stats
+  const totalRunners = sorted.length;
+  const maxLaps = Math.max(...sorted.map(([,a]) => a.total));
+  const winner  = sorted.find(([,a]) => a.total === maxLaps);
+  const allTimes = rows.map(r => toLapMin(r.finish_time)).filter(Boolean);
+  const avgTime  = allTimes.reduce((a,b) => a+b, 0) / allTimes.length;
+
+  function fmtMin(m) {
+    const mins = Math.floor(m); const secs = Math.round((m - mins) * 60);
+    return `${mins}:${String(secs).padStart(2,"0")}`;
+  }
+
+  document.getElementById("statsRow").innerHTML = `
+    <div class="stat"><div class="stat-label">Runners</div><div class="stat-value">${totalRunners}</div></div>
+    <div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${maxLaps}</div><div class="stat-sub">${winner ? winner[0].split(" ").slice(-1)[0] : ""}</div></div>
+    <div class="stat"><div class="stat-label">Avg lap (all)</div><div class="stat-value">${fmtMin(avgTime)}</div></div>
+    <div class="stat"><div class="stat-label">Race duration</div><div class="stat-value">${maxLaps}h</div><div class="stat-sub">~${(maxLaps/24).toFixed(1)} days</div></div>
+  `;
+
+  // Night annotations
+  const annotations = {};
+  nightBands(startHour, maxLap).forEach(([s, e], i) => {
+    annotations["night"+i] = { type:"box", xMin:s, xMax:e, yMin:38, yMax:62, backgroundColor:"rgba(20,30,90,0.07)", borderWidth:0 };
+    const mid = Math.round((s + e) / 2);
+    if (mid < maxLap) annotations["nightLabel"+i] = { type:"label", xValue:mid, yValue:61.3, content:`Night ${i+1}`, font:{size:9}, color:"rgba(20,40,120,0.4)" };
+  });
+
+  // Chart
+  const textColor = "#999";
+  const gridColor = "rgba(0,0,0,0.06)";
+
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("chart"), {
+    type: "line",
+    data: { labels: xLabels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: false },
+        annotation: { annotations },
+        tooltip: {
+          callbacks: {
+            title: ctx => `Lap ${ctx[0].dataIndex+1} · ${xLabels[ctx[0].dataIndex].split(" ")[1]}`,
+            label: ctx => ctx.parsed.y != null ? ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} min` : null,
+            filter: item => item.parsed.y != null,
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: textColor, font: { size: 10 }, maxRotation: 45, autoSkip: false,
+            callback(val, i) {
+              const h = (startHour + i) % 24;
+              return [0, 6, 12, 18].includes(h) ? xLabels[i] : "";
+            }
+          },
+          grid: { color: gridColor }
+        },
+        y: {
+          min: 38, max: 62,
+          title: { display: true, text: "Lap finish time (min)", color: textColor, font: { size: 11 } },
+          ticks: { color: textColor, font: { size: 11 }, callback: v => v + " min" },
+          grid: { color: gridColor }
+        }
+      }
+    }
+  });
+
+  // Legend
+  buildLegend(datasets);
+}
+
+function buildLegend(datasets) {
+  const legendEl = document.getElementById("legend");
+  legendEl.innerHTML = "";
+
+  const groups = [
+    { key: "top5",      label: "Top 5" },
+    { key: "mid-packer",label: "Mid-packers" },
+    { key: "early_dnf", label: "Early DNF" },
+  ];
+
+  groups.forEach(group => {
+    const groupDatasets = datasets.filter(d => d.category === group.key);
+    if (!groupDatasets.length) return;
+
+    const groupLabel = document.createElement("div");
+    groupLabel.className = "leg-group-label";
+    groupLabel.textContent = group.label;
+    legendEl.appendChild(groupLabel);
+
+    groupDatasets.forEach(ds => {
+      const idx = datasets.indexOf(ds);
+      const item = document.createElement("div");
+      item.className = "leg-item";
+      if (visibility[ds.fullName] === false) item.classList.add("hidden");
+
+      // Swatch (canvas for dashes)
+      const sw = document.createElement("canvas");
+      sw.width = 26; sw.height = 14;
+      sw.className = "leg-swatch";
+      sw.style.width = "26px"; sw.style.height = "14px";
+      const sc = sw.getContext("2d");
+      sc.strokeStyle = ds.borderColor; sc.lineWidth = 2.5;
+      if (ds.borderDash.length) sc.setLineDash(ds.borderDash);
+      sc.beginPath(); sc.moveTo(0, 7); sc.lineTo(26, 7); sc.stroke();
+
+      const name = document.createElement("span");
+      name.className = "leg-name";
+      name.textContent = ds.label;
+
+      item.appendChild(sw);
+      item.appendChild(name);
+      legendEl.appendChild(item);
+
+      item.addEventListener("click", () => {
+        const visible = chart.getDatasetMeta(idx).hidden;
+        chart.setDatasetVisibility(idx, !visible ? false : true);
+        // toggle properly:
+        const isHidden = !chart.isDatasetVisible(idx);
+        chart.setDatasetVisibility(idx, isHidden);
+        chart.update();
+        visibility[ds.fullName] = chart.isDatasetVisible(idx);
+        item.classList.toggle("hidden", !chart.isDatasetVisible(idx));
+      });
+    });
+  });
+}
+
+loadData();
+</script>
+</body>
+</html>
