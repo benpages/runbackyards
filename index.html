@@ -307,19 +307,34 @@
 					id: "G1M_2026",
 					label: "Go One More 2026",
 					eventId: "390956",
+					host: "my4",
 					apiKey: "f545f563e8d28831fb09508cd63b1365",
 					listname: "Lists|Detail List",
 					page: "details1",
-					startHour: 12, // ← 24h local time. Add this to any race to enable night bands + time-of-day tooltips.
+					startHour: 12,
 				},
+				{
+					id: "Bigs_2025",
+					label: "Big's Backyard Ultra 2025",
+					eventId: "364272",
+					host: "my2",
+					apiKey: "e35ba6322adb153e157d76e69096f692",
+					listname: "Result Lists|Lap Details",
+					page: "results",
+					startHour: 7, // 7:00 AM Central Time
+					extraParams: "&contest=0&r=all&l=0",
+				},
+				// Template for new races:
 				// {
-				//   id: "LastSoul_2026",
-				//   label: "Last Soul Standing 2026",
-				//   eventId: "XXXXX",
+				//   id: "RaceName_YYYY",
+				//   label: "Race Display Name YYYY",
+				//   eventId: "XXXXX",       // from raceresult URL
+				//   host: "my4",            // subdomain (my2, my4, etc.) — check network inspector
 				//   apiKey: "...",
-				//   listname: "Lists|Detail List",
-				//   page: "details1",
-				//   // no startHour → night bands won't show for this race
+				//   listname: "...",        // from network inspector
+				//   page: "...",
+				//   startHour: 9,           // optional — enables night bands + time-of-day tooltips
+				//   extraParams: "",        // optional — any extra query params needed
 				// },
 			];
 
@@ -400,33 +415,73 @@
 
 			function parseRaceresultData(apiData, raceConfig) {
 				const rows = [];
-				Object.entries(apiData).forEach(([key, lapRows]) => {
-					// key: "#N_LastName, FirstName /// N Laps /// Total Time: HH:MM:SS"
-					const namePart = key.split(" /// ")[0].replace(/^#\d+_/, "").trim();
-					const commaIdx = namePart.indexOf(", ");
-					// Store as "LastName FirstName" internally
-					const athleteName =
-						commaIdx !== -1
-							? namePart.substring(0, commaIdx) + " " + namePart.substring(commaIdx + 2)
-							: namePart;
 
-					const lapMatch = key.match(/(\d+) Laps?/i);
-					const totalLaps = lapMatch ? parseInt(lapMatch[1]) : lapRows.length;
+				Object.entries(apiData).forEach(([key, lapRows]) => {
+					if (!Array.isArray(lapRows)) return;
+
+					let athleteName, totalLaps;
+
+					if (key.includes(" /// ")) {
+						// ── G1M / spaced-separator format ─────────────────────────────────────
+						// Key: "#N_LastName, FirstName /// N Laps /// Total Time: HH:MM:SS"
+						const namePart = key.split(" /// ")[0].replace(/^#\d+_/, "").trim();
+						const commaIdx = namePart.indexOf(", ");
+						// Normalise to "LastName FirstName" for consistent display logic
+						athleteName =
+							commaIdx !== -1
+								? namePart.substring(0, commaIdx) + " " + namePart.substring(commaIdx + 2)
+								: namePart;
+						const m = key.match(/(\d+) Laps?/i);
+						totalLaps = m ? parseInt(m[1]) : lapRows.length;
+					} else {
+						// ── Big's / compact format ─────────────────────────────────────────────
+						// Key: "#N_bib///FirstName LastName///NLaps"
+						const parts = key.split("///");
+						const displayName = (parts[1] || "").trim(); // "Phil Gore"
+						// Normalise to "LastName FirstName" so shortName = first word = last name
+						const nameParts = displayName.split(" ");
+						if (nameParts.length >= 2) {
+							const last = nameParts[nameParts.length - 1];
+							const first = nameParts.slice(0, -1).join(" ");
+							athleteName = `${last} ${first}`; // "Gore Phil"
+						} else {
+							athleteName = displayName;
+						}
+						const m = (parts[2] || "").match(/(\d+)/);
+						totalLaps = m ? parseInt(m[1]) : lapRows.length;
+					}
 
 					lapRows.forEach((row) => {
-						if (!Array.isArray(row) || row.length < 7) return;
-						const lapLabel = row[3];
-						if (!lapLabel || !lapLabel.startsWith("Lap")) return;
-						rows.push({
-							athlete: athleteName,
-							race: raceConfig.id,
-							total_laps: totalLaps,
-							lap: lapLabel,
-							finish_time: row[5],
-							rest_time: row[6],
-						});
+						if (!Array.isArray(row)) return;
+						let lapNum, finishTime, restTime;
+
+						if (row.length >= 7 && String(row[3]).startsWith("Lap")) {
+							// G1M row: [col, bib, flag, "LapN", cp_MM:SS, finish_MM:SS, rest_MM:SS]
+							lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
+							finishTime = row[5];
+							restTime = row[6];
+						} else if (row.length >= 6) {
+							// Big's row: [flag, bib, lapNum, cumulative_HH:MM:SS, split_MM:SS, rest_MM:SS]
+							lapNum = parseInt(row[2], 10);
+							finishTime = row[4];
+							restTime = row[5];
+						} else {
+							return;
+						}
+
+						if (!isNaN(lapNum) && finishTime) {
+							rows.push({
+								athlete: athleteName,
+								race: raceConfig.id,
+								total_laps: totalLaps,
+								lap: "Lap" + lapNum,
+								finish_time: finishTime,
+								rest_time: restTime,
+							});
+						}
 					});
 				});
+
 				return rows;
 			}
 
@@ -456,7 +511,9 @@
 				mainEl.style.display = "none";
 				searchInput.value = "";
 
-				const url = `https://my4.raceresult.com/${raceConfig.eventId}/${raceConfig.page}/list?key=${raceConfig.apiKey}&listname=${encodeURIComponent(raceConfig.listname)}&page=${raceConfig.page}`;
+				const host = raceConfig.host || "my4";
+				const extra = raceConfig.extraParams || "";
+				const url = `https://${host}.raceresult.com/${raceConfig.eventId}/${raceConfig.page}/list?key=${raceConfig.apiKey}&listname=${encodeURIComponent(raceConfig.listname)}&page=${raceConfig.page}${extra}`;
 				try {
 					const res = await fetch(url);
 					if (!res.ok) throw new Error("HTTP " + res.status);
