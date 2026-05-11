@@ -1,0 +1,363 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-family:
+		"Inter",
+		-apple-system,
+		BlinkMacSystemFont,
+		sans-serif;
+	background: #edeae4;
+	color: #1a1a1a;
+	min-height: 100vh;
+}
+
+/* ── Nav ───────────────────────────────────────────────────────────────── */
+.site-nav {
+	background: #141414;
+	padding: 0.75rem 2rem;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+}
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 0.55rem;
+	text-decoration: none;
+	color: inherit;
+	flex-shrink: 0;
+}
+.brand-wordmark {
+	display: flex;
+	align-items: baseline;
+}
+.brand-b {
+	font-size: 0.95rem;
+	font-weight: 800;
+	letter-spacing: -0.025em;
+	color: #fff;
+}
+.brand-d {
+	font-size: 0.95rem;
+	font-weight: 300;
+	letter-spacing: -0.01em;
+	color: #666;
+}
+.site-nav .sep {
+	color: #333;
+	font-size: 0.8rem;
+}
+.site-nav .current {
+	color: #fff;
+	font-weight: 500;
+	font-size: 0.8rem;
+}
+.site-nav .nav-right {
+	margin-left: auto;
+	display: flex;
+	gap: 1.25rem;
+}
+.site-nav .nav-right a {
+	color: #777;
+	text-decoration: none;
+	font-size: 0.8rem;
+}
+.site-nav .nav-right a:hover {
+	color: #fff;
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+.race-hero {
+	background: #1a1a1a;
+	color: #fff;
+	padding: 3rem 2rem 2.5rem;
+}
+.race-event {
+	font-size: 0.78rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: #c0392b;
+	margin-bottom: 0.5rem;
+}
+.race-hero h1 {
+	font-size: clamp(1.8rem, 4vw, 2.8rem);
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	line-height: 1.1;
+	margin-bottom: 0.75rem;
+}
+.race-tagline {
+	font-size: 0.9rem;
+	color: #888;
+	margin-bottom: 2rem;
+}
+.hero-stats {
+	display: flex;
+	gap: 2.5rem;
+	flex-wrap: wrap;
+}
+.hstat-val {
+	font-size: 1.8rem;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+}
+.hstat-label {
+	font-size: 0.7rem;
+	color: #666;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	margin-top: 4px;
+}
+.winner-val {
+	color: #c0392b;
+}
+
+/* ── Description ───────────────────────────────────────────────────────── */
+.race-desc {
+	background: #fff;
+	border-bottom: 1px solid #eee;
+	padding: 1.25rem 2rem;
+	font-size: 0.88rem;
+	color: #555;
+	line-height: 1.6;
+	max-width: 780px;
+}
+
+/* ── Status ────────────────────────────────────────────────────────────── */
+.status {
+	padding: 3rem 2rem;
+	text-align: center;
+	color: #888;
+	font-size: 0.9rem;
+}
+.status.error {
+	color: #c0392b;
+}
+
+/* ── Main ──────────────────────────────────────────────────────────────── */
+main {
+	padding: 1.5rem 2rem 3rem;
+}
+
+.stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 10px;
+	margin-bottom: 2rem;
+}
+.stat {
+	background: #fff;
+	border-radius: 8px;
+	border: 1px solid #eee;
+	padding: 0.85rem 1rem;
+}
+.stat-label {
+	font-size: 0.72rem;
+	color: #888;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin-bottom: 4px;
+}
+.stat-value {
+	font-size: 1.5rem;
+	font-weight: 600;
+}
+.stat-sub {
+	font-size: 0.75rem;
+	color: #aaa;
+	margin-top: 2px;
+}
+
+/* ── Section ───────────────────────────────────────────────────────────── */
+.section {
+	margin-bottom: 2rem;
+}
+.section-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	margin-bottom: 0.75rem;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+.section-title {
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+.section-desc {
+	font-size: 0.8rem;
+	color: #999;
+	margin-top: 2px;
+}
+
+/* ── Card ──────────────────────────────────────────────────────────────── */
+.card {
+	background: #fff;
+	border-radius: 10px;
+	border: 1px solid #eee;
+	padding: 1.25rem 1.5rem;
+}
+
+/* ── Legend bar ────────────────────────────────────────────────────────── */
+.legend-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin-bottom: 0.85rem;
+	flex-wrap: wrap;
+}
+#runnerSearch {
+	width: 200px;
+	padding: 0.35rem 0.9rem;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	font-size: 0.82rem;
+	color: #333;
+	background: #fafafa;
+	outline: none;
+	transition: border-color 0.15s;
+}
+#runnerSearch:focus {
+	border-color: #c0392b;
+	background: #fff;
+}
+#runnerSearch::placeholder {
+	color: #bbb;
+}
+
+.quick-btns {
+	display: flex;
+	gap: 5px;
+}
+.qbtn {
+	font-size: 0.78rem;
+	padding: 0.3rem 0.8rem;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	background: #fafafa;
+	cursor: pointer;
+	color: #555;
+	transition:
+		background 0.12s,
+		border-color 0.12s;
+	white-space: nowrap;
+}
+.qbtn:hover {
+	background: #efefef;
+	border-color: #bbb;
+}
+
+/* ── Runner pills ──────────────────────────────────────────────────────── */
+#legend {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+.leg-item {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	padding: 5px 10px;
+	border-radius: 6px;
+	border: 1px solid #e0e0e0;
+	user-select: none;
+	background: #fff;
+	transition:
+		opacity 0.15s,
+		border-color 0.15s;
+}
+.leg-item:hover {
+	border-color: #bbb;
+	background: #f7f7f7;
+}
+.leg-item.off {
+	opacity: 0.4;
+}
+.leg-item.on {
+	border-left-width: 3px;
+	padding-left: 8px;
+}
+.leg-swatch {
+	flex-shrink: 0;
+	display: block;
+}
+.leg-name {
+	font-size: 0.78rem;
+	color: #333;
+	white-space: nowrap;
+}
+.show-more-btn {
+	font-size: 0.75rem;
+	padding: 5px 12px;
+	border-radius: 6px;
+	border: 1px dashed #ccc;
+	background: #fafafa;
+	color: #888;
+	cursor: pointer;
+	white-space: nowrap;
+}
+.show-more-btn:hover {
+	background: #f0f0f0;
+	border-color: #aaa;
+	color: #444;
+}
+
+/* ── Charts ────────────────────────────────────────────────────────────── */
+.chart-wrap {
+	position: relative;
+	width: 100%;
+	height: 400px;
+	margin-top: 1rem;
+}
+.dnf-chart-wrap {
+	height: 260px;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+footer {
+	text-align: center;
+	padding: 2rem;
+	font-size: 0.75rem;
+	color: #bbb;
+	border-top: 1px solid #eee;
+	background: #fff;
+}
+footer a {
+	color: #999;
+	text-decoration: none;
+}
+footer a:hover {
+	color: #c0392b;
+}
+
+@media (max-width: 600px) {
+	.race-desc,
+	.race-hero,
+	.site-nav,
+	main {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+	.chart-wrap {
+		height: 280px;
+	}
+	.dnf-chart-wrap {
+		height: 200px;
+	}
+	#runnerSearch {
+		width: 100%;
+	}
+	.legend-bar {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
