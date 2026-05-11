@@ -1,0 +1,42 @@
+<div id="status" class="status">Loading race data…</div>
+
+<main id="main" style="display:none">
+	<div class="stats" id="statsRow"></div>
+
+	<div class="section">
+		<div class="section-header">
+			<div>
+				<div class="section-title">Lap-by-Lap Pace</div>
+				<div class="section-desc">Finish time per loop · top 3 shown by default · click a name to toggle</div>
+			</div>
+		</div>
+		<div class="card">
+			<div class="legend-bar">
+				<input type="search" id="runnerSearch" placeholder="Find a runner…" autocomplete="off"/>
+				<div class="quick-btns">
+					<button class="qbtn" id="btnTop3">Top 3</button>
+					<button class="qbtn" id="btnAll">Show all</button>
+					<button class="qbtn" id="btnNone">Hide all</button>
+				</div>
+			</div>
+			<div id="legend"></div>
+			<div class="chart-wrap">
+				<canvas id="paceChart" role="img" aria-label="Line chart of lap finish time by loop number."></canvas>
+			</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<div class="section-header">
+			<div>
+				<div class="section-title">DNFs by Loop</div>
+				<div class="section-desc">Number of runners who completed their final loop at each point in the race</div>
+			</div>
+		</div>
+		<div class="card">
+			<div class="chart-wrap dnf-chart-wrap">
+				<canvas id="dnfChart" role="img" aria-label="Bar chart showing how many runners stopped after each loop."></canvas>
+			</div>
+		</div>
+	</div>
+</main>

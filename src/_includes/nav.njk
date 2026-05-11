@@ -30,11 +30,11 @@
     document
       .querySelectorAll(".site-nav .nav-dropdown[open]")
       .forEach((dropdown) => {
+        const summary = dropdown.querySelector("summary");
         dropdown.open = false;
-        dropdown
-            .querySelector("summary")
-            ?
-            .focus();
+        if (summary) {
+          summary.focus();
+        }
       });
   });
 </script>
