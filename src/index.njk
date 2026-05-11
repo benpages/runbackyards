@@ -1,1 +1,264 @@
-Hello world
+---
+layout: base.njk
+title: "backyards.run — Backyard Ultra Analysis"
+description: "Live race analysis for backyard ultras. Lap-by-lap pacing charts, DNF breakdowns, and tools for the last-one-standing format."
+---
+
+<div class="home-hero">
+	<div class="home-hero-inner">
+		<p class="home-eyebrow">Backyard Ultra Analysis</p>
+		<h1 class="home-h1">Data for the last one standing.</h1>
+		<p class="home-sub">Live lap pacing, DNF breakdowns, and race tools for backyard ultras — powered by real results data.</p>
+		<div class="home-races">
+			<a href="/races/bigs-2025/" class="race-card">
+				<span class="race-card-label">Big's Backyard Ultra</span>
+				<span class="race-card-detail">October 2025 · Bell Buckle, TN</span>
+				<span class="race-card-winner">Phil Gore · 114 loops</span>
+			</a>
+			<a href="/races/g1m-2026/" class="race-card">
+				<span class="race-card-label">Go One More Ultra</span>
+				<span class="race-card-detail">2026</span>
+				<span class="race-card-winner">Mark Dowdle · 73 loops</span>
+			</a>
+		</div>
+	</div>
+</div>
+
+<div class="home-body">
+
+	<div class="home-about">
+		<h2>What is this?</h2>
+		<p>Backyard ultras are a last-one-standing format: runners complete a 4.167-mile loop every hour, around the clock, until only one remains. The winner is whoever finishes a loop that no one else completes.</p>
+		<p>backyards.run pulls live results from raceresult.com and turns them into interactive charts — lap-by-lap pace lines, DNF distribution bars, and multi-race comparisons. No spreadsheets, no PDFs.</p>
+		<a href="/pace-tool/" class="home-tool-link">Try the multi-race pace tool →</a>
+	</div>
+
+	<div class="home-signup">
+		<h2>Stay in the loop</h2>
+		<p>New race analyses and tools as they launch. No spam — just data.</p>
+		<form
+			name="waitlist"
+			method="POST"
+			data-netlify="true"
+			netlify-honeypot="bot-field"
+			class="signup-form"
+		>
+			<input type="hidden" name="form-name" value="waitlist" />
+			<p class="signup-honeypot">
+				<label>Don't fill this out: <input name="bot-field" /></label>
+			</p>
+			<div class="signup-row">
+				<input
+					type="email"
+					name="email"
+					placeholder="your@email.com"
+					required
+					autocomplete="email"
+					class="signup-input"
+				/>
+				<button type="submit" class="signup-btn">Notify me</button>
+			</div>
+		</form>
+	</div>
+
+</div>
+
+<style>
+/* ── Home hero ─────────────────────────────────────────────────────────── */
+.home-hero {
+	background: #1a1a1a;
+	color: #fff;
+	padding: 4rem 2rem 3.5rem;
+}
+.home-hero-inner {
+	max-width: 680px;
+}
+.home-eyebrow {
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	color: #C0392B;
+	margin-bottom: 0.75rem;
+}
+.home-h1 {
+	font-size: clamp(2rem, 5vw, 3.2rem);
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1.08;
+	margin-bottom: 1rem;
+}
+.home-sub {
+	font-size: 1rem;
+	color: #888;
+	line-height: 1.6;
+	max-width: 520px;
+	margin-bottom: 2.5rem;
+}
+
+/* ── Race cards ────────────────────────────────────────────────────────── */
+.home-races {
+	display: flex;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+}
+.race-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	padding: 0.9rem 1.25rem;
+	background: #242424;
+	border: 1px solid #333;
+	border-radius: 10px;
+	text-decoration: none;
+	transition: border-color 0.15s, background 0.15s;
+	min-width: 200px;
+}
+.race-card:hover {
+	border-color: #C0392B;
+	background: #2a1a1a;
+}
+.race-card-label {
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: #fff;
+	letter-spacing: -0.01em;
+}
+.race-card-detail {
+	font-size: 0.72rem;
+	color: #555;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+.race-card-winner {
+	font-size: 0.8rem;
+	color: #C0392B;
+	font-weight: 500;
+	margin-top: 0.15rem;
+}
+
+/* ── Home body ─────────────────────────────────────────────────────────── */
+.home-body {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0;
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 3rem 2rem 4rem;
+}
+
+/* ── About ─────────────────────────────────────────────────────────────── */
+.home-about {
+	padding-right: 3rem;
+	border-right: 1px solid #E8E4DE;
+}
+.home-about h2,
+.home-signup h2 {
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	margin-bottom: 0.85rem;
+}
+.home-about p {
+	font-size: 0.88rem;
+	color: #555;
+	line-height: 1.7;
+	margin-bottom: 0.75rem;
+}
+.home-tool-link {
+	display: inline-block;
+	margin-top: 0.5rem;
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: #C0392B;
+	text-decoration: none;
+}
+.home-tool-link:hover {
+	text-decoration: underline;
+}
+
+/* ── Signup ────────────────────────────────────────────────────────────── */
+.home-signup {
+	padding-left: 3rem;
+}
+.home-signup p {
+	font-size: 0.88rem;
+	color: #555;
+	line-height: 1.7;
+	margin-bottom: 1.25rem;
+}
+.signup-form {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.signup-honeypot {
+	display: none;
+}
+.signup-row {
+	display: flex;
+	gap: 0.5rem;
+}
+.signup-input {
+	flex: 1;
+	padding: 0.55rem 1rem;
+	border: 1px solid #D5D0C8;
+	border-radius: 8px;
+	font-size: 0.88rem;
+	font-family: inherit;
+	background: #F7F4EF;
+	color: #1a1a1a;
+	outline: none;
+	transition: border-color 0.15s;
+}
+.signup-input:focus {
+	border-color: #C0392B;
+	background: #fff;
+}
+.signup-input::placeholder {
+	color: #bbb;
+}
+.signup-btn {
+	padding: 0.55rem 1.25rem;
+	background: #C0392B;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	font-size: 0.88rem;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background 0.15s;
+}
+.signup-btn:hover {
+	background: #a93226;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+	.home-hero {
+		padding: 2.5rem 1rem 2.5rem;
+	}
+	.home-body {
+		grid-template-columns: 1fr;
+		padding: 2rem 1rem 3rem;
+	}
+	.home-about {
+		padding-right: 0;
+		border-right: none;
+		border-bottom: 1px solid #E8E4DE;
+		padding-bottom: 2rem;
+		margin-bottom: 2rem;
+	}
+	.home-signup {
+		padding-left: 0;
+	}
+	.signup-row {
+		flex-direction: column;
+	}
+	.signup-btn {
+		width: 100%;
+	}
+}
+</style>

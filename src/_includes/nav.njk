@@ -1,14 +1,16 @@
 <nav class="site-nav">
   <a href="/" class="brand">
-    <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-      <path d="M11 2.2 A8.8 8.8 0 1 1 17.42 4.58" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M16.11 7.78 A6.5 6.5 0 1 1 14.18 5.02" stroke="white" stroke-width="4" stroke-linecap="butt"/>
     </svg>
     <span class="brand-wordmark">
-      <span class="brand-b">Backyards</span>
+      <span class="brand-b">Backyards</span><span class="brand-d">.run</span>
     </span>
   </a>
+  {% if navLabel %}
   <span class="sep">/</span>
-  <span class="current">{{ title}}</span>
+  <span class="current">{{ navLabel }}</span>
+  {% endif %}
   <div class="nav-right">
     <a href="/pace-tool/">Pace Tool</a>
     <details class="nav-dropdown">
