@@ -444,7 +444,7 @@
 						{ length: maxLap },
 						(_, j) => athlete.laps[j + 1] ?? null,
 					);
-					const shortName = name.split(" ").slice(-1)[0];
+					const shortName = name.split(" ")[0];
 					return {
 						label: `${shortName} (${athlete.total})`,
 						fullName: name,
@@ -477,7 +477,7 @@
 
 				document.getElementById("statsRow").innerHTML = `
     <div class="stat"><div class="stat-label">Runners</div><div class="stat-value">${totalRunners}</div></div>
-    <div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${maxLaps}</div><div class="stat-sub">${winner ? winner[0].split(" ").slice(-1)[0] : ""}</div></div>
+    <div class="stat"><div class="stat-label">Most laps</div><div class="stat-value">${maxLaps}</div><div class="stat-sub">${winner ? winner[0].split(" ")[0] : ""}</div></div>
     <div class="stat"><div class="stat-label">Avg lap (all)</div><div class="stat-value">${fmtMin(avgTime)}</div></div>
     <div class="stat"><div class="stat-label">Race duration</div><div class="stat-value">${maxLaps}h</div><div class="stat-sub">~${(maxLaps / 24).toFixed(1)} days</div></div>
   `;
