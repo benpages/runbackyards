@@ -1,0 +1,55 @@
+---
+layout: base.njk
+title: "Sydney Backyard Ultra 2026 — Results & Pacing Analysis | backyards.run"
+description: "Lap-by-lap pacing and DNF analysis for Sydney Backyard Ultra 2026. April 18, 2026, St Ives Showground, Australia. Tim Kacprzak won with 75 loops — 313 miles in under 58 hours."
+navLabel: "Sydney Backyard Ultra 2026"
+---
+<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+<div class="race-hero">
+	<p class="race-event">April 18, 2026 &nbsp;·&nbsp; St Ives Showground, Australia</p>
+	<h1>Sydney Backyard<br>Ultra 2026</h1>
+	<p class="race-tagline">4.167-mile loop &nbsp;·&nbsp; Last one standing wins &nbsp;·&nbsp; Start: 8 am</p>
+	<div class="hero-stats">
+		<div>
+			<div class="hstat-val winner-val">Tim Kacprzak</div>
+			<div class="hstat-label">Winner</div>
+		</div>
+		<div>
+			<div class="hstat-val">75</div>
+			<div class="hstat-label">Winning loops</div>
+		</div>
+		<div>
+			<div class="hstat-val">~313 mi</div>
+			<div class="hstat-label">Winning distance</div>
+		</div>
+		<div>
+			<div class="hstat-val">57h 58m</div>
+			<div class="hstat-label">Race duration</div>
+		</div>
+	</div>
+</div>
+
+<!-- ── Static description (indexed by Google) ─────────────────────────────── -->
+<p class="race-desc">
+	Sydney Backyard Ultra 2026, held April 18 at St Ives Showground in Sydney, Australia. Runners completed a 4.167-mile loop every hour, starting at 8 am. Tim Kacprzak outlasted the field, completing 75 loops and covering over 313 miles across nearly 58 hours. Below is a full lap pacing and DNF breakdown.
+</p>
+
+{% include "race-analysis-charts.njk" %}
+
+{% set includeDatalabels = true %}
+{% include "chart-scripts.njk" %}
+<script>
+	window.BackyardCharts.createRacePage({
+		race: {
+			id: "Sydney_2026",
+			label: "Sydney Backyard Ultra 2026",
+			eventId: "392622",
+			host: "my2",
+			apiKey: "0a739b84b363738d6c6639ee30acd51e",
+			listname: "Laps",
+			page: "details1",
+			startHour: 8,
+			extraParams: "&r=all"
+		}
+	});
+</script>

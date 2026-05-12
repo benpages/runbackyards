@@ -101,7 +101,11 @@
 			let totalLaps;
 
 			if (key.includes(" /// ")) {
-				const namePart = key.split(" /// ")[0].replace(/^#\d+_/, "").trim();
+				const namePart = key.split(" /// ")[0]
+					.replace(/^#\d+_/, "")   // strip "#123_" rank prefix
+					.replace(/^#/, "")         // strip bare "#" if no rank
+					.replace(/\s*\|.*$/, "")   // strip " | AUS" nationality suffix
+					.trim();
 				const commaIdx = namePart.indexOf(", ");
 				athleteName =
 					commaIdx !== -1
@@ -131,10 +135,17 @@
 				let restTime;
 
 				if (row.length >= 7 && String(row[3]).startsWith("Lap")) {
+					// G1M format: [col, bib, flag, "LapN", cp, finishTime, rest]
 					lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
 					finishTime = row[5];
 					restTime = row[6];
+				} else if (String(row[1]).startsWith("Yard")) {
+					// Sydney format: [icon, "Yard N", startTime, lapTime, ...]
+					lapNum = parseInt(String(row[1]).replace(/\D/g, ""), 10);
+					finishTime = row[3];
+					restTime = row[4];
 				} else if (row.length >= 6) {
+					// Big's format: [flag, bib, lapNum, cumulativeTime, finishTime, rest]
 					lapNum = parseInt(row[2], 10);
 					finishTime = row[4];
 					restTime = row[5];

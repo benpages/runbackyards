@@ -60,6 +60,12 @@ Parser auto-detects format by `key.includes(" /// ")`.
 
 ## Race configs
 ```js
+// Sydney Backyard Ultra 2026 — April 18, 2026, St Ives Showground, Australia
+// Uses G1M format ( /// separators, details1 page). Winner: Tim Kacprzak, 75 loops.
+{ id: "Sydney_2026", label: "Sydney Backyard Ultra 2026", eventId: "392622",
+  host: "my2", apiKey: "0a739b84b363738d6c6639ee30acd51e",
+  listname: "Laps", page: "details1", startHour: 8 }
+
 // Go One More Ultra 2026 — April 10, 2026, Liberty Hill, TX
 { id: "G1M_2026", label: "Go One More 2026", eventId: "390956",
   host: "my4", apiKey: "f545f563e8d28831fb09508cd63b1365",
