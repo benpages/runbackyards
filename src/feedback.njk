@@ -1,0 +1,144 @@
+---
+layout: base.njk
+title: "Feedback & Feature Requests — backyards.run"
+description: "Share feedback or request a feature for backyards.run."
+---
+
+<div class="fb-wrap">
+	<p class="eyebrow" style="margin-bottom: 1.25rem;">Feedback</p>
+	<h1 class="display fb-h1">Tell us what<br>you think.</h1>
+	<p class="fb-sub">Spotted a bug? Want a race added? Have an idea? We read everything.</p>
+
+	<form
+		name="feedback"
+		method="POST"
+		data-netlify="true"
+		netlify-honeypot="bot-field"
+		class="fb-form"
+	>
+		<input type="hidden" name="form-name" value="feedback" />
+		<p style="display:none"><label>Skip this: <input name="bot-field" /></label></p>
+
+		<div class="fb-field">
+			<label for="fb-type">Type</label>
+			<select id="fb-type" name="type" required class="fb-select">
+				<option value="" disabled selected>Select one…</option>
+				<option value="feature">Feature request</option>
+				<option value="race">Add a race</option>
+				<option value="bug">Bug report</option>
+				<option value="other">General feedback</option>
+			</select>
+		</div>
+
+		<div class="fb-field">
+			<label for="fb-message">Message</label>
+			<textarea
+				id="fb-message"
+				name="message"
+				rows="5"
+				placeholder="What's on your mind?"
+				required
+				class="fb-textarea"
+			></textarea>
+		</div>
+
+		<div class="fb-field">
+			<label for="fb-email">Email <span class="fb-optional">(optional — only if you want a reply)</span></label>
+			<input
+				type="email"
+				id="fb-email"
+				name="email"
+				placeholder="your@email.com"
+				autocomplete="email"
+				class="fb-input"
+			/>
+		</div>
+
+		<button type="submit" class="fb-btn">Send feedback →</button>
+	</form>
+</div>
+
+<style>
+.fb-wrap {
+	max-width: 560px;
+	margin: 0 auto;
+	padding: 5rem 2rem 6rem;
+}
+.fb-h1 {
+	font-size: clamp(3rem, 7vw, 5rem);
+	color: #141414;
+	margin-bottom: 1rem;
+}
+.fb-sub {
+	font-size: 0.95rem;
+	color: #666;
+	line-height: 1.65;
+	margin-bottom: 3rem;
+}
+.fb-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.75rem;
+}
+.fb-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.fb-field label {
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #444;
+}
+.fb-optional {
+	font-weight: 400;
+	text-transform: none;
+	letter-spacing: 0;
+	color: #999;
+}
+.fb-input,
+.fb-select,
+.fb-textarea {
+	padding: 0.75rem 1rem;
+	border: 1px solid #E8E4DE;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-family: inherit;
+	background: #F7F4EF;
+	color: #141414;
+	outline: none;
+	transition: border-color 0.15s;
+	width: 100%;
+	box-sizing: border-box;
+}
+.fb-input:focus,
+.fb-select:focus,
+.fb-textarea:focus {
+	border-color: #C0392B;
+}
+.fb-textarea {
+	resize: vertical;
+	min-height: 120px;
+}
+.fb-btn {
+	align-self: flex-start;
+	padding: 0.75rem 1.75rem;
+	background: #C0392B;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 700;
+	font-family: inherit;
+	cursor: pointer;
+	letter-spacing: 0.02em;
+	transition: background 0.15s;
+}
+.fb-btn:hover { background: #a93226; }
+
+@media (max-width: 600px) {
+	.fb-wrap { padding: 3.5rem 1.5rem 5rem; }
+}
+</style>

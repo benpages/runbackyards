@@ -3,28 +3,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
+      <loc>https://backyards.run/races/sydney-2026/</loc>
+      <lastmod>2026-05-12T06:41:39.272Z</lastmod>
+    </url>
+  
+    <url>
       <loc>https://backyards.run/</loc>
-      <lastmod>2026-05-12T05:55:17.626Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/pace-tool/</loc>
-      <lastmod>2026-05-12T06:02:47.017Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/races/bigs-2025/</loc>
-      <lastmod>2026-05-12T06:41:26.175Z</lastmod>
+      <lastmod>2026-05-12T11:00:27.835Z</lastmod>
     </url>
   
     <url>
       <loc>https://backyards.run/races/g1m-2026/</loc>
-      <lastmod>2026-05-12T06:41:31.352Z</lastmod>
+      <lastmod>2026-05-12T11:00:49.221Z</lastmod>
     </url>
   
     <url>
-      <loc>https://backyards.run/races/sydney-2026/</loc>
-      <lastmod>2026-05-12T06:41:39.272Z</lastmod>
+      <loc>https://backyards.run/races/bigs-2025/</loc>
+      <lastmod>2026-05-12T11:01:03.341Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/pace-tool/</loc>
+      <lastmod>2026-05-12T11:01:12.497Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/feedback/</loc>
+      <lastmod>2026-05-12T11:05:55.173Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/learn/what-is-backyard-ultra/</loc>
+      <lastmod>2026-05-12T11:14:45.475Z</lastmod>
     </url>
   
 </urlset>
