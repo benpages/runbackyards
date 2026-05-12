@@ -5,6 +5,7 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy("./src/js");
 	eleventyConfig.addPassthroughCopy("./src/assets");
 	eleventyConfig.addPassthroughCopy("src/_redirects");
+	eleventyConfig.addPassthroughCopy("src/favicon.svg");
 
 	eleventyConfig.addShortcode("year", () => `${new Date().getFullYear()}`);
 

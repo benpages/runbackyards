@@ -29,6 +29,11 @@
 		if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) {
 			return null;
 		}
+		// HH:MM:SS (e.g. "00:43:58" from Sydney Yard Time) → convert to minutes
+		if (parts.length === 3) {
+			return parts[0] * 60 + parts[1] + parts[2] / 60;
+		}
+		// MM:SS (e.g. "43:58" from G1M / Big's)
 		return parts[0] + parts[1] / 60;
 	}
 
@@ -75,6 +80,10 @@
 		return bands;
 	}
 
+	function toTitleCase(str) {
+		return str.replace(/\S+/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+	}
+
 	function fullDisplayName(stored) {
 		const parts = stored.trim().split(" ");
 		if (parts.length < 2) {
@@ -93,7 +102,13 @@
 		const rows = [];
 
 		Object.entries(apiData).forEach(([key, lapRows]) => {
-			if (!Array.isArray(lapRows)) {
+			// Flatten nested structure (Sydney wraps rows in a sub-object)
+			let actualRows;
+			if (Array.isArray(lapRows)) {
+				actualRows = lapRows;
+			} else if (lapRows && typeof lapRows === "object") {
+				actualRows = Object.values(lapRows).flat();
+			} else {
 				return;
 			}
 
@@ -107,12 +122,18 @@
 					.replace(/\s*\|.*$/, "")   // strip " | AUS" nationality suffix
 					.trim();
 				const commaIdx = namePart.indexOf(", ");
-				athleteName =
-					commaIdx !== -1
-						? `${namePart.substring(0, commaIdx)} ${namePart.substring(commaIdx + 2)}`
-						: namePart;
+				if (commaIdx !== -1) {
+					// "Last, First" → store as "Last First"
+					athleteName = toTitleCase(`${namePart.substring(0, commaIdx)} ${namePart.substring(commaIdx + 2)}`);
+				} else {
+					// "First Last" (no comma) → reverse to "Last First" for consistent pill display
+					const parts = namePart.split(" ");
+					athleteName = toTitleCase(parts.length >= 2
+						? `${parts[parts.length - 1]} ${parts.slice(0, -1).join(" ")}`
+						: namePart);
+				}
 				const match = key.match(/(\d+) Laps?/i);
-				totalLaps = match ? parseInt(match[1], 10) : lapRows.length;
+				totalLaps = match ? parseInt(match[1], 10) : actualRows.length;
 			} else {
 				const parts = key.split("///");
 				const displayName = (parts[1] || "").trim();
@@ -122,10 +143,10 @@
 						? `${nameParts[nameParts.length - 1]} ${nameParts.slice(0, -1).join(" ")}`
 						: displayName;
 				const match = (parts[2] || "").match(/(\d+)/);
-				totalLaps = match ? parseInt(match[1], 10) : lapRows.length;
+				totalLaps = match ? parseInt(match[1], 10) : actualRows.length;
 			}
 
-			lapRows.forEach((row) => {
+			actualRows.forEach((row) => {
 				if (!Array.isArray(row)) {
 					return;
 				}
@@ -134,16 +155,16 @@
 				let finishTime;
 				let restTime;
 
-				if (row.length >= 7 && String(row[3]).startsWith("Lap")) {
+				if (String(row[3]).startsWith("Yard")) {
+					// Sydney format: [bib, pid, flag, "Yard N", start, s1, s2, s3, finish, yardTime, ...]
+					lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
+					finishTime = row[9]; // "Yard Time" elapsed HH:MM:SS e.g. "00:43:58"
+					restTime = row[10];
+				} else if (row.length >= 7 && String(row[3]).startsWith("Lap")) {
 					// G1M format: [col, bib, flag, "LapN", cp, finishTime, rest]
 					lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
 					finishTime = row[5];
 					restTime = row[6];
-				} else if (String(row[1]).startsWith("Yard")) {
-					// Sydney format: [icon, "Yard N", startTime, lapTime, ...]
-					lapNum = parseInt(String(row[1]).replace(/\D/g, ""), 10);
-					finishTime = row[3];
-					restTime = row[4];
 				} else if (row.length >= 6) {
 					// Big's format: [flag, bib, lapNum, cumulativeTime, finishTime, rest]
 					lapNum = parseInt(row[2], 10);
@@ -236,7 +257,7 @@
 `;
 	}
 
-	function buildNightAnnotations(race, maxLap) {
+	function buildNightAnnotations(race, maxLap, yMin = 38, yMax = 62) {
 		const annotations = {};
 		if (race.startHour === undefined) {
 			return annotations;
@@ -247,8 +268,8 @@
 				type: "box",
 				xMin: start,
 				xMax: end,
-				yMin: 38,
-				yMax: 62,
+				yMin,
+				yMax,
 				backgroundColor: "rgba(20,30,90,0.07)",
 				borderWidth: 0,
 			};
@@ -475,15 +496,21 @@
 	}
 
 	function renderDNFChart({ rows, race, canvas, existingChart }) {
-		const athleteTotals = {};
+		// Use the highest lap number actually parsed per athlete (completed laps only),
+		// so DNF runners who started but didn't finish a lap don't get counted one loop too late.
+		const athleteMaxLap = {};
 		rows.forEach((row) => {
-			athleteTotals[row.athlete] = Math.max(athleteTotals[row.athlete] || 0, +row.total_laps + 1);
+			const lapNum = parseInt((row.lap || "").replace(/\D/g, ""), 10);
+			if (!isNaN(lapNum)) {
+				athleteMaxLap[row.athlete] = Math.max(athleteMaxLap[row.athlete] || 0, lapNum);
+			}
 		});
 
-		const maxLap = Math.max(...Object.values(athleteTotals));
+		const maxLap = Math.max(...Object.values(athleteMaxLap)) + 1;
 		const counts = {};
-		Object.values(athleteTotals).forEach((total) => {
-			counts[total] = (counts[total] || 0) + 1;
+		Object.values(athleteMaxLap).forEach((maxL) => {
+			const bucket = maxL + 1;
+			counts[bucket] = (counts[bucket] || 0) + 1;
 		});
 
 		const labels = Array.from({ length: maxLap }, (_, i) => `L${i + 1}`);
@@ -491,6 +518,8 @@
 		const colors = data.map((_value, i) => (i + 1 === maxLap ? "#C0392B" : "rgba(26,26,26,0.75)"));
 		const step = maxLap > 60 ? 10 : maxLap > 30 ? 5 : 1;
 		const plugins = window.ChartDataLabels ? [window.ChartDataLabels] : [];
+		const dataMax = Math.max(...data);
+		const nightAnnotations = buildNightAnnotations(race, maxLap, 0, dataMax + 5);
 
 		if (existingChart) {
 			existingChart.destroy();
@@ -516,6 +545,9 @@
 				animation: false,
 				plugins: {
 					legend: { display: false },
+					annotation: {
+						annotations: nightAnnotations,
+					},
 					datalabels: {
 						anchor: "end",
 						align: "top",
@@ -560,7 +592,7 @@
 					},
 					y: {
 						beginAtZero: true,
-						max: Math.max(...data) + 1,
+						max: Math.max(...data) + 5,
 						ticks: {
 							color: TEXT_COLOR,
 							font: { size: 10 },
@@ -672,6 +704,18 @@
 
 		fetchRows(race)
 			.then((rows) => {
+				const paceData = buildPaceData(rows);
+				const winner = paceData.sorted[0];
+				const winnerName = winner ? fullDisplayName(winner[0]) : "—";
+				const winnerLoops = winner ? winner[1].total : "—";
+				const winnerDist = winner ? `~${Math.round(winner[1].total * 4.167)} mi` : "—";
+
+				const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+				set("heroWinner", winnerName);
+				set("heroLoops", winnerLoops);
+				set("heroDist", winnerDist);
+				set("heroRunners", paceData.sorted.length);
+
 				pace.render(rows, race);
 				dnfChart = renderDNFChart({
 					rows,

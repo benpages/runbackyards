@@ -388,7 +388,7 @@ main {
 	margin-top: 1rem;
 }
 .dnf-chart-wrap {
-	height: 260px;
+	height: 400px;
 }
 
 /* ── Hero (race pages) ─────────────────────────────────────────────────── */
@@ -487,7 +487,7 @@ footer a:hover {
 		height: 300px;
 	}
 	.dnf-chart-wrap {
-		height: 200px;
+		height: 300px;
 	}
 	#runnerSearch {
 		width: 100%;
