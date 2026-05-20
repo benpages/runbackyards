@@ -167,32 +167,28 @@
 
 	<div class="page-section">
 		<h2>How the best runners pace</h2>
-		<p>Knowing the target pace is one thing. How you run to it is another.</p>
-		<p>There is no single approach at the front of the field. Pick any of the runners below and you'll see completely different execution at the top five. The CS (consistency score) is a measure of how much a runner's loops vary from their own average. Lower means more predictable.</p>
-
-		<h3>Running tight</h3>
-		<p>Harvey Lewis ran Go One More 2026 with a CS of 3.6%. His loops clustered within about 45 seconds of his median across two days and nights. Jon Noll at Big's 2025 ran 111 laps at CS 4.2%. Find a pace, lock it in, hold it.</p>
-		<p>For a crew, runners like this are the most manageable. You know almost exactly when they'll be back. Build a tight routine and you can run the tent like clockwork.</p>
-
-		<h3>Banking time</h3>
-		<p>Merijn Geerts ran Big's 2023 to a CS of 14.9%, with loops ranging from 46:45 to over 54:00. Phil Gore's spread at Big's 2025 was CS 24.0%, with loops as fast as 41 minutes and as slow as 52. That's not erratic running. Looking at the splits, both runners push fast laps early to bank extra tent time, then use it. Gore came back two years later and ran 14 more loops at Big's with the same approach.</p>
-		<p>Crewing this style is harder in a different way. You can't plan around the clock. You plan around the runner.</p>
-
-		<p class="pa-fighter-prompt">Pick a runner.</p>
+		<p>There is no single approach at the front of the field.</p>
+		<p>Pick any of the runners below and you'll see completely different execution at the top five.</p>
+		<p class="section-note">The CS (consistency score) is a measure of how much a runner's loops vary from their own average. Lower means more predictable.</p>
 		<div class="pa-fighter-grid" id="paFighterGrid"></div>
 		<div class="pa-fighter-races" id="paFighterRaces" style="display:none"></div>
 		<div id="paFighterPanel"></div>
+		<br/>
+		<p>Two types of pacing strategies emerge from the data:</p>
+		<h3>1. Metronomes</h3>
+		<p>Harvey Lewis ran Go One More 2026 with a CS of 3.6%. His loops clustered within about 45 seconds of his median across two days and nights.</p>
+		<p>Jon Noll at Big's 2025 ran 111 laps at CS 4.2%. The strategy here is: find a pace, lock it in, and hold it.</p>
+		<h3>2. Yo-Yo's</h3>
+		<p>Merijn Geerts ran Big's 2023 to a CS of 14.9%, with loops ranging from 39:26 to over 56:00.</p>
+		<p>Phil Gore's spread at Big's 2023 was CS 22.3%, with loops as fast as 37 minutes and as slow as 56.</p>
+		<p>Gore came back two years later and ran 14 more loops at Big's with the same approach.</p>
 
 	</div>
 
 	<div class="page-section">
 		<h2>The same runners, different races</h2>
 		<p>Several athletes appear across multiple races, and what stands out is how little their pace changes between them.</p>
-		<p>Łukasz Wróbel ran Legends 2025 and Legends 2026 on the same course, one year apart. He finished 116 loops the first time and 114 the second, with medians of 42:52 and 43:24. Two and a half minutes per loop slower after 12 months. If you have a formula for a specific course, the numbers suggest you should resist the urge to change it.</p>
-		<p>Harvey Lewis is the most consistent multi-race performer in this group. He ran Big's 2023, Big's 2025, and Go One More 2026, two different courses over two years. His pace adjusts to the terrain but the execution doesn't change. At Big's his median sits around 54:30 on the harder course. At Go One More it drops to 50:57. Tighter at a flatter race, slower on the hills, same discipline throughout.</p>
-		<p>Phil Gore ran Big's 2023 at CS 22.3%, came back two years later and ran 14 more loops at CS 24.0%. Same wide approach, more output. Sam Harvey pushed comparable numbers at Dead Cow Gully in Australia, where the two traded some of the highest loop counts on record.</p>
 		<div class="pa-crossrace">
-
 			<div class="pa-crossrace-athlete">
 				<div>
 					<p class="pa-crossrace-name">Łukasz Wróbel</p>
@@ -261,6 +257,13 @@
 			</div>
 
 		</div>
+		<br/>
+		<p>
+			<strong>Łukasz Wróbel</strong> ran Legends 2025 and Legends 2026 on the same course, one year apart. He finished 116 loops the first time and 114 the second, with medians of 42:52 and 43:24. Two and a half minutes per loop slower after 12 months. If you have a formula for a specific course, the numbers suggest you should resist the urge to change it.</p>
+		<p>
+			<strong>Harvey Lewis</strong> is the most consistent multi-race performer in this group. He ran Big's 2023, Big's 2025, and Go One More 2026, two different courses over two years. His pace adjusts to the terrain but the execution doesn't change. At Big's his median sits around 54:30 on the harder course. At Go One More it drops to 50:57.</p>
+		<p>
+			<strong>Phil Gore</strong> ran Big's 2023 at CS 22.3%, came back two years later and ran 14 more loops at CS 24.0%. Same wide approach, more output. Sam Harvey pushed comparable numbers at Dead Cow Gully in Australia, where the two traded some of the highest loop counts on record.</p>
 	</div>
 
 	<div class="page-section">
@@ -963,7 +966,12 @@
 			var tile = document.createElement("div");
 			tile.className = "pa-fighter-tile";
 			tile.dataset.id = athlete.id;
-			var sub = athlete.rank ? "World #" + athlete.rank : (athlete.races.length + " race" + (athlete.races.length !== 1 ? "s" : ""));
+			var sub = athlete.rank
+				? "World #" + athlete.rank
+				: (athlete.races.length + " race" + (
+					athlete.races.length !== 1
+					? "s"
+					: ""));
 			tile.innerHTML = '<div class="pa-fighter-avatar">' + athlete.initials + "</div>" + '<span class="pa-fighter-tile-name">' + athlete.name + "</span>" + '<span class="pa-fighter-tile-sub">' + sub + "</span>";
 			tile.addEventListener("click", function () {
 				selectAthlete(athlete.id);
