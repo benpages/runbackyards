@@ -269,11 +269,28 @@
 
 	<div class="page-newsletter">
 		<h2 class="page-newsletter-h2">Stay in the loop</h2>
-		<p class="page-newsletter-body">Race results, crewing guides, and backyard ultra content — straight to your inbox.</p>
-		<form class="page-newsletter-form" action="#" method="post">
-			<input class="page-newsletter-input" type="email" name="email" placeholder="your@email.com" required/>
-			<button class="page-newsletter-btn" type="submit">Subscribe</button>
-		</form>
+		<p class="page-newsletter-body">Race results, crewing guides, and backyard ultra content straight to your inbox.</p>
+		<form
+			name="waitlist"
+			method="POST"
+			data-netlify="true"
+			netlify-honeypot="bot-field"
+			class="page-newsletter-form"
+		>
+  <input type="hidden" name="form-name" value="waitlist"/>
+  <p style="display:none">
+    <label>Skip this: <input name="bot-field"/></label>
+  </p>
+  <input
+				type="email"
+				name="email"
+				placeholder="your@email.com"
+				required
+				autocomplete="email"
+				class="page-newsletter-input"
+			/>
+  <button type="submit" class="page-newsletter-btn">Notify me</button>
+</form>
 	</div>
 
 </div>
