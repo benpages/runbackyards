@@ -1,7 +1,7 @@
 ---
 layout: base.njk
 title: "Backyard Ultra Pace Chart & Splits — backyards.run"
-description: "Compare lap-by-lap pacing across backyard ultra races. Analyze how winners like Phil Gore, Tim Kacprzak, and Mark Dowdle paced their loops — and where the field fell apart."
+description: "Compare lap-by-lap pacing across backyard ultra races. Analyze how winners like Phil Gore, Tim Kacprzak, and Mark Dowdle paced their loops."
 navLabel: "Splits"
 ---
 
@@ -49,8 +49,7 @@ navLabel: "Splits"
 			page: "details1",
 			startHour: 8,
 			extraParams: "&r=all"
-		},
-		{
+		}, {
 			id: "G1M_2026",
 			label: "Go One More 2026",
 			eventId: "390956",
@@ -59,8 +58,7 @@ navLabel: "Splits"
 			listname: "Lists|Detail List",
 			page: "details1",
 			startHour: 12
-		},
-		{
+		}, {
 			id: "Bigs_2025",
 			label: "Big's Backyard Ultra 2025",
 			eventId: "364272",
@@ -73,6 +71,7 @@ navLabel: "Splits"
 		}
 	];
 
-	window.BackyardCharts.createPaceTool({ races: RACES });
+	window
+		.BackyardCharts
+		.createPaceTool({races: RACES});
 </script>
-

@@ -4,9 +4,9 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Backyard Ultra Pacing Strategy: Data From 26 Elite Runners | backyards.run</title>
-    <meta name="description" content="We analyzed 26 elite runners across five backyard ultra races to find the ideal loop pace. Here&#39;s what the data says about pacing strategy, and what most runners get wrong."/>
+    <meta name="description" content="We analyzed 26 elite runners across five backyard ultra races to find the ideal loop pace. Here&#39;s what the data says about pacing strategy."/>
     <meta property="og:title" content="Backyard Ultra Pacing Strategy: Data From 26 Elite Runners | backyards.run"/>
-    <meta property="og:description" content="We analyzed 26 elite runners across five backyard ultra races to find the ideal loop pace. Here&#39;s what the data says about pacing strategy, and what most runners get wrong."/>
+    <meta property="og:description" content="We analyzed 26 elite runners across five backyard ultra races to find the ideal loop pace. Here&#39;s what the data says about pacing strategy."/>
     <meta property="og:url" content="https://backyards.run/learn/pace-analysis/"/>
     <meta property="og:type" content="website"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -283,365 +283,619 @@
 
 
 <script>
-(function () {
+	(function () {
 
-	/* ── Athletes ──────────────────────────────────────────────────────────── */
-	var ATHLETES = [
-		{
-			id: "lewis", name: "Harvey Lewis", initials: "HL",
-			races: [
-				{
-					label: "G1M 2026", loops: 58,
-					stat: { median: "50:57", q1: "50:02", q3: "51:52", cs: "3.6", pace: "7:36/km" },
-					api: { id: "G1M_2026", eventId: "390956", host: "my4", apiKey: "f545f563e8d28831fb09508cd63b1365", listname: "Lists|Detail List", page: "details1", startHour: 12 },
-					storedName: "Lewis Harvey"
-				},
-				{
-					label: "Big's 2025", loops: 111,
-					stat: { median: "54:30", q1: null, q3: null, cs: "5.9", pace: null },
-					api: { id: "Bigs_2025", eventId: "364272", host: "my2", apiKey: "e35ba6322adb153e157d76e69096f692", listname: "Result Lists|Lap Details", page: "results", startHour: 7, extraParams: "&contest=0&r=all&l=0" },
-					storedName: "Lewis Harvey"
-				}
-			]
-		},
-		{
-			id: "noll", name: "Jon Noll", initials: "JN",
-			races: [
-				{
-					label: "Big's 2025", loops: 111,
-					stat: { median: "55:09", q1: "53:36", q3: "55:54", cs: "4.2", pace: "8:14/km" },
-					api: { id: "Bigs_2025", eventId: "364272", host: "my2", apiKey: "e35ba6322adb153e157d76e69096f692", listname: "Result Lists|Lap Details", page: "results", startHour: 7, extraParams: "&contest=0&r=all&l=0" },
-					storedName: "Noll Jon"
-				}
-			]
-		},
-		{
-			id: "geerts", name: "Merijn Geerts", initials: "MG",
-			races: [
-				{
-					label: "Big's 2023", loops: 100,
-					stat: { median: "49:36", q1: "46:45", q3: "54:07", cs: "14.9", pace: "7:24/km" },
-					api: null,
-					storedName: "Geerts Merijn"
-				}
-			]
-		},
-		{
-			id: "gore", name: "Phil Gore", initials: "PG",
-			races: [
-				{
-					label: "Big's 2025", loops: 114,
-					stat: { median: "46:53", q1: "41:01", q3: "52:16", cs: "24.0", pace: "7:00/km" },
-					api: { id: "Bigs_2025", eventId: "364272", host: "my2", apiKey: "e35ba6322adb153e157d76e69096f692", listname: "Result Lists|Lap Details", page: "results", startHour: 7, extraParams: "&contest=0&r=all&l=0" },
-					storedName: "Gore Phil"
-				},
-				{
-					label: "Big's 2023", loops: 100,
-					stat: { median: "47:44", q1: null, q3: null, cs: "22.3", pace: null },
-					api: null,
-					storedName: "Gore Phil"
-				}
-			]
-		},
-		{
-			id: "wrobel", name: "Łukasz Wróbel", initials: "ŁW",
-			races: [
-				{
-					label: "Legends 2025", loops: 116,
-					stat: { median: "42:52", q1: null, q3: null, cs: "5.2", pace: null },
-					api: null,
-					storedName: "Wróbel Łukasz"
-				},
-				{
-					label: "Legends 2026", loops: 114,
-					stat: { median: "43:24", q1: null, q3: null, cs: null, pace: null },
-					api: null,
-					storedName: "Wróbel Łukasz"
-				}
-			]
-		}
-	];
-
-	/* ── Helpers ───────────────────────────────────────────────────────────── */
-	var SCALE_MIN = 40, SCALE_RANGE = 20; // 40:00 to 60:00 minute scale
-	var raceCache = {};
-	var activeChart = null;
-	var loadToken = 0;
-
-	function parseMin(str) {
-		if (!str) return null;
-		var p = str.split(":").map(Number);
-		return p[0] + p[1] / 60;
-	}
-
-	function fmtMin(m) {
-		var mins = Math.floor(m);
-		var secs = Math.round((m - mins) * 60);
-		return mins + ":" + (secs < 10 ? "0" : "") + secs;
-	}
-
-	function toBarPct(m) {
-		return Math.max(0, Math.min(100, (m - SCALE_MIN) / SCALE_RANGE * 100));
-	}
-
-	function renderBar(q1m, q3m, medm) {
-		var medPct = toBarPct(medm).toFixed(1);
-		var fill = "";
-		if (q1m != null && q3m != null) {
-			var lp = toBarPct(q1m).toFixed(1);
-			var wp = (toBarPct(q3m) - toBarPct(q1m)).toFixed(1);
-			fill = '<div class="pa-pace-fill" style="left:' + lp + '%;width:' + wp + '%"></div>';
-		}
-		var q1Label = q1m != null ? fmtMin(q1m) : "";
-		var q3Label = q3m != null ? fmtMin(q3m) : "";
-		return '<div class="pa-pace-wrap"><div class="pa-pace-track">' + fill +
-			'<div class="pa-pace-median" style="left:' + medPct + '%"></div></div>' +
-			'<div class="pa-pace-labels"><span>' + q1Label + '</span>' +
-			'<span class="pa-pace-labels-mid">med ' + fmtMin(medm) + '</span>' +
-			'<span>' + q3Label + '</span></div></div>';
-	}
-
-	function computeStats(laps) {
-		var valid = laps.filter(function (v) { return v != null; });
-		if (valid.length < 4) return null;
-		var sorted = valid.slice().sort(function (a, b) { return a - b; });
-		function pct(arr, p) {
-			var i = p / 100 * (arr.length - 1);
-			var lo = Math.floor(i), hi = Math.ceil(i);
-			return arr[lo] + (arr[hi] - arr[lo]) * (i - lo);
-		}
-		var q1 = pct(sorted, 25), q3 = pct(sorted, 75), iqr = q3 - q1;
-		var clean = sorted.filter(function (v) { return v >= q1 - 1.5 * iqr && v <= q3 + 1.5 * iqr; });
-		var q1c = pct(clean, 25), q3c = pct(clean, 75), med = pct(clean, 50);
-		return { q1: q1c, q3: q3c, median: med, cs: ((q3c - q1c) / med * 100).toFixed(1) };
-	}
-
-	function buildUrl(api) {
-		var extra = api.extraParams || "";
-		return "https://" + api.host + ".raceresult.com/" + api.eventId + "/" + api.page +
-			"/list?key=" + api.apiKey + "&listname=" + encodeURIComponent(api.listname) +
-			"&page=" + api.page + extra;
-	}
-
-	function toLapMin(t) {
-		if (!t) return null;
-		var p = t.split(":").map(Number);
-		if (p.length === 3) return p[0] * 60 + p[1] + p[2] / 60;
-		return p[0] + p[1] / 60;
-	}
-
-	async function fetchAthleteRows(api, storedName) {
-		var key = api.id;
-		if (!raceCache[key]) {
-			var resp = await fetch(buildUrl(api));
-			if (!resp.ok) throw new Error("HTTP " + resp.status);
-			var json = await resp.json();
-			if (!json.data) throw new Error("no data");
-			raceCache[key] = BackyardCharts.parseRaceresultData(json.data, api);
-		}
-		return raceCache[key].filter(function (r) { return r.athlete === storedName; });
-	}
-
-	function renderChart(canvasEl, lapMins, medianMin, startHour) {
-		if (!window.Chart || !window["chartjs-plugin-annotation"]) return;
-		Chart.register(window["chartjs-plugin-annotation"]);
-		if (activeChart) { activeChart.destroy(); activeChart = null; }
-
-		var labels = lapMins.map(function (_, i) { return "L" + (i + 1); });
-		var maxLap = lapMins.length;
-		var step = maxLap > 60 ? 10 : maxLap > 30 ? 5 : maxLap > 15 ? 2 : 1;
-
-		var annotations = {
-			median: {
-				type: "line", yMin: medianMin, yMax: medianMin,
-				borderColor: "rgba(192,57,43,0.5)", borderWidth: 1.5, borderDash: [5, 4]
+		/* ── Athletes ──────────────────────────────────────────────────────────── */
+		var ATHLETES = [
+			{
+				id: "lewis",
+				name: "Harvey Lewis",
+				initials: "HL",
+				races: [
+					{
+						label: "G1M 2026",
+						loops: 58,
+						stat: {
+							median: "50:57",
+							q1: "50:02",
+							q3: "51:52",
+							cs: "3.6",
+							pace: "7:36/km"
+						},
+						api: {
+							id: "G1M_2026",
+							eventId: "390956",
+							host: "my4",
+							apiKey: "f545f563e8d28831fb09508cd63b1365",
+							listname: "Lists|Detail List",
+							page: "details1",
+							startHour: 12
+						},
+						storedName: "Lewis Harvey"
+					}, {
+						label: "Big's 2025",
+						loops: 111,
+						stat: {
+							median: "54:30",
+							q1: null,
+							q3: null,
+							cs: "5.9",
+							pace: null
+						},
+						api: {
+							id: "Bigs_2025",
+							eventId: "364272",
+							host: "my2",
+							apiKey: "e35ba6322adb153e157d76e69096f692",
+							listname: "Result Lists|Lap Details",
+							page: "results",
+							startHour: 7,
+							extraParams: "&contest=0&r=all&l=0"
+						},
+						storedName: "Lewis Harvey"
+					}
+				]
+			}, {
+				id: "noll",
+				name: "Jon Noll",
+				initials: "JN",
+				races: [
+					{
+						label: "Big's 2025",
+						loops: 111,
+						stat: {
+							median: "55:09",
+							q1: "53:36",
+							q3: "55:54",
+							cs: "4.2",
+							pace: "8:14/km"
+						},
+						api: {
+							id: "Bigs_2025",
+							eventId: "364272",
+							host: "my2",
+							apiKey: "e35ba6322adb153e157d76e69096f692",
+							listname: "Result Lists|Lap Details",
+							page: "results",
+							startHour: 7,
+							extraParams: "&contest=0&r=all&l=0"
+						},
+						storedName: "Noll Jon"
+					}
+				]
+			}, {
+				id: "geerts",
+				name: "Merijn Geerts",
+				initials: "MG",
+				races: [
+					{
+						label: "Big's 2023",
+						loops: 100,
+						stat: {
+							median: "49:36",
+							q1: "46:45",
+							q3: "54:07",
+							cs: "14.9",
+							pace: "7:24/km"
+						},
+						api: null,
+						storedName: "Geerts Merijn"
+					}
+				]
+			}, {
+				id: "gore",
+				name: "Phil Gore",
+				initials: "PG",
+				races: [
+					{
+						label: "Big's 2025",
+						loops: 114,
+						stat: {
+							median: "46:53",
+							q1: "41:01",
+							q3: "52:16",
+							cs: "24.0",
+							pace: "7:00/km"
+						},
+						api: {
+							id: "Bigs_2025",
+							eventId: "364272",
+							host: "my2",
+							apiKey: "e35ba6322adb153e157d76e69096f692",
+							listname: "Result Lists|Lap Details",
+							page: "results",
+							startHour: 7,
+							extraParams: "&contest=0&r=all&l=0"
+						},
+						storedName: "Gore Phil"
+					}, {
+						label: "Big's 2023",
+						loops: 100,
+						stat: {
+							median: "47:44",
+							q1: null,
+							q3: null,
+							cs: "22.3",
+							pace: null
+						},
+						api: null,
+						storedName: "Gore Phil"
+					}
+				]
+			}, {
+				id: "wrobel",
+				name: "Łukasz Wróbel",
+				initials: "ŁW",
+				races: [
+					{
+						label: "Legends 2025",
+						loops: 116,
+						stat: {
+							median: "42:52",
+							q1: null,
+							q3: null,
+							cs: "5.2",
+							pace: null
+						},
+						api: null,
+						storedName: "Wróbel Łukasz"
+					}, {
+						label: "Legends 2026",
+						loops: 114,
+						stat: {
+							median: "43:24",
+							q1: null,
+							q3: null,
+							cs: null,
+							pace: null
+						},
+						api: null,
+						storedName: "Wróbel Łukasz"
+					}
+				]
 			}
-		};
+		];
 
-		if (startHour !== undefined) {
-			var open = null;
-			for (var i = 1; i <= maxLap + 1; i++) {
-				var hour = (startHour + i - 1) % 24;
-				var isNight = hour >= 21 || hour < 6;
-				if (isNight && open === null) open = i - 1.5;
-				if (!isNight && open !== null) {
-					annotations["night" + i] = { type: "box", xMin: open, xMax: i - 1.5, yMin: 38, yMax: 65, backgroundColor: "rgba(20,30,90,0.07)", borderWidth: 0 };
-					open = null;
-				}
-			}
-			if (open !== null) {
-				annotations["nightEnd"] = { type: "box", xMin: open, xMax: maxLap - 0.5, yMin: 38, yMax: 65, backgroundColor: "rgba(20,30,90,0.07)", borderWidth: 0 };
-			}
+		/* ── Helpers ───────────────────────────────────────────────────────────── */
+		var SCALE_MIN = 40,
+			SCALE_RANGE = 20; // 40:00 to 60:00 minute scale
+		var raceCache = {};
+		var activeChart = null;
+		var loadToken = 0;
+
+		function parseMin(str) {
+			if (!str) 
+				return null;
+			var p = str
+				.split(":")
+				.map(Number);
+			return p[0] + p[1] / 60;
 		}
 
-		activeChart = new Chart(canvasEl, {
-			type: "line",
-			data: {
-				labels: labels,
-				datasets: [{
-					data: lapMins,
-					borderColor: "#C0392B",
-					backgroundColor: "transparent",
-					borderWidth: 2,
-					pointRadius: 0,
-					pointHoverRadius: 4,
-					tension: 0.2,
-					spanGaps: false
-				}]
-			},
-			options: {
-				responsive: true, maintainAspectRatio: false, animation: false,
-				plugins: {
-					legend: { display: false },
-					annotation: { annotations: annotations },
-					tooltip: {
-						callbacks: {
-							title: function (ctx) { return "Loop " + (ctx[0].dataIndex + 1); },
-							label: function (ctx) { return ctx.parsed.y != null ? " " + fmtMin(ctx.parsed.y) : null; }
+		function fmtMin(m) {
+			var mins = Math.floor(m);
+			var secs = Math.round((m - mins) * 60);
+			return mins + ":" + (
+				secs < 10
+				? "0"
+				: "") + secs;
+		}
+
+		function toBarPct(m) {
+			return Math.max(0, Math.min(100, (m - SCALE_MIN) / SCALE_RANGE * 100));
+		}
+
+		function renderBar(q1m, q3m, medm) {
+			var medPct = toBarPct(medm).toFixed(1);
+			var fill = "";
+			if (q1m != null && q3m != null) {
+				var lp = toBarPct(q1m).toFixed(1);
+				var wp = (toBarPct(q3m) - toBarPct(q1m)).toFixed(1);
+				fill = '<div class="pa-pace-fill" style="left:' + lp + '%;width:' + wp + '%"></div>';
+			}
+			var q1Label = q1m != null
+				? fmtMin(q1m)
+				: "";
+			var q3Label = q3m != null
+				? fmtMin(q3m)
+				: "";
+			return '<div class="pa-pace-wrap"><div class="pa-pace-track">' + fill + '<div class="pa-pace-median" style="left:' + medPct + '%"></div></div>' + '<div class="pa-pace-labels"><span>' + q1Label + '</span>' + '<span class="pa-pace-labels-mid">med ' + fmtMin(medm) + '</span>' + '<span>' + q3Label + '</span></div></div>';
+		}
+
+		function computeStats(laps) {
+			var valid = laps.filter(function (v) {
+				return v != null;
+			});
+			if (valid.length < 4) 
+				return null;
+			var sorted = valid
+				.slice()
+				.sort(function (a, b) {
+					return a - b;
+				});
+			function pct(arr, p) {
+				var i = p / 100 * (arr.length - 1);
+				var lo = Math.floor(i),
+					hi = Math.ceil(i);
+				return arr[lo] + (arr[hi] - arr[lo]) * (i - lo);
+			}
+			var q1 = pct(sorted, 25),
+				q3 = pct(sorted, 75),
+				iqr = q3 - q1;
+			var clean = sorted.filter(function (v) {
+				return v >= q1 - 1.5 * iqr && v <= q3 + 1.5 * iqr;
+			});
+			var q1c = pct(clean, 25),
+				q3c = pct(clean, 75),
+				med = pct(clean, 50);
+			return {
+				q1: q1c,
+				q3: q3c,
+				median: med,
+				cs: ((q3c - q1c) / med * 100).toFixed(1)
+			};
+		}
+
+		function buildUrl(api) {
+			var extra = api.extraParams || "";
+			return "https://" + api.host + ".raceresult.com/" + api.eventId + "/" + api.page + "/list?key=" + api.apiKey + "&listname=" + encodeURIComponent(api.listname) + "&page=" + api.page + extra;
+		}
+
+		function toLapMin(t) {
+			if (!t) 
+				return null;
+			var p = t
+				.split(":")
+				.map(Number);
+			if (p.length === 3) 
+				return p[0] * 60 + p[1] + p[2] / 60;
+			return p[0] + p[1] / 60;
+		}
+
+		async function fetchAthleteRows(api, storedName) {
+			var key = api.id;
+			if (!raceCache[key]) {
+				var resp = await fetch(buildUrl(api));
+				if (!resp.ok) 
+					throw new Error("HTTP " + resp.status);
+				var json = await resp.json();
+				if (!json.data) 
+					throw new Error("no data");
+				raceCache[key] = BackyardCharts.parseRaceresultData(json.data, api);
+			}
+			return raceCache[key].filter(function (r) {
+				return r.athlete === storedName;
+			});
+		}
+
+		function renderChart(canvasEl, lapMins, medianMin, startHour) {
+			if (!window.Chart || !window["chartjs-plugin-annotation"]) 
+				return;
+			Chart.register(window["chartjs-plugin-annotation"]);
+			if (activeChart) {
+				activeChart.destroy();
+				activeChart = null;
+			}
+
+			var labels = lapMins.map(function (_, i) {
+				return "L" + (
+				i + 1);
+			});
+			var maxLap = lapMins.length;
+			var step = maxLap > 60
+				? 10
+				: maxLap > 30
+					? 5
+					: maxLap > 15
+						? 2
+						: 1;
+
+			var annotations = {
+				median: {
+					type: "line",
+					yMin: medianMin,
+					yMax: medianMin,
+					borderColor: "rgba(192,57,43,0.5)",
+					borderWidth: 1.5,
+					borderDash: [5, 4]
+				}
+			};
+
+			if (startHour !== undefined) {
+				var open = null;
+				for (var i = 1; i <= maxLap + 1; i++) {
+					var hour = (startHour + i - 1) % 24;
+					var isNight = hour >= 21 || hour < 6;
+					if (isNight && open === null) 
+						open = i - 1.5;
+					if (!isNight && open !== null) {
+						annotations["night" + i] = {
+							type: "box",
+							xMin: open,
+							xMax: i - 1.5,
+							yMin: 38,
+							yMax: 65,
+							backgroundColor: "rgba(20,30,90,0.07)",
+							borderWidth: 0
+						};
+						open = null;
+					}
+				}
+				if (open !== null) {
+					annotations["nightEnd"] = {
+						type: "box",
+						xMin: open,
+						xMax: maxLap - 0.5,
+						yMin: 38,
+						yMax: 65,
+						backgroundColor: "rgba(20,30,90,0.07)",
+						borderWidth: 0
+					};
+				}
+			}
+
+			activeChart = new Chart(canvasEl, {
+				type: "line",
+				data: {
+					labels: labels,
+					datasets: [
+						{
+							data: lapMins,
+							borderColor: "#C0392B",
+							backgroundColor: "transparent",
+							borderWidth: 2,
+							pointRadius: 0,
+							pointHoverRadius: 4,
+							tension: 0.2,
+							spanGaps: false
+						}
+					]
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					animation: false,
+					plugins: {
+						legend: {
+							display: false
+						},
+						annotation: {
+							annotations: annotations
+						},
+						tooltip: {
+							callbacks: {
+								title: function (ctx) {
+									return "Loop " + (
+									ctx[0].dataIndex + 1);
+								},
+								label: function (ctx) {
+									return ctx.parsed.y != null
+										? " " + fmtMin(ctx.parsed.y)
+										: null;
+								}
+							}
+						}
+					},
+					scales: {
+						x: {
+							ticks: {
+								color: "#999",
+								font: {
+									size: 10
+								},
+								maxRotation: 0,
+								autoSkip: false,
+								callback: function (_v, idx) {
+									var n = idx + 1;
+									return n % step === 0 || n === 1
+										? "L" + n
+										: "";
+								}
+							},
+							grid: {
+								color: "rgba(0,0,0,0.06)"
+							}
+						},
+						y: {
+							min: 38,
+							max: 65,
+							title: {
+								display: true,
+								text: "Lap time (min)",
+								color: "#999",
+								font: {
+									size: 10
+								}
+							},
+							ticks: {
+								color: "#999",
+								font: {
+									size: 10
+								},
+								callback: function (v) {
+									return v;
+								}
+							},
+							grid: {
+								color: "rgba(0,0,0,0.06)"
+							}
 						}
 					}
-				},
-				scales: {
-					x: {
-						ticks: {
-							color: "#999", font: { size: 10 }, maxRotation: 0, autoSkip: false,
-							callback: function (_v, idx) { var n = idx + 1; return n % step === 0 || n === 1 ? "L" + n : ""; }
-						},
-						grid: { color: "rgba(0,0,0,0.06)" }
-					},
-					y: {
-						min: 38, max: 65,
-						title: { display: true, text: "Lap time (min)", color: "#999", font: { size: 10 } },
-						ticks: { color: "#999", font: { size: 10 }, callback: function (v) { return v; } },
-						grid: { color: "rgba(0,0,0,0.06)" }
+				}
+			});
+		}
+
+		/* ── Render grid ───────────────────────────────────────────────────────── */
+		var gridEl = document.getElementById("paFighterGrid");
+		var racesEl = document.getElementById("paFighterRaces");
+		var panelEl = document.getElementById("paFighterPanel");
+
+		ATHLETES.forEach(function (athlete) {
+			var tile = document.createElement("div");
+			tile.className = "pa-fighter-tile";
+			tile.dataset.id = athlete.id;
+			var sub = athlete.races.length === 1
+				? "1 race"
+				: athlete.races.length + " races";
+			tile.innerHTML = '<div class="pa-fighter-avatar">' + athlete.initials + "</div>" + '<span class="pa-fighter-tile-name">' + athlete.name + "</span>" + '<span class="pa-fighter-tile-sub">' + sub + "</span>";
+			tile.addEventListener("click", function () {
+				selectAthlete(athlete.id);
+			});
+			gridEl.appendChild(tile);
+		});
+
+		var currentAthleteId = null;
+
+		function selectAthlete(id) {
+			if (currentAthleteId === id) 
+				return;
+			currentAthleteId = id;
+			gridEl
+				.querySelectorAll(".pa-fighter-tile")
+				.forEach(function (t) {
+					t
+						.classList
+						.toggle("selected", t.dataset.id === id);
+				});
+			var athlete = ATHLETES.find(function (a) {
+				return a.id === id;
+			});
+			if (athlete.races.length > 1) {
+				renderRacePills(athlete);
+				racesEl.style.display = "flex";
+			} else {
+				racesEl.style.display = "none";
+			}
+			selectRace(id, 0);
+		}
+
+		function renderRacePills(athlete) {
+			racesEl.innerHTML = "";
+			athlete
+				.races
+				.forEach(function (race, idx) {
+					var pill = document.createElement("button");
+					pill.className = "pa-fighter-race-pill";
+					pill.dataset.idx = idx;
+					pill.textContent = race.label + " · " + race.loops + " laps";
+					pill.addEventListener("click", function () {
+						selectRace(athlete.id, idx);
+					});
+					racesEl.appendChild(pill);
+				});
+		}
+
+		function syncPills(idx) {
+			racesEl
+				.querySelectorAll(".pa-fighter-race-pill")
+				.forEach(function (p) {
+					p
+						.classList
+						.toggle("selected", parseInt(p.dataset.idx) === idx);
+				});
+		}
+
+		async function selectRace(athleteId, raceIdx) {
+			syncPills(raceIdx);
+			var token = ++loadToken;
+			var athlete = ATHLETES.find(function (a) {
+				return a.id === athleteId;
+			});
+			var race = athlete.races[raceIdx];
+			var st = race.stat;
+
+			var q1m = parseMin(st.q1),
+				q3m = parseMin(st.q3),
+				medm = parseMin(st.median);
+			var chips = [
+				st.cs
+					? "CS " + st.cs + "%"
+					: null,
+				st.pace || null
+			]
+				.filter(Boolean)
+				.map(function (c) {
+					return '<span class="pa-chip">' + c + "</span>";
+				})
+				.join("");
+			var liveHtml = race.api
+				? '<div class="pa-fighter-chart-status" id="paChartStatus">Loading lap data…</div>' + '<div class="pa-fighter-chart-wrap" id="paChartWrap" style="display:none"><canvas id="paChartCanvas"></canvas></div>'
+				: "";
+
+			panelEl.innerHTML = '<div class="pa-fighter-panel">' + '<p class="pa-fighter-panel-name">' + athlete.name + "</p>" + '<p class="pa-fighter-panel-meta">' + race.label + " · " + race.loops + " laps</p>" + '<div id="paBar">' + (
+				medm != null
+				? renderBar(q1m, q3m, medm)
+				: "") + "</div>" + (
+				chips
+				? '<div class="pa-card-chips" style="margin-top:10px">' + chips + "</div>"
+				: "") + liveHtml + "</div>";
+
+			if (!race.api) 
+				return;
+			
+			try {
+				var rows = await fetchAthleteRows(race.api, race.storedName);
+				if (token !== loadToken) 
+					return; // stale — user moved on
+				if (!rows.length) 
+					throw new Error("athlete not found");
+				
+				var maxLap = Math
+					.max
+					.apply(null, rows.map(function (r) {
+						return parseInt(r.lap.replace(/\D/g, ""), 10);
+					}));
+				var lapMins = [];
+				for (var i = 1; i <= maxLap; i++) {
+					var row = rows.find(function (r) {
+						return parseInt(r.lap.replace(/\D/g, ""), 10) === i;
+					});
+					lapMins.push(
+						row
+						? toLapMin(row.finish_time)
+						: null);
+				}
+
+				// If no pre-computed Q1/Q3, derive from live laps
+				var q1Draw = q1m,
+					q3Draw = q3m,
+					medDraw = medm;
+				if (q1m == null || q3m == null) {
+					var live = computeStats(lapMins);
+					if (live) {
+						q1Draw = live.q1;
+						q3Draw = live.q3;
+						medDraw = live.median;
+						var barEl = document.getElementById("paBar");
+						if (barEl) 
+							barEl.innerHTML = renderBar(q1Draw, q3Draw, medDraw);
+						}
 					}
-				}
-			}
-		});
-	}
 
-	/* ── Render grid ───────────────────────────────────────────────────────── */
-	var gridEl = document.getElementById("paFighterGrid");
-	var racesEl = document.getElementById("paFighterRaces");
-	var panelEl = document.getElementById("paFighterPanel");
+				var statusEl = document.getElementById("paChartStatus");
+				var wrapEl = document.getElementById("paChartWrap");
+				var canvasEl = document.getElementById("paChartCanvas");
+				if (statusEl) 
+					statusEl.style.display = "none";
+				if (wrapEl) 
+					wrapEl.style.display = "";
+				renderChart(
+					canvasEl, lapMins, medDraw != null
+					? medDraw
+					: medm,
+				race.api.startHour);
 
-	ATHLETES.forEach(function (athlete) {
-		var tile = document.createElement("div");
-		tile.className = "pa-fighter-tile";
-		tile.dataset.id = athlete.id;
-		var sub = athlete.races.length === 1 ? "1 race" : athlete.races.length + " races";
-		tile.innerHTML =
-			'<div class="pa-fighter-avatar">' + athlete.initials + "</div>" +
-			'<span class="pa-fighter-tile-name">' + athlete.name + "</span>" +
-			'<span class="pa-fighter-tile-sub">' + sub + "</span>";
-		tile.addEventListener("click", function () { selectAthlete(athlete.id); });
-		gridEl.appendChild(tile);
-	});
-
-	var currentAthleteId = null;
-
-	function selectAthlete(id) {
-		if (currentAthleteId === id) return;
-		currentAthleteId = id;
-		gridEl.querySelectorAll(".pa-fighter-tile").forEach(function (t) {
-			t.classList.toggle("selected", t.dataset.id === id);
-		});
-		var athlete = ATHLETES.find(function (a) { return a.id === id; });
-		if (athlete.races.length > 1) {
-			renderRacePills(athlete);
-			racesEl.style.display = "flex";
-		} else {
-			racesEl.style.display = "none";
-		}
-		selectRace(id, 0);
-	}
-
-	function renderRacePills(athlete) {
-		racesEl.innerHTML = "";
-		athlete.races.forEach(function (race, idx) {
-			var pill = document.createElement("button");
-			pill.className = "pa-fighter-race-pill";
-			pill.dataset.idx = idx;
-			pill.textContent = race.label + " · " + race.loops + " laps";
-			pill.addEventListener("click", function () { selectRace(athlete.id, idx); });
-			racesEl.appendChild(pill);
-		});
-	}
-
-	function syncPills(idx) {
-		racesEl.querySelectorAll(".pa-fighter-race-pill").forEach(function (p) {
-			p.classList.toggle("selected", parseInt(p.dataset.idx) === idx);
-		});
-	}
-
-	async function selectRace(athleteId, raceIdx) {
-		syncPills(raceIdx);
-		var token = ++loadToken;
-		var athlete = ATHLETES.find(function (a) { return a.id === athleteId; });
-		var race = athlete.races[raceIdx];
-		var st = race.stat;
-
-		var q1m = parseMin(st.q1), q3m = parseMin(st.q3), medm = parseMin(st.median);
-		var chips = [st.cs ? "CS " + st.cs + "%" : null, st.pace || null]
-			.filter(Boolean).map(function (c) { return '<span class="pa-chip">' + c + "</span>"; }).join("");
-		var liveHtml = race.api
-			? '<div class="pa-fighter-chart-status" id="paChartStatus">Loading lap data…</div>' +
-			  '<div class="pa-fighter-chart-wrap" id="paChartWrap" style="display:none"><canvas id="paChartCanvas"></canvas></div>'
-			: "";
-
-		panelEl.innerHTML =
-			'<div class="pa-fighter-panel">' +
-			'<p class="pa-fighter-panel-name">' + athlete.name + "</p>" +
-			'<p class="pa-fighter-panel-meta">' + race.label + " · " + race.loops + " laps</p>" +
-			'<div id="paBar">' + (medm != null ? renderBar(q1m, q3m, medm) : "") + "</div>" +
-			(chips ? '<div class="pa-card-chips" style="margin-top:10px">' + chips + "</div>" : "") +
-			liveHtml +
-			"</div>";
-
-		if (!race.api) return;
-
-		try {
-			var rows = await fetchAthleteRows(race.api, race.storedName);
-			if (token !== loadToken) return; // stale — user moved on
-			if (!rows.length) throw new Error("athlete not found");
-
-			var maxLap = Math.max.apply(null, rows.map(function (r) {
-				return parseInt(r.lap.replace(/\D/g, ""), 10);
-			}));
-			var lapMins = [];
-			for (var i = 1; i <= maxLap; i++) {
-				var row = rows.find(function (r) { return parseInt(r.lap.replace(/\D/g, ""), 10) === i; });
-				lapMins.push(row ? toLapMin(row.finish_time) : null);
-			}
-
-			// If no pre-computed Q1/Q3, derive from live laps
-			var q1Draw = q1m, q3Draw = q3m, medDraw = medm;
-			if (q1m == null || q3m == null) {
-				var live = computeStats(lapMins);
-				if (live) {
-					q1Draw = live.q1; q3Draw = live.q3; medDraw = live.median;
-					var barEl = document.getElementById("paBar");
-					if (barEl) barEl.innerHTML = renderBar(q1Draw, q3Draw, medDraw);
+			} catch (err) {
+				if (token !== loadToken) 
+					return;
+				var statusEl2 = document.getElementById("paChartStatus");
+				if (statusEl2) 
+					statusEl2.textContent = "Chart unavailable for this race.";
 				}
 			}
 
-			var statusEl = document.getElementById("paChartStatus");
-			var wrapEl = document.getElementById("paChartWrap");
-			var canvasEl = document.getElementById("paChartCanvas");
-			if (statusEl) statusEl.style.display = "none";
-			if (wrapEl) wrapEl.style.display = "";
-			renderChart(canvasEl, lapMins, medDraw != null ? medDraw : medm, race.api.startHour);
-
-		} catch (err) {
-			if (token !== loadToken) return;
-			var statusEl2 = document.getElementById("paChartStatus");
-			if (statusEl2) statusEl2.textContent = "Chart unavailable for this race.";
-		}
-	}
-
-})();
+	})();
 </script>
-
     <footer>
 	Data sourced live from <a href="https://raceresult.com" target="_blank" rel="noopener">raceresult.com</a>
 	&nbsp;·&nbsp; <a href="/">backyards.run</a>
