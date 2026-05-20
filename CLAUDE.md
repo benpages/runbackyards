@@ -60,22 +60,43 @@ Parser auto-detects format by `key.includes(" /// ")`.
 
 ## Race configs
 ```js
-// Sydney Backyard Ultra 2026 — April 18, 2026, St Ives Showground, Australia
-// Uses G1M format ( /// separators, details1 page). Winner: Tim Kacprzak, 75 loops.
-{ id: "Sydney_2026", label: "Sydney Backyard Ultra 2026", eventId: "392622",
-  host: "my2", apiKey: "0a739b84b363738d6c6639ee30acd51e",
-  listname: "Laps", page: "details1", startHour: 8 }
+// Big's Backyard Ultra 2023 — October 2023, Bell Buckle, TN
+// r=pid&pid=5 is a single-runner preview; use r=all&l=0 for full pull.
+{ id: "Bigs_2023", eventId: "266852", host: "my2",
+  apiKey: "c32693b41c83792c4af8a8bcf61c4aa0",
+  listname: "Result Lists|Lap Details", page: "F6E602",
+  startHour: 7, extraParams: "&r=all&l=0" }
+
+// Legends Backyard Ultra 2025 — April 2025, Retie, Belgium
+// "Online|Ronden Details" with r=all returns all athletes' lap splits. r=pid&pid=N fetches one athlete.
+{ id: "Legends_2025", eventId: "337369", host: "my2",
+  apiKey: "07708f8146716bea0992945f49ba2ead",
+  listname: "Online|Ronden Details", page: "4A0932",
+  startHour: 10, extraParams: "&r=all&l=0" }
+
+// Big's Backyard Ultra 2025 — October 2025, Bell Buckle, TN
+{ id: "Bigs_2025", label: "Big's Backyard Ultra 2025", eventId: "364272",
+  host: "my2", apiKey: "e35ba6322adb153e157d76e69096f692",
+  listname: "Result Lists|Lap Details", page: "results", startHour: 7,
+  extraParams: "&contest=0&r=all&l=0" }
+
+// Legends Backyard Ultra 2026 — April 25, 2026, Retie, Belgium. Winner: Łukasz Wróbel, 114 loops.
+// "Result Lists|Lap Details" with r=all returns all athletes' lap splits. r=pid&pid=N fetches one athlete.
+{ id: "Legends_2026", eventId: "387219", host: "my1",
+  apiKey: "a15c39a3af787ed11ce45bff82407380",
+  listname: "Result Lists|Lap Details", page: "details0",
+  startHour: 10, extraParams: "&r=all&l=0" }
 
 // Go One More Ultra 2026 — April 10, 2026, Liberty Hill, TX
 { id: "G1M_2026", label: "Go One More 2026", eventId: "390956",
   host: "my4", apiKey: "f545f563e8d28831fb09508cd63b1365",
   listname: "Lists|Detail List", page: "details1", startHour: 12 }
 
-// Big's Backyard Ultra 2025
-{ id: "Bigs_2025", label: "Big's Backyard Ultra 2025", eventId: "364272",
-  host: "my2", apiKey: "e35ba6322adb153e157d76e69096f692",
-  listname: "Result Lists|Lap Details", page: "results", startHour: 7,
-  extraParams: "&contest=0&r=all&l=0" }
+// Sydney Backyard Ultra 2026 — April 18, 2026, St Ives Showground, Australia
+// Uses G1M format ( /// separators, details1 page). Winner: Tim Kacprzak, 75 loops.
+{ id: "Sydney_2026", label: "Sydney Backyard Ultra 2026", eventId: "392622",
+  host: "my2", apiKey: "0a739b84b363738d6c6639ee30acd51e",
+  listname: "Laps", page: "details1", startHour: 8 }
 ```
 
 ## Key chart details

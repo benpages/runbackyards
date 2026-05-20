@@ -1,7 +1,7 @@
 ---
 layout: base.njk
-title: "Backyard Ultra Pacing Strategy: Data From 26 Elite Runners | backyards.run"
-description: "We analyzed 26 elite runners across five backyard ultra races to find the ideal loop pace. Here's what the data says about pacing strategy."
+title: "Backyard Ultra Pacing Strategy: Data From 31 Elite Runners | backyards.run"
+description: "We analyzed 31 elite runners across six backyard ultra races to find the ideal loop pace. Here's what the data says about pacing strategy."
 navLabel: "Pacing Strategy"
 ---
 
@@ -10,28 +10,28 @@ navLabel: "Pacing Strategy"
 	<header class="page-header">
 		<p class="race-event">Pacing strategy &nbsp;·&nbsp; backyard ultra</p>
 		<h1 class="page-h1">How to Pace<br>a Backyard Ultra</h1>
-		<p class="page-lede">We looked at 26 elite runners across five races to find the ideal loop pace. The answer might surprise you.</p>
+		<p class="page-lede">We looked at 31 elite runners across six races to find the ideal loop pace. The answer might surprise you.</p>
 	</header>
 
 	<div class="page-section">
 		<h2>The question</h2>
 		<p>Backyard ultra pacing comes down to one real question: do you run fast, finish loops early, and bank more recovery time in your tent? Or do you run conservatively, sacrifice that buffer, but preserve more energy for the loops ahead?</p>
 		<p>Both strategies have logic behind them. More tent time means more sleep, more food, more time to deal with your feet. But a slower loop means more cumulative time on your feet per hour, which compounds quickly when you're 60 loops in and still going.</p>
-		<p>We pulled lap-by-lap splits for 26 elite runners across five major races to see how the best backyard ultra athletes in the world actually pace.</p>
+		<p>We pulled lap-by-lap splits for 31 elite runners across six major races to see how the best backyard ultra athletes in the world actually pace.</p>
 	</div>
 
 	<div class="page-section">
 		<h2>The ideal pace window</h2>
 		<p>We looked at lap splits for the top five finishers from six races: Big's Backyard Ultra 2023 and 2025, the Legends Backyard Ultra 2025 and 2026, the BPN Go One More 2026, and the Sydney Backyard Ultra 2026. That's 31 athletes and thousands of loops of data.</p>
-		<p>After removing sleep sprints and anomalous slow laps that skew the numbers, the pace across the first 26 runners (five races) falls between <strong>47:45 and 51:48</strong> per loop. The overall median is <strong>49:55</strong>.</p>
+		<p>After removing sleep sprints and anomalous slow laps that skew the numbers, the ideal pace falls between <strong id="pa-prose-window">47:45 and 51:48</strong> per loop. The overall median is <strong id="pa-prose-median">49:55</strong>.</p>
 		<p>If you're finishing loops around 50 minutes with eight or nine minutes to spare, you're not running too slowly. That buffer is the pace working as intended.</p>
 		<div class="learn-stat-row">
 			<div class="learn-stat">
-				<span class="learn-stat-num" style="font-size:1.35rem">47:45&nbsp;&ndash;&nbsp;51:48</span>
+				<span class="learn-stat-num" id="pa-stat-window" style="font-size:1.35rem">47:45&nbsp;&ndash;&nbsp;51:48</span>
 				<span class="learn-stat-label">Ideal pace window</span>
 			</div>
 			<div class="learn-stat">
-				<span class="learn-stat-num">49:55</span>
+				<span class="learn-stat-num" id="pa-stat-median">49:55</span>
 				<span class="learn-stat-label">Overall median</span>
 			</div>
 			<div class="learn-stat">
@@ -43,33 +43,17 @@ navLabel: "Pacing Strategy"
 				<span class="learn-stat-label">Races covered</span>
 			</div>
 		</div>
-		<div class="pa-methodology">
-			<strong>Methodology.</strong> Each athlete's lap times were cleaned with IQR filtering, removing sleep sprints and anomalous slow laps. The per-athlete median was then computed individually. The ideal pace window is the interquartile range across all 26 individual medians from Big's 2023/2025, Legends 2025/2026, and G1M 2026. Sydney Backyard Ultra 2026 is included in the race and athlete count but its top-five aggregate is not yet incorporated into the pace window calculation.
+		<div class="pa-methodology" id="pa-methodology">
+			<strong>Methodology.</strong> Each athlete's lap times were cleaned with IQR filtering, removing sleep sprints and anomalous slow laps. The per-athlete median was then computed individually. The ideal pace window is the interquartile range across the individual medians of the top-five finishers from all six races, loaded live from race results on page load.
 		</div>
 	</div>
 
 	<div class="page-section">
 		<h2>Course matters</h2>
-		<p>The 47 to 51 minute aggregate window is a starting point, not a universal target. Drill into individual races and the range shifts significantly, because in backyard ultras, all courses are not created equal.</p>
+		<p>That aggregate window is a starting point, not a universal target. Drill into individual races and the range shifts significantly, because in backyard ultras, all courses are not created equal.</p>
 		<p>Legends Backyard Ultra, run on a relatively flat course in Belgium, sees top runners averaging around 44 minutes per loop. Big's Backyard Ultra, the world championship course in Bell Buckle, Tennessee, pushes that past 53 minutes. Same format, same 4.167-mile distance, very different targets.</p>
 		<p>This matters for training. A 51-minute loop might be perfectly calibrated for Go One More but would put you well off the pace at a Legends field. Know your course before you decide what "fast enough" means.</p>
 		<div class="pa-courses">
-			<div class="pa-course-row">
-				<div class="pa-course-label">Legends 2025<span class="pa-course-date">Apr 2025 &middot; Belgium</span></div>
-				<div class="pa-bar-track">
-					<div class="pa-bar-fill" style="left:0.3%;width:31.2%"></div>
-					<div class="pa-bar-median" style="left:11.0%"></div>
-				</div>
-				<div class="pa-bar-range">43:02 &ndash; 47:05 <span class="pa-bar-range-med">med 44:26</span></div>
-			</div>
-			<div class="pa-course-row">
-				<div class="pa-course-label">Legends 2026<span class="pa-course-date">Apr 2026 &middot; Belgium</span></div>
-				<div class="pa-bar-track">
-					<div class="pa-bar-fill" style="left:14.4%;width:36.7%"></div>
-					<div class="pa-bar-median" style="left:35.5%"></div>
-				</div>
-				<div class="pa-bar-range">44:52 &ndash; 49:38 <span class="pa-bar-range-med">med 47:37</span></div>
-			</div>
 			<div class="pa-course-row">
 				<div class="pa-course-label">Big's 2023<span class="pa-course-date">Oct 2023 &middot; Tennessee</span></div>
 				<div class="pa-bar-track">
@@ -79,12 +63,12 @@ navLabel: "Pacing Strategy"
 				<div class="pa-bar-range">46:38 &ndash; 53:06 <span class="pa-bar-range-med">med 50:03</span></div>
 			</div>
 			<div class="pa-course-row">
-				<div class="pa-course-label">G1M 2026<span class="pa-course-date">Apr 2026 &middot; Texas</span></div>
+				<div class="pa-course-label">Legends 2025<span class="pa-course-date">Apr 2025 &middot; Belgium</span></div>
 				<div class="pa-bar-track">
-					<div class="pa-bar-fill" style="left:54.6%;width:19.6%"></div>
-					<div class="pa-bar-median" style="left:64.6%"></div>
+					<div class="pa-bar-fill" style="left:0.3%;width:31.2%"></div>
+					<div class="pa-bar-median" style="left:11.0%"></div>
 				</div>
-				<div class="pa-bar-range">50:06 &ndash; 52:39 <span class="pa-bar-range-med">med 51:24</span></div>
+				<div class="pa-bar-range">43:02 &ndash; 47:05 <span class="pa-bar-range-med">med 44:26</span></div>
 			</div>
 			<div class="pa-course-row">
 				<div class="pa-course-label">Big's 2025<span class="pa-course-date">Oct 2025 &middot; Tennessee</span></div>
@@ -94,8 +78,29 @@ navLabel: "Pacing Strategy"
 				</div>
 				<div class="pa-bar-range">49:09 &ndash; 55:42 <span class="pa-bar-range-med">med 53:30</span></div>
 			</div>
+			<div class="pa-course-row">
+				<div class="pa-course-label">G1M 2026<span class="pa-course-date">Apr 2026 &middot; Texas</span></div>
+				<div class="pa-bar-track">
+					<div class="pa-bar-fill" style="left:54.6%;width:19.6%"></div>
+					<div class="pa-bar-median" style="left:64.6%"></div>
+				</div>
+				<div class="pa-bar-range">50:06 &ndash; 52:39 <span class="pa-bar-range-med">med 51:24</span></div>
+			</div>
+			<div class="pa-course-row" id="pa-course-sydney">
+				<div class="pa-course-label">Sydney 2026<span class="pa-course-date">Apr 2026 &middot; Australia</span></div>
+				<div class="pa-bar-track"></div>
+				<div class="pa-bar-range" style="color:#bbb">Loading&hellip;</div>
+			</div>
+			<div class="pa-course-row">
+				<div class="pa-course-label">Legends 2026<span class="pa-course-date">Apr 2026 &middot; Belgium</span></div>
+				<div class="pa-bar-track">
+					<div class="pa-bar-fill" style="left:14.4%;width:36.7%"></div>
+					<div class="pa-bar-median" style="left:35.5%"></div>
+				</div>
+				<div class="pa-bar-range">44:52 &ndash; 49:38 <span class="pa-bar-range-med">med 47:37</span></div>
+			</div>
 		</div>
-		<p class="section-note">Each bar shows the Q1 to Q3 pace range across the top-five finishers for that race. The vertical line marks the median. All bars are plotted on a shared scale from 43:00 to 56:00 so courses are directly comparable.</p>
+		<p class="section-note">Each bar shows the Q1 to Q3 pace range across the top-five finishers for that race. The vertical line marks the median. All bars are plotted on a shared scale from 43:00 to 56:00 so courses are directly comparable. Sydney 2026 data loads live from race results.</p>
 	</div>
 
 	<div class="page-section">
@@ -113,7 +118,7 @@ navLabel: "Pacing Strategy"
 		<p>Jon Noll at Big's 2025 ran 111 laps at CS 4.2%. The strategy here is: find a pace, lock it in, and hold it.</p>
 		<h3>2. Yo-Yo's</h3>
 		<p>Merijn Geerts ran Big's 2023 to a CS of 14.9%, with loops ranging from 39:26 to over 56:00.</p>
-		<p>Phil Gore's spread at Big's 2023 was CS 22.3%, with loops as fast as 37 minutes and as slow as 56.</p>
+		<p>Phil Gore's spread at Big's 2023 was CS 22.3%, with loops as fast as 37 minutes and close to an hour at the other end.</p>
 		<p>Gore came back two years later and ran 14 more loops at Big's with the same approach.</p>
 
 	</div>
@@ -192,11 +197,11 @@ navLabel: "Pacing Strategy"
 		</div>
 		<br/>
 		<p>
-			<strong>Łukasz Wróbel</strong> ran Legends 2025 and Legends 2026 on the same course, one year apart. He finished 116 loops the first time and 114 the second, with medians of 42:52 and 43:24. Two and a half minutes per loop slower after 12 months. If you have a formula for a specific course, the numbers suggest you should resist the urge to change it.</p>
+			<strong>Łukasz Wróbel</strong> ran Legends 2025 and Legends 2026 on the same course, one year apart. He finished 116 loops the first time and 114 the second, with medians of 42:52 and 43:24. Thirty-two seconds per loop slower after 12 months. If you have a formula for a specific course, the numbers suggest you should resist the urge to change it.</p>
 		<p>
 			<strong>Harvey Lewis</strong> is the most consistent multi-race performer in this group. He ran Big's 2023, Big's 2025, and Go One More 2026, two different courses over two years. His pace adjusts to the terrain but the execution doesn't change. At Big's his median sits around 54:30 on the harder course. At Go One More it drops to 50:57.</p>
 		<p>
-			<strong>Phil Gore</strong> ran Big's 2023 at CS 22.3%, came back two years later and ran 14 more loops at CS 24.0%. Same wide approach, more output. Sam Harvey pushed comparable numbers at Dead Cow Gully in Australia, where the two traded some of the highest loop counts on record.</p>
+			<strong>Phil Gore</strong> ran Big's 2023 at CS 22.3%, came back two years later and ran 14 more loops at CS 24.0%. Same wide approach, more output.</p>
 	</div>
 
 	<div class="page-section">
@@ -375,7 +380,7 @@ navLabel: "Pacing Strategy"
 				races: [
 					{
 						label: "Big's 2025",
-						loops: 109,
+						loops: 113,
 						stat: {
 							median: null,
 							q1: null,
@@ -399,7 +404,7 @@ navLabel: "Pacing Strategy"
 						storedName: "Steyaert Ivo"
 					}, {
 						label: "Legends 2026",
-						loops: 110,
+						loops: 84,
 						stat: {
 							median: null,
 							q1: null,
@@ -407,8 +412,16 @@ navLabel: "Pacing Strategy"
 							cs: null,
 							pace: null
 						},
-						api: null,
-						startHour: 10,
+						api: {
+							id: "Legends_2026",
+							eventId: "387219",
+							host: "my1",
+							apiKey: "a15c39a3af787ed11ce45bff82407380",
+							listname: "Result Lists|Lap Details",
+							page: "details0",
+							startHour: 10,
+							extraParams: "&r=all&l=0"
+						},
 						nightStart: 19,
 						nightEnd: 7,
 						loopNote: "Day loop: technical trail · Night loop: flat road (7pm–7am)",
@@ -560,7 +573,7 @@ navLabel: "Pacing Strategy"
 				races: [
 					{
 						label: "G1M 2026",
-						loops: 74,
+						loops: 73,
 						stat: {
 							median: null,
 							q1: null,
@@ -690,18 +703,23 @@ navLabel: "Pacing Strategy"
 			return p[0] + p[1] / 60;
 		}
 
-		async function fetchAthleteRows(api, storedName) {
+		async function fetchAllRows(api) {
 			var key = api.id;
 			if (!raceCache[key]) {
 				var resp = await fetch(buildUrl(api));
-				if (!resp.ok) 
+				if (!resp.ok)
 					throw new Error("HTTP " + resp.status);
 				var json = await resp.json();
-				if (!json.data) 
+				if (!json.data)
 					throw new Error("no data");
 				raceCache[key] = BackyardCharts.parseRaceresultData(json.data, api);
 			}
-			return raceCache[key].filter(function (r) {
+			return raceCache[key];
+		}
+
+		async function fetchAthleteRows(api, storedName) {
+			var rows = await fetchAllRows(api);
+			return rows.filter(function (r) {
 				return r.athlete === storedName;
 			});
 		}
@@ -1095,6 +1113,122 @@ navLabel: "Pacing Strategy"
 					statusEl2.textContent = "Chart unavailable for this race.";
 				}
 			}
+
+		/* ── Shared helper: group rows by athlete, return sorted top-N ─────────── */
+		function topNByLaps(rows, n) {
+			var byAthlete = {};
+			rows.forEach(function(r) {
+				if (!byAthlete[r.athlete]) byAthlete[r.athlete] = { total: 0, laps: [] };
+				byAthlete[r.athlete].total = Math.max(byAthlete[r.athlete].total, r.total_laps);
+				var m = toLapMin(r.finish_time);
+				if (m != null) byAthlete[r.athlete].laps.push(m);
+			});
+			return Object.values(byAthlete)
+				.sort(function(a, b) { return b.total - a.total; })
+				.slice(0, n);
+		}
+
+		/* ── Sydney 2026 course bar (dynamic) ─────────────────────────────────── */
+		var SYD_API = {
+			id: "Sydney_2026",
+			eventId: "392622",
+			host: "my2",
+			apiKey: "0a739b84b363738d6c6639ee30acd51e",
+			listname: "Laps",
+			page: "details1"
+		};
+
+		(async function loadSydneyBar() {
+			var COURSE_MIN = 43, COURSE_RANGE = 13;
+			function cPct(m) { return Math.max(0, Math.min(100, (m - COURSE_MIN) / COURSE_RANGE * 100)); }
+			try {
+				var allRows = await fetchAllRows(SYD_API);
+				var top5 = topNByLaps(allRows, 5);
+				var pooled = [];
+				top5.forEach(function(a) { pooled = pooled.concat(a.laps); });
+				var stats = computeStats(pooled);
+				if (!stats) throw new Error("stats failed");
+
+				var q1Pct  = cPct(stats.q1).toFixed(1);
+				var wPct   = (cPct(stats.q3) - cPct(stats.q1)).toFixed(1);
+				var medPct = cPct(stats.median).toFixed(1);
+
+				var rowEl = document.getElementById("pa-course-sydney");
+				if (!rowEl) return;
+				rowEl.querySelector(".pa-bar-track").innerHTML =
+					'<div class="pa-bar-fill" style="left:' + q1Pct + '%;width:' + wPct + '%"></div>' +
+					'<div class="pa-bar-median" style="left:' + medPct + '%"></div>';
+				rowEl.querySelector(".pa-bar-range").innerHTML =
+					fmtMin(stats.q1) + ' &ndash; ' + fmtMin(stats.q3) +
+					' <span class="pa-bar-range-med">med ' + fmtMin(stats.median) + '</span>';
+				rowEl.querySelector(".pa-bar-range").removeAttribute("style");
+			} catch(e) {
+				var rowEl2 = document.getElementById("pa-course-sydney");
+				if (rowEl2) rowEl2.querySelector(".pa-bar-range").textContent = "Data unavailable";
+			}
+		})();
+
+		/* ── Pace window: dynamic recompute across all six races ───────────────── */
+		(async function computeAndRenderPaceWindow() {
+			var allMedians = [];
+
+			// All six race APIs — lap-detail format, r=all for full pulls
+			var LIVE_APIS = [
+				{ id: "Bigs_2023", eventId: "266852", host: "my2",
+				  apiKey: "c32693b41c83792c4af8a8bcf61c4aa0",
+				  listname: "Result Lists|Lap Details", page: "F6E602",
+				  extraParams: "&r=all&l=0" },
+				{ id: "Legends_2025", eventId: "337369", host: "my2",
+				  apiKey: "07708f8146716bea0992945f49ba2ead",
+				  listname: "Online|Ronden Details", page: "4A0932",
+				  extraParams: "&r=all&l=0" },
+				{ id: "Bigs_2025", eventId: "364272", host: "my2",
+				  apiKey: "e35ba6322adb153e157d76e69096f692",
+				  listname: "Result Lists|Lap Details", page: "results",
+				  extraParams: "&contest=0&r=all&l=0" },
+				{ id: "Legends_2026", eventId: "387219", host: "my1",
+				  apiKey: "a15c39a3af787ed11ce45bff82407380",
+				  listname: "Result Lists|Lap Details", page: "details0",
+				  extraParams: "&r=all&l=0" },
+				{ id: "G1M_2026", eventId: "390956", host: "my4",
+				  apiKey: "f545f563e8d28831fb09508cd63b1365",
+				  listname: "Lists|Detail List", page: "details1" },
+				SYD_API
+			];
+
+			await Promise.all(LIVE_APIS.map(async function(api) {
+				try {
+					var rows = await fetchAllRows(api);
+					topNByLaps(rows, 5).forEach(function(a) {
+						var s = computeStats(a.laps);
+						if (s) allMedians.push(s.median);
+					});
+				} catch(e) {}
+			}));
+
+			if (allMedians.length < 4) return;
+
+			// IQR of the individual medians = the pace window
+			var sorted = allMedians.slice().sort(function(a, b) { return a - b; });
+			function pct(arr, p) {
+				var i = p / 100 * (arr.length - 1);
+				var lo = Math.floor(i), hi = Math.ceil(i);
+				return arr[lo] + (arr[hi] - arr[lo]) * (i - lo);
+			}
+			var winQ1  = pct(sorted, 25);
+			var winMed = pct(sorted, 50);
+			var winQ3  = pct(sorted, 75);
+
+			var winEl = document.getElementById("pa-stat-window");
+			var medEl = document.getElementById("pa-stat-median");
+			if (winEl) winEl.innerHTML = fmtMin(winQ1) + "&nbsp;&ndash;&nbsp;" + fmtMin(winQ3);
+			if (medEl) medEl.textContent = fmtMin(winMed);
+
+			var proseWin = document.getElementById("pa-prose-window");
+			var proseMed = document.getElementById("pa-prose-median");
+			if (proseWin) proseWin.textContent = fmtMin(winQ1) + " and " + fmtMin(winQ3);
+			if (proseMed) proseMed.textContent = fmtMin(winMed);
+		})();
 
 	})();
 </script>
