@@ -37,6 +37,30 @@ body {
 	color: #c0392b;
 }
 
+blockquote {
+	position: relative;
+	margin: 2rem 0;
+	padding-left: 2.75rem;
+	font-family: "Barlow Condensed", sans-serif;
+	font-style: italic;
+	font-weight: 800;
+	font-size: 1.5rem;
+	line-height: 1.2;
+	color: #141414;
+}
+blockquote::before {
+	content: "\201C";
+	position: absolute;
+	left: 0;
+	top: -0.05em;
+	font-family: "Barlow Condensed", sans-serif;
+	font-size: 3.25rem;
+	font-weight: 900;
+	font-style: normal;
+	line-height: 1;
+	color: #c0392b;
+}
+
 /* ── Brand / Nav ───────────────────────────────────────────────────────── */
 .site-nav {
 	background: #141414;
@@ -1844,14 +1868,18 @@ p.first-detail {
 	transform: translateX(-50%);
 }
 .pa-pace-labels {
+	position: relative;
 	display: flex;
 	justify-content: space-between;
 	font-size: 0.73rem;
 	color: #888;
 }
 .pa-pace-labels-mid {
+	position: absolute;
+	transform: translateX(-50%);
 	color: #141414;
 	font-weight: 600;
+	white-space: nowrap;
 }
 .pa-card-chips {
 	display: flex;
@@ -2070,6 +2098,12 @@ p.first-detail {
 	color: #aaa;
 	text-align: center;
 	padding: 20px 0;
+}
+.pa-fighter-chart-note {
+	font-size: 0.75rem;
+	color: #aaa;
+	margin-top: 10px;
+	margin-bottom: 0;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */

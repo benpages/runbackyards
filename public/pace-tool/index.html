@@ -40,7 +40,6 @@
         <a href="/learn/pace-analysis/">Pacing Strategy</a>
       </div>
     </details>
-    <a href="/records/">Records</a>
     <details class="nav-dropdown">
       <summary>Races</summary>
       <div class="nav-dropdown-menu">
@@ -49,7 +48,8 @@
         <a href="/races/bigs-2025/">Big's 2025</a>
       </div>
     </details>
-    <a href="/pace-tool/">Splits</a>
+    <a href="/records/">Records</a>
+    
 
   </div>
 </nav>
@@ -73,34 +73,34 @@
 </script>
     
 <div class="controls">
-	<label for="raceSelect">Race</label>
-	<select id="raceSelect"></select>
+  <label for="raceSelect">Race</label>
+  <select id="raceSelect"></select>
 </div>
 
 <div id="status" class="status">Loading race data…</div>
 
 <main id="main" style="display: none">
-	<div class="stats" id="statsRow"></div>
-	<div class="card">
-		<div class="card-title">Lap finish time (min) · by loop number</div>
-		<div class="legend-bar">
-			<input
+  <div class="stats" id="statsRow"></div>
+  <div class="card">
+    <div class="card-title">Lap finish time (min) · by loop number</div>
+    <div class="legend-bar">
+      <input
 						type="search"
 						id="runnerSearch"
 						placeholder="Find a runner…"
 						autocomplete="off"
 					/>
-			<div class="quick-btns">
-				<button class="qbtn" id="btnTop2">Top 2</button>
-				<button class="qbtn" id="btnAll">Show all</button>
-				<button class="qbtn" id="btnNone">Hide all</button>
-			</div>
-		</div>
-		<div id="legend"></div>
-		<div class="chart-wrap" style="margin-top: 1rem">
-			<canvas id="chart" role="img" aria-label="Line chart of lap finish time by loop number."></canvas>
-		</div>
-	</div>
+      <div class="quick-btns">
+        <button class="qbtn" id="btnTop2">Top 2</button>
+        <button class="qbtn" id="btnAll">Show all</button>
+        <button class="qbtn" id="btnNone">Hide all</button>
+      </div>
+    </div>
+    <div id="legend"></div>
+    <div class="chart-wrap" style="margin-top: 1rem">
+      <canvas id="chart" role="img" aria-label="Line chart of lap finish time by loop number."></canvas>
+    </div>
+  </div>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -109,42 +109,42 @@
 <script src="/js/backyard-charts.js"></script>
 
 <script>
-	const RACES = [
-		{
-			id: "Sydney_2026",
-			label: "Sydney Backyard Ultra 2026",
-			eventId: "392622",
-			host: "my2",
-			apiKey: "0a739b84b363738d6c6639ee30acd51e",
-			listname: "Laps",
-			page: "details1",
-			startHour: 8,
-			extraParams: "&r=all"
-		}, {
-			id: "G1M_2026",
-			label: "Go One More 2026",
-			eventId: "390956",
-			host: "my4",
-			apiKey: "f545f563e8d28831fb09508cd63b1365",
-			listname: "Lists|Detail List",
-			page: "details1",
-			startHour: 12
-		}, {
-			id: "Bigs_2025",
-			label: "Big's Backyard Ultra 2025",
-			eventId: "364272",
-			host: "my2",
-			apiKey: "e35ba6322adb153e157d76e69096f692",
-			listname: "Result Lists|Lap Details",
-			page: "results",
-			startHour: 7,
-			extraParams: "&contest=0&r=all&l=0"
-		}
-	];
+  const RACES = [
+    {
+      id: "Sydney_2026",
+      label: "Sydney Backyard Ultra 2026",
+      eventId: "392622",
+      host: "my2",
+      apiKey: "0a739b84b363738d6c6639ee30acd51e",
+      listname: "Laps",
+      page: "details1",
+      startHour: 8,
+      extraParams: "&r=all"
+    }, {
+      id: "G1M_2026",
+      label: "Go One More 2026",
+      eventId: "390956",
+      host: "my4",
+      apiKey: "f545f563e8d28831fb09508cd63b1365",
+      listname: "Lists|Detail List",
+      page: "details1",
+      startHour: 12
+    }, {
+      id: "Bigs_2025",
+      label: "Big's Backyard Ultra 2025",
+      eventId: "364272",
+      host: "my2",
+      apiKey: "e35ba6322adb153e157d76e69096f692",
+      listname: "Result Lists|Lap Details",
+      page: "results",
+      startHour: 7,
+      extraParams: "&contest=0&r=all&l=0"
+    }
+  ];
 
-	window
-		.BackyardCharts
-		.createPaceTool({races: RACES});
+  window
+    .BackyardCharts
+    .createPaceTool({races: RACES});
 </script>
     <footer>
 	Data sourced live from <a href="https://raceresult.com" target="_blank" rel="noopener">raceresult.com</a>
