@@ -1697,6 +1697,399 @@ p.first-detail {
 	}
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   PACE ANALYSIS PAGE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Section sub-headings ────────────────────────────────────────────────── */
+.page-section h3 {
+	font-size: 0.82rem;
+	font-weight: 700;
+	color: #141414;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	margin-top: 2rem;
+	margin-bottom: 0.5rem;
+}
+
+/* ── Course breakdown bars ───────────────────────────────────────────────── */
+.pa-courses {
+	margin: 1.75rem 0 0.5rem;
+}
+.pa-course-row {
+	display: grid;
+	grid-template-columns: 150px 1fr 200px;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+.pa-course-label {
+	font-size: 0.83rem;
+	font-weight: 600;
+	color: #1a1a1a;
+}
+.pa-course-date {
+	display: block;
+	font-size: 0.68rem;
+	color: #888;
+	font-weight: 400;
+	margin-top: 2px;
+}
+.pa-bar-track {
+	height: 8px;
+	background: #e8e4de;
+	border-radius: 4px;
+	position: relative;
+}
+.pa-bar-fill {
+	position: absolute;
+	height: 100%;
+	background: #c0392b;
+	border-radius: 4px;
+	opacity: 0.4;
+}
+.pa-bar-median {
+	position: absolute;
+	width: 2px;
+	height: 14px;
+	top: -3px;
+	background: #141414;
+	border-radius: 1px;
+	transform: translateX(-50%);
+}
+.pa-bar-range {
+	font-size: 0.8rem;
+	color: #444;
+}
+.pa-bar-range-med {
+	color: #888;
+	font-size: 0.75rem;
+}
+
+/* ── Methodology callout ─────────────────────────────────────────────────── */
+.pa-methodology {
+	background: #f7f4ef;
+	border-left: 3px solid #c0392b;
+	padding: 1rem 1.25rem;
+	border-radius: 0 8px 8px 0;
+	margin: 1.5rem 0 0;
+	font-size: 0.85rem;
+	color: #555;
+	line-height: 1.75;
+}
+.pa-methodology strong {
+	color: #141414;
+}
+
+/* ── Runner cards ────────────────────────────────────────────────────────── */
+.pa-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: 1rem;
+	margin-top: 1.75rem;
+}
+.pa-card {
+	background: #f7f4ef;
+	border: 1px solid #e8e4de;
+	border-radius: 10px;
+	padding: 1.25rem;
+}
+.pa-card-crossrace {
+	font-size: 0.65rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	background: #141414;
+	color: #fff;
+	padding: 2px 7px;
+	border-radius: 3px;
+	display: inline-block;
+	margin-bottom: 0.6rem;
+}
+.pa-card-name {
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: #141414;
+	margin-bottom: 2px;
+}
+.pa-card-meta {
+	font-size: 0.75rem;
+	color: #888;
+	margin-bottom: 1rem;
+}
+.pa-pace-wrap {
+	margin-bottom: 0.85rem;
+}
+.pa-pace-track {
+	height: 8px;
+	background: #e8e4de;
+	border-radius: 4px;
+	position: relative;
+	margin-bottom: 6px;
+}
+.pa-pace-fill {
+	position: absolute;
+	height: 100%;
+	background: #c0392b;
+	border-radius: 4px;
+	opacity: 0.45;
+}
+.pa-pace-median {
+	position: absolute;
+	width: 2px;
+	height: 14px;
+	top: -3px;
+	background: #141414;
+	border-radius: 1px;
+	transform: translateX(-50%);
+}
+.pa-pace-labels {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.73rem;
+	color: #888;
+}
+.pa-pace-labels-mid {
+	color: #141414;
+	font-weight: 600;
+}
+.pa-card-chips {
+	display: flex;
+	gap: 5px;
+	flex-wrap: wrap;
+	margin-bottom: 0.75rem;
+}
+.pa-chip {
+	font-size: 0.72rem;
+	background: #e8e4de;
+	padding: 2px 7px;
+	border-radius: 4px;
+	color: #555;
+}
+.pa-card-tags {
+	display: flex;
+	gap: 4px;
+	flex-wrap: wrap;
+}
+.pa-tag {
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	padding: 3px 8px;
+	border-radius: 3px;
+	color: #fff;
+}
+.pa-tag--dark { background: #141414; }
+.pa-tag--red  { background: #c0392b; }
+.pa-tag--gray { background: #888; }
+
+/* ── Cross-race section ──────────────────────────────────────────────────── */
+.pa-crossrace {
+	margin-top: 1.75rem;
+}
+.pa-crossrace-athlete {
+	display: grid;
+	grid-template-columns: 190px 1fr;
+	gap: 2rem;
+	padding: 2rem 0;
+	border-bottom: 1px solid #e8e4de;
+	align-items: start;
+}
+.pa-crossrace-athlete:first-child {
+	border-top: 1px solid #e8e4de;
+}
+.pa-crossrace-name {
+	font-size: 1rem;
+	font-weight: 700;
+	color: #141414;
+	margin-bottom: 0.25rem;
+}
+.pa-crossrace-total {
+	font-size: 0.72rem;
+	color: #888;
+	line-height: 1.5;
+}
+.pa-crossrace-races {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+.pa-crossrace-race {
+	background: #f7f4ef;
+	border: 1px solid #e8e4de;
+	border-radius: 8px;
+	padding: 0.85rem 1rem;
+	flex: 1;
+	min-width: 155px;
+}
+.pa-crossrace-race-name {
+	font-size: 0.65rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: #c0392b;
+	margin-bottom: 6px;
+}
+.pa-crossrace-race-loops {
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 900;
+	font-size: 1.7rem;
+	color: #141414;
+	line-height: 1;
+	margin-bottom: 3px;
+}
+.pa-crossrace-race-loops span {
+	font-size: 0.9rem;
+	font-weight: 400;
+	color: #888;
+	font-family: "Inter", sans-serif;
+}
+.pa-crossrace-race-detail {
+	font-size: 0.72rem;
+	color: #888;
+}
+
+/* ── Fighter selector ────────────────────────────────────────────────────── */
+.pa-fighter-prompt {
+	font-size: 0.82rem;
+	color: #888;
+	margin-bottom: 14px;
+}
+.pa-fighter-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 10px;
+	margin-bottom: 14px;
+}
+.pa-fighter-tile {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	padding: 16px 10px 14px;
+	border: 2px solid #e8e4de;
+	border-radius: 10px;
+	background: #f7f4ef;
+	cursor: pointer;
+	text-align: center;
+	transition: border-color 0.15s, transform 0.1s;
+	user-select: none;
+}
+.pa-fighter-tile:hover {
+	border-color: #c0392b;
+	transform: translateY(-2px);
+}
+.pa-fighter-tile.selected {
+	border-color: #c0392b;
+	background: #fff;
+}
+.pa-fighter-avatar {
+	width: 52px;
+	height: 52px;
+	border-radius: 50%;
+	background: #141414;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: 'Barlow Condensed', sans-serif;
+	font-weight: 700;
+	font-size: 1.0rem;
+	letter-spacing: 0.03em;
+	color: #fff;
+	flex-shrink: 0;
+}
+.pa-fighter-tile.selected .pa-fighter-avatar {
+	background: #c0392b;
+}
+.pa-fighter-tile-name {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: #141414;
+	line-height: 1.3;
+}
+.pa-fighter-tile-sub {
+	font-size: 0.67rem;
+	color: #999;
+	line-height: 1.2;
+}
+.pa-fighter-races {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 14px;
+}
+.pa-fighter-race-pill {
+	padding: 5px 14px;
+	border-radius: 20px;
+	border: 1.5px solid #e8e4de;
+	background: #f7f4ef;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: #555;
+	cursor: pointer;
+	transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+.pa-fighter-race-pill:hover {
+	border-color: #c0392b;
+	color: #c0392b;
+}
+.pa-fighter-race-pill.selected {
+	background: #c0392b;
+	border-color: #c0392b;
+	color: #fff;
+}
+.pa-fighter-panel {
+	background: #f7f4ef;
+	border: 1px solid #e8e4de;
+	border-radius: 10px;
+	padding: 20px 24px 24px;
+}
+.pa-fighter-panel-name {
+	font-family: 'Barlow Condensed', sans-serif;
+	font-weight: 900;
+	font-style: italic;
+	text-transform: uppercase;
+	font-size: 1.4rem;
+	letter-spacing: 0.01em;
+	color: #141414;
+	margin-bottom: 2px;
+}
+.pa-fighter-panel-meta {
+	font-size: 0.78rem;
+	color: #888;
+	margin-bottom: 14px;
+}
+.pa-fighter-chart-wrap {
+	position: relative;
+	height: 200px;
+	margin-top: 20px;
+}
+.pa-fighter-chart-status {
+	font-size: 0.78rem;
+	color: #aaa;
+	text-align: center;
+	padding: 20px 0;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 760px) {
+	.pa-fighter-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+	.pa-course-row {
+		grid-template-columns: 120px 1fr;
+		gap: 8px;
+	}
+	.pa-bar-range {
+		display: none;
+	}
+	.pa-crossrace-athlete {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+}
+
 /* ── Homepage responsive ───────────────────────────────────────────────────── */
 @media (max-width: 780px) {
 	.h-hero-inner {
@@ -1744,6 +2137,11 @@ p.first-detail {
 }
 
 /* ── Race page responsive ──────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+	.pa-fighter-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
 @media (max-width: 600px) {
 	.site-nav,
 	header.tool-header,
