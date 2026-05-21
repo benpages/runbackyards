@@ -141,7 +141,7 @@ navLabel: "Pacing Strategy"
 					<div class="pa-crossrace-race">
 						<p class="pa-crossrace-race-name">Legends 2026</p>
 						<p class="pa-crossrace-race-loops">114 <span>laps</span></p>
-						<p class="pa-crossrace-race-detail">med 43:24</p>
+						<p class="pa-crossrace-race-detail">med 43:24 &middot; CS 6.8%</p>
 					</div>
 				</div>
 			</div>
@@ -693,12 +693,14 @@ navLabel: "Pacing Strategy"
 		}
 
 		function toLapMin(t) {
-			if (!t) 
+			if (!t)
 				return null;
 			var p = t
 				.split(":")
 				.map(Number);
-			if (p.length === 3) 
+			if (p.length < 2 || isNaN(p[0]) || isNaN(p[1]))
+				return null;
+			if (p.length === 3)
 				return p[0] * 60 + p[1] + p[2] / 60;
 			return p[0] + p[1] / 60;
 		}

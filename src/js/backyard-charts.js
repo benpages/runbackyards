@@ -170,6 +170,11 @@
 					lapNum = parseInt(row[2], 10);
 					finishTime = row[4];
 					restTime = row[5];
+				} else if (row.length >= 5) {
+					// Legends 2026 format: [bib, id, lapNum, finishTime, distance]
+					lapNum = parseInt(row[2], 10);
+					finishTime = row[3];
+					restTime = null;
 				} else {
 					return;
 				}
