@@ -137,11 +137,18 @@
 			} else {
 				const parts = key.split("///");
 				const displayName = (parts[1] || "").trim();
-				const nameParts = displayName.split(" ");
-				athleteName =
-					nameParts.length >= 2
-						? `${nameParts[nameParts.length - 1]} ${nameParts.slice(0, -1).join(" ")}`
-						: displayName;
+				const commaIdx = displayName.indexOf(", ");
+				if (commaIdx !== -1) {
+					// "Last, First" → store as "Last First"
+					athleteName = toTitleCase(`${displayName.substring(0, commaIdx)} ${displayName.substring(commaIdx + 2)}`);
+				} else {
+					// "First Last" → reverse to "Last First"
+					const nameParts = displayName.split(" ");
+					athleteName =
+						nameParts.length >= 2
+							? `${nameParts[nameParts.length - 1]} ${nameParts.slice(0, -1).join(" ")}`
+							: displayName;
+				}
 				const match = (parts[2] || "").match(/(\d+)/);
 				totalLaps = match ? parseInt(match[1], 10) : actualRows.length;
 			}
@@ -171,9 +178,11 @@
 					finishTime = row[4];
 					restTime = row[5];
 				} else if (row.length >= 5) {
-					// Legends 2026 format: [bib, id, lapNum, finishTime, distance]
+					// Two 5-column formats:
+					// Legends 2026: [bib, id, lapNum, finishTime, distance]
+					// Legends 2025: [bib, id, lapNum, distance, finishTime]
 					lapNum = parseInt(row[2], 10);
-					finishTime = row[3];
+					finishTime = String(row[3]).includes("km") ? row[4] : row[3];
 					restTime = null;
 				} else {
 					return;
