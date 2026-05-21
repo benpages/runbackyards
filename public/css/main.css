@@ -501,7 +501,19 @@ footer a:hover {
 
 /* ── Hero ──────────────────────────────────────────────────────────────── */
 .h-hero {
-	background: #0f0f0f;
+	background:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"),
+		linear-gradient(rgba(10, 10, 10, 0.87), rgba(10, 10, 10, 0.87)),
+		url("/assets/img/bakcyard-runner-hero-image.jpeg");
+	background-size:
+		300px 300px,
+		cover,
+		cover;
+	background-position:
+		top left,
+		center,
+		center;
+	background-blend-mode: overlay, normal, normal;
 	color: #fff;
 }
 .h-hero-inner {
@@ -526,7 +538,7 @@ footer a:hover {
 	color: #aaa;
 	line-height: 1.65;
 	max-width: 480px;
-	margin-bottom: 2.5rem;
+	margin-bottom: 0;
 }
 .h-ctas {
 	display: flex;
@@ -594,6 +606,84 @@ footer a:hover {
 	background: #222;
 	margin: 0 2rem 0 0;
 	flex-shrink: 0;
+}
+
+/* ── Featured content ──────────────────────────────────────────────────── */
+.h-featured {
+	background: #edeae4;
+	padding: 4rem 0 2rem;
+}
+.h-featured-inner {
+	padding: 0 3rem;
+}
+.h-feat-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1.5rem;
+}
+.h-feat-card {
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+	background: rgba(255, 255, 255, 0.52);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	border: 1px solid rgba(255, 255, 255, 0.78);
+	border-radius: 12px;
+	text-decoration: none;
+	box-shadow:
+		0 2px 16px rgba(0, 0, 0, 0.05),
+		inset 0 1px 0 rgba(255, 255, 255, 0.9);
+	transition:
+		border-color 0.2s,
+		background 0.2s,
+		box-shadow 0.2s,
+		transform 0.2s;
+}
+.h-feat-card:hover {
+	border-color: rgba(192, 57, 43, 0.45);
+	background: rgba(255, 255, 255, 0.7);
+	transform: translateY(-2px);
+	box-shadow:
+		0 8px 32px rgba(0, 0, 0, 0.08),
+		inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.h-feat-eyebrow {
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #c0392b;
+	margin-bottom: 0.75rem;
+}
+.h-feat-title {
+	font-family: "Barlow Condensed", sans-serif;
+	font-style: italic;
+	font-weight: 900;
+	text-transform: uppercase;
+	font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+	color: #141414;
+	line-height: 0.95;
+	margin-bottom: 1rem;
+}
+.h-feat-desc {
+	font-size: 0.88rem;
+	color: #666;
+	line-height: 1.65;
+	flex: 1;
+}
+.h-feat-arrow {
+	display: block;
+	font-size: 1.1rem;
+	color: #bbb;
+	margin-top: 1.75rem;
+	transition:
+		color 0.15s,
+		transform 0.15s;
+}
+.h-feat-card:hover .h-feat-arrow {
+	color: #c0392b;
+	transform: translateX(4px);
 }
 
 /* ── Races ─────────────────────────────────────────────────────────────── */
@@ -1908,9 +1998,15 @@ p.first-detail {
 	border-radius: 3px;
 	color: #fff;
 }
-.pa-tag--dark { background: #141414; }
-.pa-tag--red  { background: #c0392b; }
-.pa-tag--gray { background: #888; }
+.pa-tag--dark {
+	background: #141414;
+}
+.pa-tag--red {
+	background: #c0392b;
+}
+.pa-tag--gray {
+	background: #888;
+}
 
 /* ── Cross-race section ──────────────────────────────────────────────────── */
 .pa-crossrace {
@@ -2001,7 +2097,9 @@ p.first-detail {
 	background: #f7f4ef;
 	cursor: pointer;
 	text-align: center;
-	transition: border-color 0.15s, transform 0.1s;
+	transition:
+		border-color 0.15s,
+		transform 0.1s;
 	user-select: none;
 }
 .pa-fighter-tile:hover {
@@ -2020,9 +2118,9 @@ p.first-detail {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-family: 'Barlow Condensed', sans-serif;
+	font-family: "Barlow Condensed", sans-serif;
 	font-weight: 700;
-	font-size: 1.0rem;
+	font-size: 1rem;
 	letter-spacing: 0.03em;
 	color: #fff;
 	flex-shrink: 0;
@@ -2056,7 +2154,10 @@ p.first-detail {
 	font-weight: 600;
 	color: #555;
 	cursor: pointer;
-	transition: border-color 0.12s, color 0.12s, background 0.12s;
+	transition:
+		border-color 0.12s,
+		color 0.12s,
+		background 0.12s;
 }
 .pa-fighter-race-pill:hover {
 	border-color: #c0392b;
@@ -2074,7 +2175,7 @@ p.first-detail {
 	padding: 20px 24px 24px;
 }
 .pa-fighter-panel-name {
-	font-family: 'Barlow Condensed', sans-serif;
+	font-family: "Barlow Condensed", sans-serif;
 	font-weight: 900;
 	font-style: italic;
 	text-transform: uppercase;
@@ -2139,6 +2240,12 @@ p.first-detail {
 	.h-format-div {
 		margin-right: 1.25rem;
 	}
+	.h-featured-inner {
+		padding: 0 1.5rem;
+	}
+	.h-feat-grid {
+		grid-template-columns: 1fr;
+	}
 	.h-races-inner {
 		padding: 0 1.5rem;
 	}
@@ -2165,6 +2272,9 @@ p.first-detail {
 	}
 }
 @media (min-width: 781px) and (max-width: 1100px) {
+	.h-feat-grid {
+		grid-template-columns: 1fr 1fr;
+	}
 	.h-race-grid {
 		grid-template-columns: 1fr 1fr;
 	}

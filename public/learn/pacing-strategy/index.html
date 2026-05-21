@@ -78,7 +78,7 @@
 	<header class="page-header">
 		<p class="race-event">Pacing strategy &nbsp;·&nbsp; backyard ultra</p>
 		<h1 class="page-h1">How to Pace<br>a Backyard Ultra</h1>
-		<p class="page-lede">We looked at 26 elite runners across six races to find the ideal loop pace. The answer might surprise you.</p>
+		<p class="page-lede">We looked at 26 elite runners across six races to find the ideal loop pace.</p>
 	</header>
 
 	<div class="page-section">
@@ -785,14 +785,14 @@
 		}
 
 		function toLapMin(t) {
-			if (!t)
+			if (!t) 
 				return null;
 			var p = t
 				.split(":")
 				.map(Number);
-			if (p.length < 2 || isNaN(p[0]) || isNaN(p[1]))
+			if (p.length < 2 || isNaN(p[0]) || isNaN(p[1])) 
 				return null;
-			if (p.length === 3)
+			if (p.length === 3) 
 				return p[0] * 60 + p[1] + p[2] / 60;
 			return p[0] + p[1] / 60;
 		}
@@ -801,10 +801,10 @@
 			var key = api.id;
 			if (!raceCache[key]) {
 				var resp = await fetch(buildUrl(api));
-				if (!resp.ok)
+				if (!resp.ok) 
 					throw new Error("HTTP " + resp.status);
 				var json = await resp.json();
-				if (!json.data)
+				if (!json.data) 
 					throw new Error("no data");
 				raceCache[key] = BackyardCharts.parseRaceresultData(json.data, api);
 			}
@@ -1211,14 +1211,25 @@
 		/* ── Shared helper: group rows by athlete, return sorted top-N ─────────── */
 		function topNByLaps(rows, n) {
 			var byAthlete = {};
-			rows.forEach(function(r) {
-				if (!byAthlete[r.athlete]) byAthlete[r.athlete] = { total: 0, laps: [] };
+			rows.forEach(function (r) {
+				if (!byAthlete[r.athlete]) 
+					byAthlete[r.athlete] = {
+						total: 0,
+						laps: []
+					};
 				byAthlete[r.athlete].total = Math.max(byAthlete[r.athlete].total, r.total_laps);
 				var m = toLapMin(r.finish_time);
-				if (m != null) byAthlete[r.athlete].laps.push(m);
-			});
-			return Object.values(byAthlete)
-				.sort(function(a, b) { return b.total - a.total; })
+				if (m != null) 
+					byAthlete[r.athlete]
+						.laps
+						.push(m);
+				}
+			);
+			return Object
+				.values(byAthlete)
+				.sort(function (a, b) {
+					return b.total - a.total;
+				})
 				.slice(0, n);
 		}
 
@@ -1233,34 +1244,46 @@
 		};
 
 		(async function loadSydneyBar() {
-			var COURSE_MIN = 43, COURSE_RANGE = 13;
-			function cPct(m) { return Math.max(0, Math.min(100, (m - COURSE_MIN) / COURSE_RANGE * 100)); }
+			var COURSE_MIN = 43,
+				COURSE_RANGE = 13;
+			function cPct(m) {
+				return Math.max(0, Math.min(100, (m - COURSE_MIN) / COURSE_RANGE * 100));
+			}
 			try {
 				var allRows = await fetchAllRows(SYD_API);
 				var top5 = topNByLaps(allRows, 5);
 				var pooled = [];
-				top5.forEach(function(a) { pooled = pooled.concat(a.laps); });
+				top5.forEach(function (a) {
+					pooled = pooled.concat(a.laps);
+				});
 				var stats = computeStats(pooled);
-				if (!stats) throw new Error("stats failed");
-
-				var q1Pct  = cPct(stats.q1).toFixed(1);
-				var wPct   = (cPct(stats.q3) - cPct(stats.q1)).toFixed(1);
+				if (!stats) 
+					throw new Error("stats failed");
+				
+				var q1Pct = cPct(stats.q1).toFixed(1);
+				var wPct = (cPct(stats.q3) - cPct(stats.q1)).toFixed(1);
 				var medPct = cPct(stats.median).toFixed(1);
 
 				var rowEl = document.getElementById("pa-course-sydney");
-				if (!rowEl) return;
-				rowEl.querySelector(".pa-bar-track").innerHTML =
-					'<div class="pa-bar-fill" style="left:' + q1Pct + '%;width:' + wPct + '%"></div>' +
-					'<div class="pa-bar-median" style="left:' + medPct + '%"></div>';
-				rowEl.querySelector(".pa-bar-range").innerHTML =
-					fmtMin(stats.q1) + ' &ndash; ' + fmtMin(stats.q3) +
-					' <span class="pa-bar-range-med">med ' + fmtMin(stats.median) + '</span>';
-				rowEl.querySelector(".pa-bar-range").removeAttribute("style");
-			} catch(e) {
+				if (!rowEl) 
+					return;
+				rowEl
+					.querySelector(".pa-bar-track")
+					.innerHTML = '<div class="pa-bar-fill" style="left:' + q1Pct + '%;width:' + wPct + '%"></div>' + '<div class="pa-bar-median" style="left:' + medPct + '%"></div>';
+				rowEl
+					.querySelector(".pa-bar-range")
+					.innerHTML = fmtMin(stats.q1) + ' &ndash; ' + fmtMin(stats.q3) + ' <span class="pa-bar-range-med">med ' + fmtMin(stats.median) + '</span>';
+				rowEl
+					.querySelector(".pa-bar-range")
+					.removeAttribute("style");
+			} catch (e) {
 				var rowEl2 = document.getElementById("pa-course-sydney");
-				if (rowEl2) rowEl2.querySelector(".pa-bar-range").textContent = "Data unavailable";
-			}
-		})();
+				if (rowEl2) 
+					rowEl2
+						.querySelector(".pa-bar-range")
+						.textContent = "Data unavailable";
+				}
+			})();
 
 		/* ── Pace window: dynamic recompute across all six races ───────────────── */
 		(async function computeAndRenderPaceWindow() {
@@ -1268,61 +1291,95 @@
 
 			// All six race APIs — lap-detail format, r=all for full pulls
 			var LIVE_APIS = [
-				{ id: "Bigs_2023", eventId: "266852", host: "my2",
-				  apiKey: "c32693b41c83792c4af8a8bcf61c4aa0",
-				  listname: "Result Lists|Lap Details", page: "F6E602",
-				  extraParams: "&r=all&l=0" },
-				{ id: "Legends_2025", eventId: "337369", host: "my2",
-				  apiKey: "07708f8146716bea0992945f49ba2ead",
-				  listname: "Online|Ronden Details", page: "4A0932",
-				  extraParams: "&r=all&l=0" },
-				{ id: "Bigs_2025", eventId: "364272", host: "my2",
-				  apiKey: "e35ba6322adb153e157d76e69096f692",
-				  listname: "Result Lists|Lap Details", page: "results",
-				  extraParams: "&contest=0&r=all&l=0" },
-				{ id: "Legends_2026", eventId: "387219", host: "my1",
-				  apiKey: "a15c39a3af787ed11ce45bff82407380",
-				  listname: "Result Lists|Lap Details", page: "details0",
-				  extraParams: "&r=all&l=0" },
-				{ id: "G1M_2026", eventId: "390956", host: "my4",
-				  apiKey: "f545f563e8d28831fb09508cd63b1365",
-				  listname: "Lists|Detail List", page: "details1" },
+				{
+					id: "Bigs_2023",
+					eventId: "266852",
+					host: "my2",
+					apiKey: "c32693b41c83792c4af8a8bcf61c4aa0",
+					listname: "Result Lists|Lap Details",
+					page: "F6E602",
+					extraParams: "&r=all&l=0"
+				}, {
+					id: "Legends_2025",
+					eventId: "337369",
+					host: "my2",
+					apiKey: "07708f8146716bea0992945f49ba2ead",
+					listname: "Online|Ronden Details",
+					page: "4A0932",
+					extraParams: "&r=all&l=0"
+				}, {
+					id: "Bigs_2025",
+					eventId: "364272",
+					host: "my2",
+					apiKey: "e35ba6322adb153e157d76e69096f692",
+					listname: "Result Lists|Lap Details",
+					page: "results",
+					extraParams: "&contest=0&r=all&l=0"
+				}, {
+					id: "Legends_2026",
+					eventId: "387219",
+					host: "my1",
+					apiKey: "a15c39a3af787ed11ce45bff82407380",
+					listname: "Result Lists|Lap Details",
+					page: "details0",
+					extraParams: "&r=all&l=0"
+				}, {
+					id: "G1M_2026",
+					eventId: "390956",
+					host: "my4",
+					apiKey: "f545f563e8d28831fb09508cd63b1365",
+					listname: "Lists|Detail List",
+					page: "details1"
+				},
 				SYD_API
 			];
 
-			await Promise.all(LIVE_APIS.map(async function(api) {
+			await Promise.all(LIVE_APIS.map(async function (api) {
 				try {
 					var rows = await fetchAllRows(api);
-					topNByLaps(rows, 5).forEach(function(a) {
+					topNByLaps(rows, 5).forEach(function (a) {
 						var s = computeStats(a.laps);
-						if (s) allMedians.push(s.median);
-					});
-				} catch(e) {}
+						if (s) 
+							allMedians.push(s.median);
+						}
+					);
+				} catch (e) {}
 			}));
 
-			if (allMedians.length < 4) return;
-
+			if (allMedians.length < 4) 
+				return;
+			
 			// IQR of the individual medians = the pace window
-			var sorted = allMedians.slice().sort(function(a, b) { return a - b; });
+			var sorted = allMedians
+				.slice()
+				.sort(function (a, b) {
+					return a - b;
+				});
 			function pct(arr, p) {
 				var i = p / 100 * (arr.length - 1);
-				var lo = Math.floor(i), hi = Math.ceil(i);
+				var lo = Math.floor(i),
+					hi = Math.ceil(i);
 				return arr[lo] + (arr[hi] - arr[lo]) * (i - lo);
 			}
-			var winQ1  = pct(sorted, 25);
+			var winQ1 = pct(sorted, 25);
 			var winMed = pct(sorted, 50);
-			var winQ3  = pct(sorted, 75);
+			var winQ3 = pct(sorted, 75);
 
 			var winEl = document.getElementById("pa-stat-window");
 			var medEl = document.getElementById("pa-stat-median");
-			if (winEl) winEl.innerHTML = fmtMin(winQ1) + "&nbsp;&ndash;&nbsp;" + fmtMin(winQ3);
-			if (medEl) medEl.textContent = fmtMin(winMed);
-
+			if (winEl) 
+				winEl.innerHTML = fmtMin(winQ1) + "&nbsp;&ndash;&nbsp;" + fmtMin(winQ3);
+			if (medEl) 
+				medEl.textContent = fmtMin(winMed);
+			
 			var proseWin = document.getElementById("pa-prose-window");
 			var proseMed = document.getElementById("pa-prose-median");
-			if (proseWin) proseWin.textContent = fmtMin(winQ1) + " and " + fmtMin(winQ3);
-			if (proseMed) proseMed.textContent = fmtMin(winMed);
-		})();
+			if (proseWin) 
+				proseWin.textContent = fmtMin(winQ1) + " and " + fmtMin(winQ3);
+			if (proseMed) 
+				proseMed.textContent = fmtMin(winMed);
+			}
+		)();
 
 	})();
 </script>
