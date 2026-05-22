@@ -1812,6 +1812,412 @@ p.first-detail {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   RACE FINDER PAGE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Shared alignment container ──────────────────────────────────────────── */
+.finder-inner {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0 3rem;
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────────────── */
+.finder-hero h1 {
+	font-size: clamp(2.5rem, 6vw, 4rem);
+}
+
+/* ── Filter bar ──────────────────────────────────────────────────────────── */
+.finder-filters {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	background: #f7f4ef;
+	border-bottom: 1px solid #e8e4de;
+	padding: 0.75rem 0;
+}
+.finder-filters-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+.finder-filter-group {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+}
+.finder-label {
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: #888;
+	white-space: nowrap;
+}
+.finder-select {
+	font-size: 0.88rem;
+	padding: 0.35rem 0.65rem;
+	border: 1px solid #d5d0c8;
+	border-radius: 6px;
+	background: #fff;
+	color: #1a1a1a;
+	cursor: pointer;
+	font-family: inherit;
+}
+.finder-select:focus {
+	outline: 2px solid #c0392b;
+	outline-offset: 1px;
+}
+.finder-count {
+	font-size: 0.75rem;
+	color: #888;
+	font-weight: 500;
+	white-space: nowrap;
+}
+.finder-list-cta {
+	display: inline-block;
+	padding: 0.5rem 1.1rem;
+	background: #c0392b;
+	color: #fff;
+	text-decoration: none;
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	border-radius: 6px;
+	white-space: nowrap;
+	transition: background 0.15s;
+	flex-shrink: 0;
+}
+.finder-list-cta:hover { background: #a93226; }
+
+/* ── Race list container ─────────────────────────────────────────────────── */
+.finder-wrap {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0 3rem 5rem;
+}
+
+/* ── Race row ────────────────────────────────────────────────────────────── */
+.finder-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 2rem;
+	padding: 1.75rem 0;
+	border-bottom: 1px solid #e8e4de;
+}
+.finder-row:first-child {
+	border-top: 1px solid #e8e4de;
+	margin-top: 2rem;
+}
+.finder-row-main {
+	flex: 1;
+	min-width: 0;
+}
+.finder-eyebrow {
+	margin-bottom: 0.4rem;
+}
+.finder-race-name {
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 800;
+	font-style: italic;
+	text-transform: uppercase;
+	font-size: 1.6rem;
+	color: #141414;
+	line-height: 1;
+	margin-bottom: 0.5rem;
+}
+.finder-badges {
+	display: flex;
+	gap: 4px;
+	flex-wrap: wrap;
+	margin-top: 0.5rem;
+}
+.finder-badge {
+	display: inline-block;
+	font-size: 0.6rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	padding: 0.18rem 0.45rem;
+	border-radius: 3px;
+	color: #fff;
+	white-space: nowrap;
+}
+.finder-badge--silver { background: #141414; }
+.finder-badge--bronze { background: #7b5e3a; }
+
+/* ── Right side ──────────────────────────────────────────────────────────── */
+.finder-row-aside {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.55rem;
+	flex-shrink: 0;
+}
+.finder-price {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #1a1a1a;
+	white-space: nowrap;
+}
+.finder-price--empty {
+	color: #aaa;
+	font-weight: 400;
+}
+.finder-cta {
+	display: inline-block;
+	padding: 0.4rem 0.9rem;
+	background: none;
+	border: 1.5px solid #1a1a1a;
+	color: #1a1a1a;
+	text-decoration: none;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	border-radius: 6px;
+	transition: background 0.15s, color 0.15s;
+	white-space: nowrap;
+}
+.finder-cta:hover {
+	background: #1a1a1a;
+	color: #fff;
+}
+.finder-cta--disabled {
+	background: none;
+	border: none;
+	color: #aaa;
+	font-size: 0.75rem;
+	font-weight: 500;
+	padding: 0.45rem 0;
+	cursor: default;
+}
+.finder-report {
+	background: none;
+	border: none;
+	color: #ccc;
+	font-size: 0.7rem;
+	cursor: pointer;
+	font-family: inherit;
+	padding: 0;
+	text-decoration: underline;
+	text-decoration-style: dotted;
+	text-underline-offset: 2px;
+	transition: color 0.15s;
+}
+.finder-report:hover { color: #888; }
+
+/* ── Empty / reset ───────────────────────────────────────────────────────── */
+.finder-empty {
+	padding: 3rem 0;
+	text-align: center;
+	color: #888;
+	font-size: 0.9rem;
+}
+.finder-reset {
+	margin-left: 0.5rem;
+	background: none;
+	border: none;
+	color: #c0392b;
+	font-size: 0.88rem;
+	font-weight: 600;
+	cursor: pointer;
+	text-decoration: underline;
+	font-family: inherit;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+	.finder-wrap {
+		padding: 0 1.5rem 4rem;
+	}
+	.finder-row {
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.finder-row-aside {
+		align-items: flex-start;
+	}
+	.finder-inner {
+		padding: 0 1.5rem;
+	}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIST YOUR EVENT PAGE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.lye-wrap {
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 3rem 2rem 6rem;
+}
+.lye-honeypot {
+	display: none;
+}
+.lye-section {
+	padding-bottom: 2.5rem;
+	margin-bottom: 2.5rem;
+	border-bottom: 1px solid #e8e4de;
+}
+.lye-section--last {
+	border-bottom: none;
+}
+.lye-section-title {
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 800;
+	font-style: italic;
+	text-transform: uppercase;
+	font-size: 1.4rem;
+	color: #141414;
+	margin-bottom: 1.5rem;
+}
+.lye-field {
+	margin-bottom: 1.25rem;
+}
+.lye-label {
+	display: block;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #444;
+	margin-bottom: 0.4rem;
+}
+.lye-required {
+	color: #c0392b;
+}
+.lye-hint {
+	font-weight: 400;
+	color: #aaa;
+}
+.lye-input {
+	width: 100%;
+	padding: 0.65rem 0.85rem;
+	border: 1px solid #d5d0c8;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-family: inherit;
+	background: #fff;
+	color: #1a1a1a;
+	outline: none;
+	transition: border-color 0.15s;
+	box-sizing: border-box;
+}
+.lye-input:focus {
+	border-color: #c0392b;
+}
+.lye-input::placeholder {
+	color: #bbb;
+}
+.lye-select {
+	cursor: pointer;
+	appearance: auto;
+}
+.lye-input--short { width: 140px; }
+.lye-input--date  { width: 200px; }
+.lye-textarea {
+	resize: vertical;
+	min-height: 100px;
+	line-height: 1.6;
+}
+.lye-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
+}
+.lye-cost-row {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+.lye-currency {
+	width: auto;
+	flex-shrink: 0;
+}
+.lye-input--cost {
+	width: 140px;
+}
+.lye-checkbox-label {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.88rem;
+	color: #444;
+	cursor: pointer;
+	margin-bottom: 0.6rem;
+}
+.lye-checkbox-label input[type="checkbox"] {
+	accent-color: #c0392b;
+	width: 15px;
+	height: 15px;
+}
+.lye-submit-row {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+	padding-top: 1rem;
+}
+.lye-submit {
+	padding: 0.8rem 2rem;
+	background: #c0392b;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	font-size: 0.95rem;
+	font-weight: 700;
+	font-family: inherit;
+	cursor: pointer;
+	letter-spacing: 0.02em;
+	transition: background 0.15s;
+}
+.lye-submit:hover { background: #a93226; }
+.lye-submit-note {
+	font-size: 0.8rem;
+	color: #888;
+	line-height: 1.6;
+	max-width: 340px;
+}
+
+/* ── Success state ───────────────────────────────────────────────────────── */
+.lye-success {
+	text-align: center;
+	padding: 5rem 2rem;
+}
+.lye-success-icon {
+	font-size: 2.5rem;
+	color: #2d6a4f;
+	margin-bottom: 1rem;
+}
+.lye-success-title {
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 900;
+	font-style: italic;
+	text-transform: uppercase;
+	font-size: 3rem;
+	color: #141414;
+	margin-bottom: 1rem;
+}
+.lye-success-body {
+	font-size: 0.95rem;
+	color: #555;
+	line-height: 1.75;
+	max-width: 420px;
+	margin: 0 auto 2rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+	.lye-row {
+		grid-template-columns: 1fr;
+	}
+	.lye-wrap {
+		padding: 2rem 1.5rem 5rem;
+	}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    PACE ANALYSIS PAGE
    ═══════════════════════════════════════════════════════════════════════════ */
 

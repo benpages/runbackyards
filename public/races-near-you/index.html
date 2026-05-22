@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Find a Backyard Ultra Near You — 2026 Race Finder | backyards.run</title>
+    <meta name="description" content="Find a backyard ultra near you. Browse upcoming 2026 races by country and region, with registration links and prices."/>
+    <meta property="og:title" content="Find a Backyard Ultra Near You — 2026 Race Finder | backyards.run"/>
+    <meta property="og:description" content="Find a backyard ultra near you. Browse upcoming 2026 races by country and region, with registration links and prices."/>
+    <meta property="og:url" content="https://backyards.run/races-near-you/"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content="https://backyards.run/assets/img/backyardsrun-og-image.jpeg"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <script data-goatcounter="https://backyards.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <nav class="site-nav">
+  <a href="/" class="brand">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M16.11 7.78 A6.5 6.5 0 1 1 14.18 5.02" stroke="white" stroke-width="4" stroke-linecap="butt"/>
+    </svg>
+    <span class="brand-wordmark">
+      <span class="brand-b">BACKYARDS</span>
+      <span class="brand-d" style="padding-left:0.25em;">.run</span>
+    </span>
+  </a>
+  
+    <span class="sep">/</span>
+    <span class="current">Race Finder</span>
+  
+  <div class="nav-right">
+    <details class="nav-dropdown">
+      <summary>Learn</summary>
+      <div class="nav-dropdown-menu">
+        <a href="/learn/what-is-backyard-ultra/">What is a Backyard Ultra?</a>
+        <a href="/learn/crewing-tips/">Crewing Tips</a>
+        <a href="/learn/pacing-strategy/">Pacing Strategy</a>
+      </div>
+    </details>
+    <details class="nav-dropdown">
+      <summary>Race Results</summary>
+      <div class="nav-dropdown-menu">
+        <a href="/races/sydney-2026/">Sydney 2026</a>
+        <a href="/races/g1m-2026/">Go One More 2026</a>
+        <a href="/races/bigs-2025/">Big's 2025</a>
+      </div>
+    </details>
+    <a href="/backyard-ultra-finder/">Race Finder</a>
+    <a href="/records/">Records</a>
+    
+
+  </div>
+</nav>
+
+<script>
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    document
+      .querySelectorAll(".site-nav .nav-dropdown[open]")
+      .forEach((dropdown) => {
+        const summary = dropdown.querySelector("summary");
+        dropdown.open = false;
+        if (summary) {
+          summary.focus();
+        }
+      });
+  });
+</script>
+    
+
+<form name="sold-out-report" netlify netlify-honeypot="bot-field" hidden aria-hidden="true">
+  <input name="race" type="text">
+  <input name="bot-field" type="text">
+</form>
+
+<div class="race-hero finder-hero">
+  <div class="finder-inner">
+    <p class="race-event">Race Finder</p>
+    <h1>Find a Backyard<br>Ultra Near You</h1>
+    <p class="race-tagline">Upcoming races worldwide.</p>
+  </div>
+</div>
+
+<div class="finder-filters" id="finder-filters">
+  <div class="finder-inner finder-filters-row">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <div class="finder-filter-group">
+        <label class="finder-label" for="filter-country">Country</label>
+        <select id="filter-country" class="finder-select">
+          <option value="">All countries</option>
+          <option value="Australia">Australia</option>
+          <option value="Germany">Germany</option>
+          <option value="UK">UK</option>
+          <option value="USA">USA</option>
+        </select>
+      </div>
+      <div class="finder-filter-group" id="region-group" style="display:none">
+        <label class="finder-label" for="filter-region">Region</label>
+        <select id="filter-region" class="finder-select">
+          <option value="">All regions</option>
+        </select>
+      </div>
+      <span class="finder-count" id="finder-count"></span>
+    </div>
+    <a href="/list-your-event/" class="finder-list-cta">List your event</a>
+  </div>
+</div>
+
+<div class="finder-wrap">
+  <div id="race-list">
+    
+      
+      <div class="finder-row"
+         data-country="USA"
+         data-region="Michigan"
+         data-date="2026-07-18">
+        <div class="finder-row-main">
+          <p class="eyebrow finder-eyebrow">
+            18 Jul 2026&nbsp;·&nbsp;Holly
+            , Michigan
+            &nbsp;·&nbsp;USA
+          </p>
+          <h2 class="finder-race-name">Ode to Laz Michigan Backyard Ultra</h2>
+          
+            <div class="finder-badges">
+              
+                
+                  <span class="finder-badge finder-badge--silver">Silver Ticket</span>
+                
+              
+            </div>
+          
+        </div>
+        <div class="finder-row-aside">
+          
+            <span class="finder-price">$129.99</span>
+          
+          
+            <a class="finder-cta"
+             href="https://ultrasignup.com/register.aspx?dtid=62593&utm_source=backyards.run&utm_medium=race-finder&utm_campaign=ode-to-laz-michigan-2026"
+             target="_blank"
+             rel="noopener noreferrer"
+             data-goatcounter-click="outbound-ode-to-laz-michigan-2026">Register →</a>
+          
+          
+            <button class="finder-report" onclick="reportSoldOut(this, 'Ode to Laz Michigan Backyard Ultra')">Sold out? Report it</button>
+          
+        </div>
+      </div>
+    
+      
+      <div class="finder-row"
+         data-country="USA"
+         data-region="Missouri"
+         data-date="2026-08-07">
+        <div class="finder-row-main">
+          <p class="eyebrow finder-eyebrow">
+            7 Aug 2026&nbsp;·&nbsp;Kansas City
+            , Missouri
+            &nbsp;·&nbsp;USA
+          </p>
+          <h2 class="finder-race-name">Kansas City Backyard Ultra</h2>
+          
+            <div class="finder-badges">
+              
+                
+                  <span class="finder-badge finder-badge--bronze">Bronze Ticket</span>
+                
+              
+            </div>
+          
+        </div>
+        <div class="finder-row-aside">
+          
+            <span class="finder-price">$185</span>
+          
+          
+            <a class="finder-cta"
+             href="https://ultrasignup.com/register.aspx?did=130752&utm_source=backyards.run&utm_medium=race-finder&utm_campaign=kansas-city-backyard-ultra-2026"
+             target="_blank"
+             rel="noopener noreferrer"
+             data-goatcounter-click="outbound-kansas-city-backyard-ultra-2026">Register →</a>
+          
+          
+            <button class="finder-report" onclick="reportSoldOut(this, 'Kansas City Backyard Ultra')">Sold out? Report it</button>
+          
+        </div>
+      </div>
+    
+      
+      <div class="finder-row"
+         data-country="Germany"
+         data-region=""
+         data-date="2026-08-14">
+        <div class="finder-row-main">
+          <p class="eyebrow finder-eyebrow">
+            14 Aug 2026&nbsp;·&nbsp;Bornheim
+            &nbsp;·&nbsp;Germany
+          </p>
+          <h2 class="finder-race-name">Last Soul Ultra</h2>
+          
+        </div>
+        <div class="finder-row-aside">
+          
+            <span class="finder-price">€100</span>
+          
+          
+            <span class="finder-cta finder-cta--disabled">Registration closed</span>
+          
+          
+        </div>
+      </div>
+    
+      
+      <div class="finder-row"
+         data-country="UK"
+         data-region="England"
+         data-date="2026-08-29">
+        <div class="finder-row-main">
+          <p class="eyebrow finder-eyebrow">
+            29 Aug 2026&nbsp;·&nbsp;London
+            , England
+            &nbsp;·&nbsp;UK
+          </p>
+          <h2 class="finder-race-name">London Backyard Ultra</h2>
+          
+        </div>
+        <div class="finder-row-aside">
+          
+            <span class="finder-price">£115</span>
+          
+          
+            <a class="finder-cta"
+             href="https://race-nation.co.uk/register/axle-events-ltd/london-backyard-ultra-2026?utm_source=backyards.run&utm_medium=race-finder&utm_campaign=london-backyard-ultra-2026"
+             target="_blank"
+             rel="noopener noreferrer"
+             data-goatcounter-click="outbound-london-backyard-ultra-2026">Register →</a>
+          
+          
+        </div>
+      </div>
+    
+      
+      <div class="finder-row"
+         data-country="UK"
+         data-region="England"
+         data-date="2026-09-12">
+        <div class="finder-row-main">
+          <p class="eyebrow finder-eyebrow">
+            12 Sep 2026&nbsp;·&nbsp;Brandon
+            , England
+            &nbsp;·&nbsp;UK
+          </p>
+          <h2 class="finder-race-name">Thetford Back Yard Ultra Festival</h2>
+          
+        </div>
+        <div class="finder-row-aside">
+          
+            <span class="finder-price">£120</span>
+          
+          
+            <a class="finder-cta"
+             href="https://www.challenge-running.com/e/thetford-back-yard-ultra-festival-11505?utm_source=backyards.run&utm_medium=race-finder&utm_campaign=thetford-back-yard-ultra-2026"
+             target="_blank"
+             rel="noopener noreferrer"
+             data-goatcounter-click="outbound-thetford-back-yard-ultra-2026">Register →</a>
+          
+          
+            <button class="finder-report" onclick="reportSoldOut(this, 'Thetford Back Yard Ultra Festival')">Sold out? Report it</button>
+          
+        </div>
+      </div>
+    
+      
+      <div class="finder-row"
+         data-country="Australia"
+         data-region="NSW"
+         data-date="2026-09-19">
+        <div class="finder-row-main">
+          <p class="eyebrow finder-eyebrow">
+            19 Sep 2026&nbsp;·&nbsp;Sydney
+            , NSW
+            &nbsp;·&nbsp;Australia
+          </p>
+          <h2 class="finder-race-name">Sydney&#39;s Backyard Ultra</h2>
+          
+            <div class="finder-badges">
+              
+                
+                  <span class="finder-badge finder-badge--silver">Silver Ticket</span>
+                
+              
+            </div>
+          
+        </div>
+        <div class="finder-row-aside">
+          
+            <span class="finder-price">AUD $275</span>
+          
+          
+            <a class="finder-cta"
+             href="https://sydneysbackyardultra.au?utm_source=backyards.run&utm_medium=race-finder&utm_campaign=sydneys-backyard-ultra-2026"
+             target="_blank"
+             rel="noopener noreferrer"
+             data-goatcounter-click="outbound-sydneys-backyard-ultra-2026">Register →</a>
+          
+          
+            <button class="finder-report" onclick="reportSoldOut(this, 'Sydney&#39;s Backyard Ultra')">Sold out? Report it</button>
+          
+        </div>
+      </div>
+    
+      
+      <div class="finder-row"
+         data-country="UK"
+         data-region="England"
+         data-date="2026-09-25">
+        <div class="finder-row-main">
+          <p class="eyebrow finder-eyebrow">
+            25 Sep 2026&nbsp;·&nbsp;Chilcote, Swadlincote
+            , England
+            &nbsp;·&nbsp;UK
+          </p>
+          <h2 class="finder-race-name">GPC Backyard Ultra</h2>
+          
+        </div>
+        <div class="finder-row-aside">
+          
+            <span class="finder-price">£95</span>
+          
+          
+            <a class="finder-cta"
+             href="https://www.greendaleperformance.co.uk/store/p/gpc-backyard-ultra?utm_source=backyards.run&utm_medium=race-finder&utm_campaign=gpc-backyard-ultra-2026"
+             target="_blank"
+             rel="noopener noreferrer"
+             data-goatcounter-click="outbound-gpc-backyard-ultra-2026">Register →</a>
+          
+          
+            <button class="finder-report" onclick="reportSoldOut(this, 'GPC Backyard Ultra')">Sold out? Report it</button>
+          
+        </div>
+      </div>
+    
+      
+      <div class="finder-row"
+         data-country="Australia"
+         data-region="QLD"
+         data-date="2026-10-03">
+        <div class="finder-row-main">
+          <p class="eyebrow finder-eyebrow">
+            3 Oct 2026&nbsp;·&nbsp;Toowoomba
+            , QLD
+            &nbsp;·&nbsp;Australia
+          </p>
+          <h2 class="finder-race-name">Garden City Backyard Ultra</h2>
+          
+        </div>
+        <div class="finder-row-aside">
+          
+            <span class="finder-price">AUD $120</span>
+          
+          
+            <a class="finder-cta"
+             href="https://www.gcbu.com.au/?utm_source=backyards.run&utm_medium=race-finder&utm_campaign=garden-city-backyard-ultra-2026"
+             target="_blank"
+             rel="noopener noreferrer"
+             data-goatcounter-click="outbound-garden-city-backyard-ultra-2026">Register →</a>
+          
+          
+            <button class="finder-report" onclick="reportSoldOut(this, 'Garden City Backyard Ultra')">Sold out? Report it</button>
+          
+        </div>
+      </div>
+    
+  </div>
+  <p class="finder-empty" id="finder-empty" style="display:none">
+    No races match your filters. <button class="finder-reset" onclick="resetFilters()">Clear filters</button>
+  </p>
+</div>
+
+<script>
+  const regionMap = {
+    'Australia': [
+      'NSW', 'QLD'
+    ],
+    'UK': [
+      'England', 'Scotland'
+    ],
+    'USA': ['Michigan', 'Missouri']
+  };
+
+  const countrySelect = document.getElementById('filter-country');
+  const regionSelect = document.getElementById('filter-region');
+  const regionGroup = document.getElementById('region-group');
+  const countEl = document.getElementById('finder-count');
+  const emptyEl = document.getElementById('finder-empty');
+  const allRows = Array.from(document.querySelectorAll('.finder-row'));
+
+  const todayStr = new Date()
+    .toISOString()
+    .split('T')[0];
+  allRows.forEach(row => {
+    if (row.dataset.date < todayStr) {
+      row.style.display = 'none';
+      row.dataset.past = 'true';
+    }
+  });
+
+  const rows = allRows.filter(r => !r.dataset.past);
+
+  function updateRegionDropdown(country) {
+    regionSelect.innerHTML = '<option value="">All regions</option>';
+    const regions = regionMap[country];
+    if (regions) {
+      regions.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        regionSelect.appendChild(opt);
+      });
+      regionGroup.style.display = '';
+    } else {
+      regionGroup.style.display = 'none';
+    }
+  }
+
+  function applyFilters() {
+    const country = countrySelect.value;
+    const region = regionSelect.value;
+    let visible = 0;
+
+    rows.forEach(row => {
+      const matchCountry = !country || row.dataset.country === country;
+      const matchRegion = !region || row.dataset.region === region;
+      const show = matchCountry && matchRegion;
+      row.style.display = show
+        ? ''
+        : 'none';
+      if (show) 
+        visible++;
+      }
+    );
+
+    countEl.textContent = visible === rows.length
+      ? `${rows.length} races`
+      : `${visible} of ${rows.length} races`;
+    emptyEl.style.display = visible === 0
+      ? ''
+      : 'none';
+  }
+
+  function resetFilters() {
+    countrySelect.value = '';
+    regionSelect.value = '';
+    regionGroup.style.display = 'none';
+    applyFilters();
+  }
+
+  function reportSoldOut(btn, raceName) {
+    fetch('/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({'form-name': 'sold-out-report', 'race': raceName})
+    })
+      .then(() => {
+        btn.textContent = 'Thanks for the heads up!';
+        btn.disabled = true;
+      })
+      .catch(() => {
+        btn.textContent = 'Error — try again';
+      });
+  }
+
+  countrySelect.addEventListener('change', () => {
+    updateRegionDropdown(countrySelect.value);
+    regionSelect.value = '';
+    applyFilters();
+  });
+  regionSelect.addEventListener('change', applyFilters);
+
+  applyFilters();
+</script>
+    <footer>
+	Data sourced live from <a href="https://raceresult.com" target="_blank" rel="noopener">raceresult.com</a>
+	&nbsp;·&nbsp; <a href="/">backyards.run</a>
+	&nbsp;·&nbsp; <a href="/feedback/">Feedback / Feature request</a>
+</footer>
+
+  </body>
+</html>

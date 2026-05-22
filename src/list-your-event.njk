@@ -1,0 +1,208 @@
+---
+layout: base.njk
+title: List Your Backyard Ultra Event | backyards.run
+description: Add your backyard ultra to our race finder. Free listing for race directors.
+navLabel: List Your Event
+---
+
+<div class="race-hero finder-hero">
+  <p class="race-event">Race Directors</p>
+  <h1>List Your Event</h1>
+  <p class="race-tagline">Free listing. We'll review and publish within a few days.</p>
+</div>
+
+<div class="lye-wrap">
+
+  <div id="lye-form-state">
+    <form
+      name="list-event"
+      method="POST"
+      netlify
+      netlify-honeypot="bot-field"
+      id="lye-form"
+    >
+      <input type="hidden" name="form-name" value="list-event">
+      <p class="lye-honeypot">
+        <label>Don't fill this out: <input name="bot-field"></label>
+      </p>
+
+      <div class="lye-section">
+        <h2 class="lye-section-title">Race details</h2>
+
+        <div class="lye-field">
+          <label class="lye-label" for="race-name">Race name <span class="lye-required">*</span></label>
+          <input class="lye-input" type="text" id="race-name" name="race-name" required placeholder="e.g. Blue Ridge Backyard Ultra">
+        </div>
+
+        <div class="lye-row">
+          <div class="lye-field">
+            <label class="lye-label" for="race-date">Date <span class="lye-required">*</span></label>
+            <input class="lye-input" type="date" id="race-date" name="race-date" required>
+          </div>
+          <div class="lye-field">
+            <label class="lye-label" for="start-time">Start time <span class="lye-required">*</span></label>
+            <input class="lye-input" type="time" id="start-time" name="start-time" required>
+          </div>
+        </div>
+
+        <div class="lye-row">
+          <div class="lye-field">
+            <label class="lye-label" for="city">City / Town <span class="lye-required">*</span></label>
+            <input class="lye-input" type="text" id="city" name="city" required placeholder="e.g. Portland">
+          </div>
+          <div class="lye-field">
+            <label class="lye-label" for="region">State / Region</label>
+            <input class="lye-input" type="text" id="region" name="region" placeholder="e.g. Maine">
+          </div>
+        </div>
+
+        <div class="lye-field">
+          <label class="lye-label" for="country">Country <span class="lye-required">*</span></label>
+          <select class="lye-input lye-select" id="country" name="country" required>
+            <option value="" disabled selected>Select a country</option>
+            <option value="Australia">Australia</option>
+            <option value="Austria">Austria</option>
+            <option value="Belgium">Belgium</option>
+            <option value="Canada">Canada</option>
+            <option value="Denmark">Denmark</option>
+            <option value="Faroe Islands">Faroe Islands</option>
+            <option value="France">France</option>
+            <option value="Germany">Germany</option>
+            <option value="Ireland">Ireland</option>
+            <option value="Netherlands">Netherlands</option>
+            <option value="New Zealand">New Zealand</option>
+            <option value="Norway">Norway</option>
+            <option value="South Africa">South Africa</option>
+            <option value="Spain">Spain</option>
+            <option value="Sweden">Sweden</option>
+            <option value="Switzerland">Switzerland</option>
+            <option value="UK">UK</option>
+            <option value="USA">USA</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="lye-field">
+          <label class="lye-label" for="spots">Spots available</label>
+          <input class="lye-input lye-input--short" type="number" id="spots" name="spots" min="1" placeholder="e.g. 100">
+        </div>
+
+        <div class="lye-field">
+          <label class="lye-label">Entry cost</label>
+          <div class="lye-cost-row">
+            <select class="lye-input lye-select lye-currency" id="currency" name="currency">
+              <option value="USD">USD $</option>
+              <option value="AUD">AUD $</option>
+              <option value="GBP">GBP £</option>
+              <option value="EUR">EUR €</option>
+            </select>
+            <input class="lye-input lye-input--cost" type="number" id="cost" name="cost" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+
+      <div class="lye-section">
+        <h2 class="lye-section-title">Registration</h2>
+
+        <div class="lye-field">
+          <label class="lye-label">Registration opens</label>
+          <label class="lye-checkbox-label">
+            <input type="checkbox" id="reg-open-now" name="registration-currently-open" value="yes" onchange="toggleRegOpens(this)">
+            <span>Registration is currently open</span>
+          </label>
+          <input class="lye-input lye-input--date" type="date" id="reg-opens" name="registration-opens" placeholder="Opens on">
+        </div>
+
+        <div class="lye-field">
+          <label class="lye-label" for="reg-closes">Registration closes</label>
+          <input class="lye-input lye-input--date" type="date" id="reg-closes" name="registration-closes">
+        </div>
+
+        <div class="lye-field">
+          <label class="lye-label" for="reg-url">Registration URL</label>
+          <input class="lye-input" type="url" id="reg-url" name="registration-url" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="lye-section">
+        <h2 class="lye-section-title">About your event</h2>
+
+        <div class="lye-field">
+          <label class="lye-label" for="about">Tell us more <span class="lye-hint">(optional)</span></label>
+          <textarea class="lye-input lye-textarea" id="about" name="about" rows="4" placeholder="Course description, Big's affiliation, what makes this race special..."></textarea>
+        </div>
+      </div>
+
+      <div class="lye-section lye-section--last">
+        <h2 class="lye-section-title">Contact</h2>
+
+        <div class="lye-row">
+          <div class="lye-field">
+            <label class="lye-label" for="contact-name">Your name <span class="lye-required">*</span></label>
+            <input class="lye-input" type="text" id="contact-name" name="contact-name" required placeholder="Race director name">
+          </div>
+          <div class="lye-field">
+            <label class="lye-label" for="contact-email">Email address <span class="lye-required">*</span></label>
+            <input class="lye-input" type="email" id="contact-email" name="contact-email" required placeholder="you@example.com">
+          </div>
+        </div>
+      </div>
+
+      <div class="lye-submit-row">
+        <button class="lye-submit" type="submit">Submit event</button>
+        <p class="lye-submit-note">We review every submission before publishing. You'll hear from us within a few days.</p>
+      </div>
+
+    </form>
+  </div>
+
+  <div id="lye-success" style="display:none" class="lye-success">
+    <p class="lye-success-icon">✓</p>
+    <h2 class="lye-success-title">Got it.</h2>
+    <p class="lye-success-body">We'll review your event and be in touch within a few days. If your race is a fit, we'll add it to the finder.</p>
+    <a href="/backyard-ultra-finder/" class="cta-primary">Back to race finder</a>
+  </div>
+
+</div>
+
+<script>
+  function toggleRegOpens(checkbox) {
+    const dateInput = document.getElementById('reg-opens');
+    if (checkbox.checked) {
+      dateInput.style.display = 'none';
+      dateInput.value = '';
+    } else {
+      dateInput.style.display = '';
+    }
+  }
+
+  document
+    .getElementById('lye-form')
+    .addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+
+      fetch('/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(data).toString()
+      })
+        .then(() => {
+          document
+            .getElementById('lye-form-state')
+            .style
+            .display = 'none';
+          document
+            .getElementById('lye-success')
+            .style
+            .display = '';
+          window.scrollTo({top: 0, behavior: 'smooth'});
+        })
+        .catch(() => {
+          alert('Something went wrong — please try again or email us directly.');
+        });
+    });
+</script>

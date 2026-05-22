@@ -1,0 +1,192 @@
+---
+layout: base.njk
+title: Find a Backyard Ultra Near You — 2026 Race Finder | backyards.run
+description: Find a backyard ultra near you. Browse upcoming 2026 races by country and region, with registration links and prices.
+navLabel: Race Finder
+---
+
+{# Hidden Netlify form for sold-out reports — detected at build time #}
+<form name="sold-out-report" netlify netlify-honeypot="bot-field" hidden aria-hidden="true">
+  <input name="race" type="text">
+  <input name="bot-field" type="text">
+</form>
+
+<div class="race-hero finder-hero">
+  <div class="finder-inner">
+    <p class="race-event">Race Finder</p>
+    <h1>Find a Backyard<br>Ultra Near You</h1>
+    <p class="race-tagline">4.167-mile loops. Last one standing wins. Upcoming races, worldwide.</p>
+  </div>
+</div>
+
+<div class="finder-filters" id="finder-filters">
+  <div class="finder-inner finder-filters-row">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <div class="finder-filter-group">
+        <label class="finder-label" for="filter-country">Country</label>
+        <select id="filter-country" class="finder-select">
+          <option value="">All countries</option>
+          <option value="Australia">Australia</option>
+          <option value="Germany">Germany</option>
+          <option value="UK">UK</option>
+          <option value="USA">USA</option>
+        </select>
+      </div>
+      <div class="finder-filter-group" id="region-group" style="display:none">
+        <label class="finder-label" for="filter-region">Region</label>
+        <select id="filter-region" class="finder-select">
+          <option value="">All regions</option>
+        </select>
+      </div>
+      <span class="finder-count" id="finder-count"></span>
+    </div>
+    <a href="/list-your-event/" class="finder-list-cta">List your event →</a>
+  </div>
+</div>
+
+<div class="finder-wrap">
+  <div id="race-list">
+    {% for race in races | sort(false, false, "date") %}
+    {% set hasRegion = race.region and race.region.length > 0 %}
+    <div class="finder-row"
+         data-country="{{ race.country }}"
+         data-region="{{ race.region }}"
+         data-date="{{ race.date }}">
+      <div class="finder-row-main">
+        <p class="eyebrow finder-eyebrow">
+          {{ race.dateDisplay }}&nbsp;·&nbsp;{{ race.city }}{% if hasRegion %}, {{ race.region }}{% endif %}&nbsp;·&nbsp;{{ race.country }}
+        </p>
+        <h2 class="finder-race-name">{{ race.name }}</h2>
+        {% if race.tags.length > 0 %}
+        <div class="finder-badges">
+          {% for tag in race.tags %}
+            {% if tag == "silver-ticket" %}
+              <span class="finder-badge finder-badge--silver">Silver Ticket</span>
+            {% elif tag == "bronze-ticket" %}
+              <span class="finder-badge finder-badge--bronze">Bronze Ticket</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div class="finder-row-aside">
+        {% if race.price %}
+          <span class="finder-price">{{ race.price }}</span>
+        {% else %}
+          <span class="finder-price finder-price--empty">Price TBC</span>
+        {% endif %}
+        {% if race.registrationUrl %}
+          <a class="finder-cta"
+             href="{{ race.registrationUrl }}{% if '?' in race.registrationUrl %}&{% else %}?{% endif %}utm_source=backyards.run&utm_medium=race-finder&utm_campaign={{ race.id }}"
+             target="_blank"
+             rel="noopener noreferrer"
+             data-goatcounter-click="outbound-{{ race.id }}">Register →</a>
+        {% else %}
+          <span class="finder-cta finder-cta--disabled">Registration closed</span>
+        {% endif %}
+        {% if race.status != "sold-out" %}
+        <button class="finder-report" onclick="reportSoldOut(this, '{{ race.name }}')">Sold out? Report it</button>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <p class="finder-empty" id="finder-empty" style="display:none">
+    No races match your filters. <button class="finder-reset" onclick="resetFilters()">Clear filters</button>
+  </p>
+</div>
+
+<script>
+  const regionMap = {
+    'Australia': ['NSW', 'QLD'],
+    'UK': ['England', 'Scotland'],
+    'USA': ['Michigan', 'Missouri'],
+  };
+
+  const countrySelect = document.getElementById('filter-country');
+  const regionSelect  = document.getElementById('filter-region');
+  const regionGroup   = document.getElementById('region-group');
+  const countEl       = document.getElementById('finder-count');
+  const emptyEl       = document.getElementById('finder-empty');
+  const allRows       = Array.from(document.querySelectorAll('.finder-row'));
+
+  // Hide past events on load
+  const todayStr = new Date().toISOString().split('T')[0];
+  allRows.forEach(row => {
+    if (row.dataset.date < todayStr) {
+      row.style.display = 'none';
+      row.dataset.past = 'true';
+    }
+  });
+
+  const rows = allRows.filter(r => !r.dataset.past);
+
+  function updateRegionDropdown(country) {
+    regionSelect.innerHTML = '<option value="">All regions</option>';
+    const regions = regionMap[country];
+    if (regions) {
+      regions.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        regionSelect.appendChild(opt);
+      });
+      regionGroup.style.display = '';
+    } else {
+      regionGroup.style.display = 'none';
+    }
+  }
+
+  function applyFilters() {
+    const country = countrySelect.value;
+    const region  = regionSelect.value;
+    let visible   = 0;
+
+    rows.forEach(row => {
+      const matchCountry = !country || row.dataset.country === country;
+      const matchRegion  = !region  || row.dataset.region  === region;
+      const show = matchCountry && matchRegion;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    countEl.textContent = visible === rows.length
+      ? `${rows.length} races`
+      : `${visible} of ${rows.length} races`;
+    emptyEl.style.display = visible === 0 ? '' : 'none';
+  }
+
+  function resetFilters() {
+    countrySelect.value = '';
+    regionSelect.value  = '';
+    regionGroup.style.display = 'none';
+    applyFilters();
+  }
+
+  function reportSoldOut(btn, raceName) {
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        'form-name': 'sold-out-report',
+        'race': raceName,
+      }),
+    })
+      .then(() => {
+        btn.textContent = 'Thanks for the heads up!';
+        btn.disabled = true;
+      })
+      .catch(() => {
+        btn.textContent = 'Error — try again';
+      });
+  }
+
+  countrySelect.addEventListener('change', () => {
+    updateRegionDropdown(countrySelect.value);
+    regionSelect.value = '';
+    applyFilters();
+  });
+  regionSelect.addEventListener('change', applyFilters);
+
+  applyFilters();
+</script>
