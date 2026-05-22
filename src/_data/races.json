@@ -1,5 +1,33 @@
 [
   {
+    "id": "big-wolfs-backyard-ultra-2026",
+    "name": "Big Wolf's Backyard Ultra",
+    "date": "2026-06-27",
+    "dateDisplay": "27 Jun 2026",
+    "venue": "",
+    "city": "Cacouna",
+    "region": "Quebec",
+    "country": "Canada",
+    "status": "open",
+    "price": "CAD $300",
+    "registrationUrl": "https://www.bigwolfsbackyardultra.ca/en/rdl/",
+    "tags": ["silver-ticket"]
+  },
+  {
+    "id": "brokenagan-backyard-ultra-2026",
+    "name": "Brokenagan Backyard Ultra",
+    "date": "2026-07-25",
+    "dateDisplay": "25 Jul 2026",
+    "venue": "",
+    "city": "Vernon",
+    "region": "British Columbia",
+    "country": "Canada",
+    "status": "open",
+    "price": "CAD $120",
+    "registrationUrl": "https://www.bushbabestrailrunning.com/brokenagan",
+    "tags": ["bronze-ticket"]
+  },
+  {
     "id": "ode-to-laz-michigan-2026",
     "name": "Ode to Laz Michigan Backyard Ultra",
     "date": "2026-07-18",
@@ -11,6 +39,20 @@
     "status": "open",
     "price": "$129.99",
     "registrationUrl": "https://ultrasignup.com/register.aspx?dtid=62593",
+    "tags": ["silver-ticket"]
+  },
+  {
+    "id": "tartarus-backyard-ultra-2026",
+    "name": "Tartarus Backyard Ultra",
+    "date": "2026-08-15",
+    "dateDisplay": "15 Aug 2026",
+    "venue": "",
+    "city": "Spokane",
+    "region": "Washington",
+    "country": "USA",
+    "status": "open",
+    "price": "$130",
+    "registrationUrl": "https://ultrasignup.com/register.aspx?did=130045",
     "tags": ["silver-ticket"]
   },
   {
@@ -53,6 +95,20 @@
     "status": "sold-out",
     "price": "£115",
     "registrationUrl": "https://race-nation.co.uk/register/axle-events-ltd/london-backyard-ultra-2026",
+    "tags": []
+  },
+  {
+    "id": "big-breton-backyard-ultra-2026",
+    "name": "Big Breton Backyard Ultra",
+    "date": "2026-09-12",
+    "dateDisplay": "12 Sep 2026",
+    "venue": "",
+    "city": "Coxheath",
+    "region": "Nova Scotia",
+    "country": "Canada",
+    "status": "open",
+    "price": "CAD $50",
+    "registrationUrl": "https://www.webscorer.com/register?raceid=424616",
     "tags": []
   },
   {

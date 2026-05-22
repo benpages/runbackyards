@@ -27,6 +27,7 @@ navLabel: Race Finder
         <select id="filter-country" class="finder-select">
           <option value="">All countries</option>
           <option value="Australia">Australia</option>
+          <option value="Canada">Canada</option>
           <option value="Germany">Germany</option>
           <option value="UK">UK</option>
           <option value="USA">USA</option>
@@ -75,7 +76,7 @@ navLabel: Race Finder
         {% else %}
           <span class="finder-price finder-price--empty">Price TBC</span>
         {% endif %}
-        {% if race.registrationUrl %}
+        {% if race.registrationUrl and race.status != "sold-out" %}
           <a class="finder-cta"
              href="{{ race.registrationUrl }}{% if '?' in race.registrationUrl %}&{% else %}?{% endif %}utm_source=backyards.run&utm_medium=race-finder&utm_campaign={{ race.id }}"
              target="_blank"
@@ -99,8 +100,9 @@ navLabel: Race Finder
 <script>
   const regionMap = {
     'Australia': ['NSW', 'QLD'],
+    'Canada': ['British Columbia', 'Nova Scotia', 'Quebec'],
     'UK': ['England', 'Scotland'],
-    'USA': ['Michigan', 'Missouri'],
+    'USA': ['Michigan', 'Missouri', 'Washington'],
   };
 
   const countrySelect = document.getElementById('filter-country');
