@@ -1221,6 +1221,25 @@ p.section-note {
 	font-weight: 700;
 }
 
+/* ── Instagram follow button ─────────────────────────────────────────────── */
+.insta-cta-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.85rem 1.75rem;
+	background: #c0392b;
+	color: #fff;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 700;
+	text-decoration: none;
+	letter-spacing: 0.02em;
+	transition: background 0.15s;
+}
+.insta-cta-btn:hover {
+	background: #a93226;
+}
+
 /* ── Loop clock visual ───────────────────────────────────────────────────── */
 .loop-clock {
 	margin: 2rem 0;
@@ -1787,7 +1806,6 @@ p.first-detail {
 	.milestone-marker:nth-child(4) .milestone-info {
 		display: none;
 	}
-
 	/* Records */
 	.wr-grid {
 		grid-template-columns: 1fr;
