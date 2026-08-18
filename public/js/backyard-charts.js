@@ -569,20 +569,51 @@
 		const data = labels.map((_, i) => counts[i + 1] || 0);
 		const winnerIndex = maxLap - 1;
 		// The winner didn't DNF, they won — so their column gets no bar at all;
-		// a trophy annotation marks the spot instead (see winnerAnnotation below).
+		// see winnerAnnotation below for how that column is marked instead.
 		const colors = data.map((_value, i) => (i === winnerIndex ? "transparent" : "rgba(26,26,26,0.75)"));
 		const step = maxLap > 60 ? 10 : maxLap > 30 ? 5 : 1;
 		const plugins = window.ChartDataLabels ? [window.ChartDataLabels] : [];
 		const dataMax = Math.max(...data);
 		const nightAnnotations = buildNightAnnotations(race, maxLap, 0, dataMax + 5);
+		// The winner's column is marked, not barred: a hairline accent rule rising
+		// from a dot that sits exactly on the axis, capped with a small "WINNER"
+		// tag. Nothing here has bar width, so it can't collide with its neighbour.
 		const winnerAnnotation = {
-			winnerTrophy: {
-				type: "label",
+			winnerLine: {
+				type: "line",
+				xMin: winnerIndex,
+				xMax: winnerIndex,
+				yMin: 0,
+				yMax: dataMax + 2.2,
+				borderColor: "rgba(192, 57, 43, 0.35)",
+				borderWidth: 1,
+				borderDash: [3, 3],
+			},
+			winnerDot: {
+				type: "point",
 				xValue: winnerIndex,
 				yValue: 0,
-				yAdjust: -10,
-				content: "🏆",
-				font: { size: 16 },
+				backgroundColor: "#C0392B",
+				borderColor: "#F7F4EF",
+				borderWidth: 1.5,
+				radius: 4,
+				// Draw the full dot even though it straddles the axis line.
+				clip: false,
+			},
+			winnerTag: {
+				type: "label",
+				xValue: winnerIndex,
+				yValue: dataMax + 2.2,
+				content: "WINNER",
+				// The winner is always the last column, so hang the tag to the left
+				// of the rule rather than centred on it — keeps it inside the plot.
+				position: { x: "end", y: "end" },
+				xAdjust: -3,
+				backgroundColor: "#C0392B",
+				borderRadius: 3,
+				color: "#fff",
+				font: { size: 8, weight: "700", family: "Inter, sans-serif" },
+				padding: { top: 3, bottom: 3, left: 5, right: 5 },
 			},
 		};
 
@@ -652,11 +683,14 @@
 					x: {
 						grid: { display: false },
 						ticks: {
-							color: TEXT_COLOR,
-							font: { size: 9 },
+							color: (ctx) => (ctx.index === winnerIndex ? "#C0392B" : TEXT_COLOR),
+							font: (ctx) => ({ size: 9, weight: ctx.index === winnerIndex ? "700" : "400" }),
 							maxRotation: 0,
 							autoSkip: false,
 							callback(_value, index) {
+								if (index === winnerIndex) {
+									return labels[index];
+								}
 								return (index + 1) % step === 0 || index === 0 ? labels[index] : "";
 							},
 						},
