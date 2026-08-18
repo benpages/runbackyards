@@ -526,7 +526,22 @@
 		return { applyVisibleRange, buildLegend, setVisibility, syncLegendItems };
 	}
 
-	function renderDNFChart({ rows, race, canvas, existingChart }) {
+	const MI_PER_KM = 0.621371;
+	const KM_PER_MI = 1.60934;
+	const STANDARD_LOOP_MI = 4.16667; // Backyard Ultra standard: 4.16667 mi (6.7056 km) per loop
+
+	// Resolves a race's loop distance in both units, regardless of which unit
+	// the race config was authored in.
+	function loopDistances(race) {
+		if (race.distanceUnit === "km" && race.loopDistance) {
+			const km = race.loopDistance;
+			return { mi: km * MI_PER_KM, km };
+		}
+		const mi = race.loopDistance || STANDARD_LOOP_MI;
+		return { mi, km: mi * KM_PER_MI };
+	}
+
+	function renderDNFChart({ rows, race, canvas, existingChart, unitToggleId = "dnfUnitToggle" }) {
 		// Use the highest lap number actually parsed per athlete (completed laps only),
 		// so DNF runners who started but didn't finish a lap don't get counted one loop too late.
 		const athleteMaxLap = {};
@@ -544,19 +559,38 @@
 			counts[bucket] = (counts[bucket] || 0) + 1;
 		});
 
+		const { mi: loopMi, km: loopKm } = loopDistances(race);
+		let unit = "mi";
+		// Distance completed when a runner's race ended at bar index `i` (Loop i+1):
+		// they finished i full loops (a DNF on Loop 1 means 0 loops completed).
+		const distanceAt = (index) => (unit === "km" ? index * loopKm : index * loopMi);
+
 		const labels = Array.from({ length: maxLap }, (_, i) => `L${i + 1}`);
 		const data = labels.map((_, i) => counts[i + 1] || 0);
-		const colors = data.map((_value, i) => (i + 1 === maxLap ? "#C0392B" : "rgba(26,26,26,0.75)"));
+		const winnerIndex = maxLap - 1;
+		// The winner didn't DNF, they won — so their column gets no bar at all;
+		// a trophy annotation marks the spot instead (see winnerAnnotation below).
+		const colors = data.map((_value, i) => (i === winnerIndex ? "transparent" : "rgba(26,26,26,0.75)"));
 		const step = maxLap > 60 ? 10 : maxLap > 30 ? 5 : 1;
 		const plugins = window.ChartDataLabels ? [window.ChartDataLabels] : [];
 		const dataMax = Math.max(...data);
 		const nightAnnotations = buildNightAnnotations(race, maxLap, 0, dataMax + 5);
+		const winnerAnnotation = {
+			winnerTrophy: {
+				type: "label",
+				xValue: winnerIndex,
+				yValue: 0,
+				yAdjust: -10,
+				content: "🏆",
+				font: { size: 16 },
+			},
+		};
 
 		if (existingChart) {
 			existingChart.destroy();
 		}
 
-		return new Chart(canvas, {
+		const chart = new Chart(canvas, {
 			type: "bar",
 			plugins,
 			data: {
@@ -577,7 +611,7 @@
 				plugins: {
 					legend: { display: false },
 					annotation: {
-						annotations: nightAnnotations,
+						annotations: { ...nightAnnotations, ...winnerAnnotation },
 					},
 					datalabels: {
 						anchor: "end",
@@ -587,7 +621,7 @@
 							size: 9,
 							weight: "600",
 						},
-						formatter: (value) => (value === 0 ? "" : value),
+						formatter: (value, ctx) => (value === 0 || ctx.dataIndex === winnerIndex ? "" : value),
 					},
 					tooltip: {
 						callbacks: {
@@ -603,6 +637,12 @@
 								return ctx.dataIndex + 1 === maxLap
 									? ` ${count} ${noun} won the race`
 									: ` ${count} ${noun} finished their race here`;
+							},
+							afterLabel: (ctx) => {
+								if (ctx.parsed.y === 0) {
+									return null;
+								}
+								return ` ${distanceAt(ctx.dataIndex).toFixed(1)} ${unit} completed`;
 							},
 							filter: (item) => item.parsed.y > 0,
 						},
@@ -634,6 +674,24 @@
 				},
 			},
 		});
+
+		const unitToggle = document.getElementById(unitToggleId);
+		if (unitToggle) {
+			unitToggle.querySelectorAll("button").forEach((btn) => {
+				// Assign onclick (not addEventListener) so re-rendering the chart
+				// on the same page doesn't stack duplicate listeners.
+				btn.onclick = () => {
+					if (btn.dataset.unit === unit) {
+						return;
+					}
+					unit = btn.dataset.unit;
+					unitToggle.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b === btn));
+					chart.update();
+				};
+			});
+		}
+
+		return chart;
 	}
 
 	function registerChartPlugins() {
