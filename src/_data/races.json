@@ -75,12 +75,13 @@
     "date": "2026-08-14",
     "dateDisplay": "14 Aug 2026",
     "venue": "",
-    "city": "Bornheim",
+    "city": "Fürstenau",
     "region": "",
     "country": "Germany",
-    "status": "sold-out",
+    "status": "completed",
     "price": "€100",
     "registrationUrl": null,
+    "resultsUrl": "/races/last-soul-2026/",
     "tags": []
   },
   {

@@ -84,12 +84,29 @@
 		return str.replace(/\S+/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
 	}
 
+	// Names the timing system published in a form we would rather not show.
+	// Keyed by the stored "Last First" name, value is the full display name.
+	let displayOverrides = {};
+
 	function fullDisplayName(stored) {
+		if (displayOverrides[stored]) {
+			return displayOverrides[stored];
+		}
 		const parts = stored.trim().split(" ");
 		if (parts.length < 2) {
 			return stored;
 		}
 		return `${parts.slice(1).join(" ")} ${parts[0]}`;
+	}
+
+	// The short name used on legend pills — normally the surname.
+	function legendLabel(stored) {
+		const override = displayOverrides[stored];
+		if (override) {
+			const parts = override.trim().split(" ");
+			return parts.length > 1 ? parts.slice(1).join(" ") : override;
+		}
+		return stored.split(" ")[0];
 	}
 
 	function buildRaceresultUrl(race) {
@@ -227,7 +244,7 @@
 		const datasets = sorted.map(([name, athlete], index) => {
 			const style = PALETTE[index % PALETTE.length];
 			return {
-				label: `${name.split(" ")[0]} (${athlete.total})`,
+				label: `${legendLabel(name)} (${athlete.total})`,
 				fullName: name,
 				totalLaps: athlete.total,
 				data: Array.from({ length: maxLap }, (_, i) => athlete.laps[i + 1] ?? null),
@@ -675,18 +692,55 @@
 		return { render };
 	}
 
+	/**
+	 * Some races publish no usable lap list, so their splits are collected
+	 * ahead of time and served as a compact file alongside the page:
+	 *   { runners: [ { n: "Last First", g: "m", t: 94,
+	 *                  l: ["48:30", …], r: ["11:29", …] } ] }
+	 */
+	function expandLapFile(payload, race) {
+		const rows = [];
+
+		(payload.runners || []).forEach((runner) => {
+			const laps = runner.l || [];
+			const rests = runner.r || [];
+			laps.forEach((finishTime, index) => {
+				if (!finishTime) {
+					return;
+				}
+				rows.push({
+					athlete: runner.n,
+					race: race.id,
+					total_laps: runner.t ?? laps.length,
+					lap: `Lap${index + 1}`,
+					finish_time: finishTime,
+					rest_time: rests[index] || null,
+				});
+			});
+		});
+
+		return rows;
+	}
+
 	async function fetchRows(race) {
-		const response = await fetch(buildRaceresultUrl(race));
+		const isLapFile = Boolean(race.dataUrl);
+		const response = await fetch(isLapFile ? race.dataUrl : buildRaceresultUrl(race));
 		if (!response.ok) {
 			throw new Error(`HTTP ${response.status}`);
 		}
 
 		const json = await response.json();
-		if (!json.data) {
-			throw new Error("'data' field missing");
+
+		let rows;
+		if (isLapFile) {
+			rows = expandLapFile(json, race);
+		} else {
+			if (!json.data) {
+				throw new Error("'data' field missing");
+			}
+			rows = parseRaceresultData(json.data, race);
 		}
 
-		const rows = parseRaceresultData(json.data, race);
 		if (!rows.length) {
 			throw new Error("No lap rows parsed");
 		}
@@ -705,6 +759,7 @@
 
 	function createRacePage({ race, paceCanvasId = "paceChart", dnfCanvasId = "dnfChart" }) {
 		registerChartPlugins();
+		displayOverrides = race.displayNames || {};
 
 		const statusEl = document.getElementById("status");
 		const mainEl = document.getElementById("main");
@@ -722,7 +777,12 @@
 				const winner = paceData.sorted[0];
 				const winnerName = winner ? fullDisplayName(winner[0]) : "—";
 				const winnerLoops = winner ? winner[1].total : "—";
-				const winnerDist = winner ? `~${Math.round(winner[1].total * 4.167)} mi` : "—";
+				const loopDistance = race.loopDistance || 4.167;
+				const distanceUnit = race.distanceUnit || "mi";
+				const distanceDecimals = race.distanceDecimals || 0;
+				const winnerDist = winner
+					? `${distanceDecimals ? "" : "~"}${(winner[1].total * loopDistance).toFixed(distanceDecimals)} ${distanceUnit}`
+					: "—";
 
 				const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 				set("heroWinner", winnerName);

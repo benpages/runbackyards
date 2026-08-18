@@ -1,0 +1,146 @@
+---
+layout: base.njk
+title: "Last Soul Ultra 2026 — Results & Pacing Analysis | backyards.run"
+description: "Full results and lap-by-lap pacing for Last Soul Ultra 2026, Fürstenau, Germany, 14–18 August 2026. Mark Dowdle won with 94 loops and 629.8 km. All 160 runners, every split, plus the DNF breakdown."
+navLabel: "Last Soul Ultra 2026"
+---
+<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+<div class="race-hero">
+	<p class="race-event">August 14–18, 2026 &nbsp;·&nbsp; Fürstenau, Germany</p>
+	<h1>Last Soul<br>Ultra 2026</h1>
+	<p class="race-tagline">6.7 km loop &nbsp;·&nbsp; Last one standing wins &nbsp;·&nbsp; Start: 2 pm</p>
+	<div class="hero-stats">
+		<div>
+			<div class="hstat-val winner-val" id="heroWinner">—</div>
+			<div class="hstat-label">Winner</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroLoops">—</div>
+			<div class="hstat-label">Winning loops</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroDist">—</div>
+			<div class="hstat-label">Winning distance</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroRunners">—</div>
+			<div class="hstat-label">Runners</div>
+		</div>
+	</div>
+</div>
+
+<!-- ── Static description (indexed by Google) ─────────────────────────────── -->
+<p class="race-desc">
+	Last Soul Ultra 2026 ran from August 14 to August 18 in the forest at Fürstenau, Germany. One hundred and sixty runners set off at 2 pm on the Friday, and every hour on the hour they went round again on a 6.7 km loop. Four days later Mark Dowdle was the only one left, having covered 94 loops and 629.8 km. Ayyoub "Ello" El Osrouti pushed him to 93 before an Achilles injury took the last hour away from him. Below are the lap splits for every runner who started, and a breakdown of where the field came apart.
+</p>
+
+{% include "race-analysis-charts.njk" %}
+
+<!-- ── How it unfolded ────────────────────────────────────────────────────── -->
+<div class="page-wrap page-wrap--no-bottom">
+	<div class="page-section">
+		<h2>The first night took half the race</h2>
+		<p>
+			One hundred and sixty runners started. Eighty-two of them were gone before Saturday lunchtime. The damage was concentrated in a few dark hours: eighteen runners finished loop 15 at four in the morning and did not go back out, and ten more stopped an hour later. By six on Saturday morning the field had fallen from 123 to 78.
+		</p>
+		<p>
+			The middle of the race thinned it further without ever being dramatic. Fifty-seven runners were still going after 24 loops. Thirteen made it past 48. Only three made it past 72. The median run was 16 loops, which is to say that half the field never saw a second sunrise.
+		</p>
+
+		<h2>Two men and thirteen hours</h2>
+		<p>
+			Norman Mascher-Aspensjö held third place deep into Monday and stopped after 80 loops at nine in the evening. That left Dowdle and El Osrouti alone on the loop, and they stayed that way through the whole of Monday night and on into Tuesday morning, thirteen hours of two men circling a forest with nobody else on the course.
+		</p>
+		<p>
+			The numbers say El Osrouti was the faster runner for the entire race. He averaged 48:29 a loop against Dowdle's 51:42, and by getting round quicker he banked 17 hours 50 minutes of rest to Dowdle's 12 hours 59. He was quicker, he slept more, and he still lost. His Achilles had been going for days, and on loop 93 he came in at 54:58 with almost nothing left in the hour. He did not make the start of 94.
+		</p>
+		<p>
+			Dowdle's answer to being alone was strange and worth looking at on the pace chart. On loop 87, at four o'clock on Tuesday morning, on his fourth night without proper sleep, he ran 38:15. It was the fastest loop of his race by four and a half minutes, and he ran it roughly 85 loops after his legs had any business producing it. His slowest loop of the whole four days was 58:03, back on loop 15 on the first night, when everyone around him was quitting.
+		</p>
+
+		<h2>Familiar name at the front</h2>
+		<p>
+			Dowdle won <a href="/races/g1m-2026/">BPN Go One More in April</a> with 73 loops. Four months later he added 21 to that. Whatever he changed between the two, the pace chart is where you can see it: his loops sit in a tighter band for far longer, and he does not have the slow crumble in the 60s that usually decides these things.
+		</p>
+		<p>
+			Behind the leaders, Caroline Maria Bolte ran 52 loops and finished ninth overall, the best of the 42 women in the field. Hubert Karl, who is 68, ran 45. Harvey Lewis, twice a Badwater champion, stopped at 46.
+		</p>
+	</div>
+
+	<!-- ── Full standings ─────────────────────────────────────────────────── -->
+	<div class="section-header">
+		<div>
+			<div class="section-title">Final Standings</div>
+			<div class="section-desc">All {{ lastSoul2026.runners | length }} starters · loops, distance and time on course</div>
+		</div>
+	</div>
+	<div class="standings-wrap">
+		<table class="standings">
+			<thead>
+				<tr>
+					<th>Pl.</th>
+					<th>Runner</th>
+					<th>Loops</th>
+					<th>Distance</th>
+					<th>Total time</th>
+				</tr>
+			</thead>
+			<tbody id="standingsBody">
+				{% for runner in lastSoul2026.runners %}
+					<tr class="{% if loop.first %}is-winner{% endif %}{% if loop.index > 20 %} is-hidden{% endif %}">
+						<td class="st-place">{{ loop.index }}</td>
+						<td class="st-name">{% if runner.name == "Ello" %}Ayyoub "Ello" El Osrouti{% else %}{{ runner.name }}{% endif %}</td>
+						<td class="st-loops">{{ runner.loops }}</td>
+						<td class="st-num">{{ (runner.loops * 6.7) | fixed(1) }} km</td>
+						<td class="st-num">{{ runner.totalTime }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class="standings-more">
+		<button class="show-more-btn" id="standingsToggle" type="button">
+			Show all {{ lastSoul2026.runners | length }} runners
+		</button>
+	</div>
+</div>
+
+<script>
+	(function () {
+		const button = document.getElementById("standingsToggle");
+		const body = document.getElementById("standingsBody");
+		if (!button || !body) {
+			return;
+		}
+		let expanded = false;
+		const total = body.querySelectorAll("tr").length;
+		button.addEventListener("click", function () {
+			expanded = !expanded;
+			body.querySelectorAll("tr").forEach(function (row, index) {
+				row.classList.toggle("is-hidden", !expanded && index >= 20);
+			});
+			button.textContent = expanded
+				? "Show top 20 only"
+				: "Show all " + total + " runners";
+		});
+	})();
+</script>
+
+{% set includeDatalabels = true %}
+{% include "chart-scripts.njk" %}
+<script>
+	window.BackyardCharts.createRacePage({
+		race: {
+			id: "LastSoul_2026",
+			label: "Last Soul Ultra 2026",
+			dataUrl: "/races/last-soul-2026/laps.json",
+			startHour: 14,
+			loopDistance: 6.7,
+			distanceUnit: "km",
+			distanceDecimals: 1,
+			displayNames: {
+				Ello: "Ayyoub El Osrouti"
+			}
+		}
+	});
+</script>

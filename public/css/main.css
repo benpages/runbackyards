@@ -2734,3 +2734,89 @@ p.first-detail {
 		align-items: flex-start;
 	}
 }
+
+/* ── Inline links in prose sections ──────────────────────────────────────── */
+.page-section a {
+	color: #c0392b;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	text-decoration-thickness: 1px;
+	text-decoration-color: rgba(192, 57, 43, 0.4);
+}
+.page-section a:hover {
+	text-decoration-color: #c0392b;
+}
+
+/* ── Race standings table ────────────────────────────────────────────────── */
+.standings-wrap {
+	overflow-x: auto;
+	border-radius: 10px;
+	border: 1px solid #e8e4de;
+}
+.standings {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.88rem;
+}
+.standings thead {
+	background: #141414;
+}
+.standings th {
+	color: #fff;
+	font-weight: 700;
+	padding: 0.75rem 1rem;
+	text-align: left;
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 0.07em;
+	white-space: nowrap;
+}
+.standings td {
+	padding: 0.65rem 1rem;
+	border-top: 1px solid #e8e4de;
+	color: #444;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+.standings td.st-place {
+	color: #888;
+	font-variant-numeric: tabular-nums;
+	width: 1%;
+}
+.standings td.st-name {
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 800;
+	font-size: 1.05rem;
+	color: #141414;
+	white-space: normal;
+}
+.standings td.st-loops {
+	font-weight: 700;
+	color: #141414;
+	font-variant-numeric: tabular-nums;
+}
+.standings td.st-num {
+	font-variant-numeric: tabular-nums;
+	color: #666;
+}
+.standings tr.is-winner td {
+	background: #fdf6ec;
+}
+.standings tbody tr.is-hidden {
+	display: none;
+}
+.standings-more {
+	margin-top: 0.9rem;
+	text-align: center;
+}
+
+@media (max-width: 640px) {
+	.standings th,
+	.standings td {
+		padding-left: 0.6rem;
+		padding-right: 0.6rem;
+	}
+	.standings {
+		font-size: 0.82rem;
+	}
+}

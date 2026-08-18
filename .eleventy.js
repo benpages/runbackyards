@@ -9,6 +9,11 @@ module.exports = function (eleventyConfig) {
 
 	eleventyConfig.addShortcode("year", () => `${new Date().getFullYear()}`);
 
+	// Fixed decimal places, so numeric columns line up (536.0 km, not 536 km).
+	eleventyConfig.addFilter("fixed", (value, places = 1) =>
+		Number(value).toFixed(places),
+	);
+
 	eleventyConfig.addFilter("postDate", (dateObj) => {
 		return DateTime.fromJSDate(dateObj).toLocaleString(DateTime.DATE_MED);
 	});
