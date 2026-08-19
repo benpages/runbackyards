@@ -38,11 +38,6 @@
     </url>
   
     <url>
-      <loc>https://backyards.run/</loc>
-      <lastmod>2026-05-21T10:33:34.166Z</lastmod>
-    </url>
-  
-    <url>
       <loc>https://backyards.run/list-your-event/</loc>
       <lastmod>2026-05-22T12:42:55.147Z</lastmod>
     </url>
@@ -70,6 +65,16 @@
     <url>
       <loc>https://backyards.run/races/last-soul-2026/</loc>
       <lastmod>2026-08-18T15:36:37.299Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/races/legends-2025/</loc>
+      <lastmod>2026-08-19T16:03:15.319Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/</loc>
+      <lastmod>2026-08-19T16:03:16.161Z</lastmod>
     </url>
   
 </urlset>

@@ -1,0 +1,55 @@
+---
+layout: base.njk
+title: "Legends Backyard Ultra 2025 — Results & Pacing Analysis | backyards.run"
+description: "Lap-by-lap pacing and DNF analysis for the 2025 Legends Backyard Ultra in Retie, Belgium. Łukasz Wróbel set a new individual world record with 116 loops — over 777 km in 116 hours."
+navLabel: "Legends Backyard Ultra 2025"
+---
+<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+<div class="race-hero">
+	<p class="race-event">April 26, 2025 &nbsp;·&nbsp; Retie, Belgium</p>
+	<h1>Legends Backyard<br>Ultra 2025</h1>
+	<p class="race-tagline">6.706km loop &nbsp;·&nbsp; Last one standing wins &nbsp;·&nbsp; Start: 10 am</p>
+	<div class="hero-stats">
+		<div>
+			<div class="hstat-val winner-val" id="heroWinner">—</div>
+			<div class="hstat-label">Winner</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroLoops">—</div>
+			<div class="hstat-label">Winning loops</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroDist">—</div>
+			<div class="hstat-label">Winning distance</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroRunners">—</div>
+			<div class="hstat-label">Runners</div>
+		</div>
+	</div>
+</div>
+
+<!-- ── Static description (indexed by Google) ─────────────────────────────── -->
+<p class="race-desc">
+	The 2025 Legends Backyard Ultra was held April 26 in Retie, Belgium, on a 6.706km loop, one lap every hour until only one runner remained. Łukasz Wróbel outlasted the field and set a new individual backyard ultra world record, completing 116 loops and covering more than 777km across 116 straight hours. Below is a full lap pacing and DNF breakdown.
+</p>
+
+{% include "race-analysis-charts.njk" %}
+
+{% set includeDatalabels = true %}
+{% include "chart-scripts.njk" %}
+<script>
+	window.BackyardCharts.createRacePage({
+		race: {
+			id: "Legends_2025",
+			label: "Legends Backyard Ultra 2025",
+			eventId: "337369",
+			host: "my2",
+			apiKey: "07708f8146716bea0992945f49ba2ead",
+			listname: "Online|Ronden Details",
+			page: "4A0932",
+			startHour: 10,
+			extraParams: "&r=all&l=0"
+		}
+	});
+</script>
