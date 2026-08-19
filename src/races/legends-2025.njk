@@ -1,7 +1,7 @@
 ---
 layout: base.njk
-title: "Legends Backyard Ultra 2025 — Results & Pacing Analysis | backyards.run"
-description: "Lap-by-lap pacing and DNF analysis for the 2025 Legends Backyard Ultra in Retie, Belgium. Łukasz Wróbel won with 116 loops — over 777 km in 116 hours."
+title: "Legends Backyard Ultra 2025 Results | backyards.run"
+description: "Full results and lap-by-lap pacing for the 2025 Legends Backyard Ultra in Retie, Belgium. Łukasz Wróbel won with 116 loops, over 777 km in 116 hours."
 navLabel: "Legends Backyard Ultra 2025"
 ---
 <!-- ── Hero ───────────────────────────────────────────────────────────────── -->
@@ -31,10 +31,104 @@ navLabel: "Legends Backyard Ultra 2025"
 
 <!-- ── Static description (indexed by Google) ─────────────────────────────── -->
 <p class="race-desc">
-	The 2025 Legends Backyard Ultra was held April 26 in Retie, Belgium, on a 6.706km loop, one lap every hour until only one runner remained. Łukasz Wróbel outlasted the field, completing 116 loops and covering more than 777km across 116 straight hours. Below is a full lap pacing and DNF breakdown.
+	Legends Backyard Ultra 2025 results: the race was held April 26 in Retie, Belgium, on a 6.706km loop, one lap every hour until only one runner remained. Łukasz Wróbel outlasted the field, completing 116 loops and covering more than 777km across 116 straight hours. Below are the full results, lap pacing, and DNF breakdown.
 </p>
 
 {% include "race-analysis-charts.njk" %}
+
+<!-- ── How it unfolded ────────────────────────────────────────────────────── -->
+<div class="page-wrap page-wrap--no-bottom">
+	<div class="page-section">
+		<h2>The first night cut the field in half</h2>
+		<p>
+			Ninety-eight runners started at 10 am. By loop 12, around 10 pm, that was down to 83. Then came the collapse: 70 were still going after loop 15, and just one hour and one loop later, only 54 remained. Sixteen runners finished loop 15 in the small hours of Sunday morning and didn't go back out for loop 16, the single biggest cut of the race, all inside sixty minutes.
+		</p>
+		<p>
+			The thinning didn't stop there. Thirty runners were left after 24 loops, thirteen after 30, eight after 36. By the two-day mark, loop 48, only four remained. The median finisher managed 16 loops, meaning half the field never made it past that first brutal night.
+		</p>
+
+		<h2>Fifty-six hours, two men</h2>
+		<p>
+			Bert Verbist held third place until loop 59, stopping just short of two and a half days on course. From loop 60 onward it was Łukasz Wróbel and Jan Vandekerckhove alone, and they stayed out there together for another 56 loops, well over two more full days, before Vandekerckhove's race ended during loop 116.
+		</p>
+		<p>
+			It was close. Vandekerckhove's slowest loop of the entire race, 58:51, came on loop 114, seconds from the hour cutoff, on his fourth night without real sleep. He recovered to run 48:10 on loop 115, but couldn't complete a 116th. Wróbel, by contrast, was still finding sub-41-minute loops in that same stretch: 40:57, 40:39, 40:42 across loops 110 to 112.
+		</p>
+		<p>
+			Across the whole race Wróbel averaged 43:13 a loop to Vandekerckhove's 44:36, banking roughly three hours more total rest over the four and a half days. His fastest loop was 38:26, on the very first lap; his slowest was 51:54, on loop 44. It was a one-loop margin at the very top of a race that ran nearly five days.
+		</p>
+
+		<h2>Best of the rest</h2>
+		<p>
+			Kathleen Van Winckel was the strongest of the twelve women in the field, running 21 loops to finish 32nd overall.
+		</p>
+	</div>
+</div>
+
+<!-- ── Full standings ─────────────────────────────────────────────────── -->
+<div class="section-header">
+	<div>
+		<div class="section-title">Final Standings</div>
+		<div class="section-desc">All {{ legends2025.runners | length }} starters · loops, distance and time on course</div>
+	</div>
+</div>
+<div class="standings-wrap">
+	<table class="standings">
+		<thead>
+			<tr>
+				<th>Pl.</th>
+				<th>Runner</th>
+				<th>Loops</th>
+				<th>Distance</th>
+				<th>Total time</th>
+			</tr>
+		</thead>
+		<tbody id="standingsBody">
+			{% for runner in legends2025.runners %}
+				<tr class="{% if loop.first %}is-winner{% endif %}{% if loop.index > 20 %} is-hidden{% endif %}">
+					<td class="st-place">{{ loop.index }}</td>
+					<td class="st-name">{{ runner.name }}</td>
+					<td class="st-loops">{{ runner.loops }}</td>
+					<td class="st-num">{{ (runner.loops * 6.706) | fixed(1) }} km</td>
+					<td class="st-num">{{ runner.totalTime }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+<div class="standings-more">
+	<button class="show-more-btn" id="standingsToggle" type="button">
+			Show all {{ legends2025.runners | length }} runners
+		</button>
+</div>
+</div>
+
+<script>
+(function () {
+	const button = document.getElementById("standingsToggle");
+	const body = document.getElementById("standingsBody");
+	if (!button || !body) {
+		return;
+	}
+	let expanded = false;
+	const total = body
+		.querySelectorAll("tr")
+		.length;
+	button.addEventListener("click", function () {
+		expanded = !expanded;
+		body
+			.querySelectorAll("tr")
+			.forEach(function (row, index) {
+				row
+					.classList
+					.toggle("is-hidden", !expanded && index >= 20);
+			});
+		button.textContent = expanded
+			? "Show top 20 only"
+			: "Show all " + total + " runners";
+	});
+})();
+</script>
 
 {% set includeDatalabels = true %}
 {% include "chart-scripts.njk" %}
