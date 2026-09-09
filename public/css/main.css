@@ -1080,6 +1080,11 @@ footer a:hover {
 	margin-bottom: 1rem;
 	max-width: 660px;
 }
+.page-section--last {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
 .page-section p:last-child {
 	margin-bottom: 0;
 }
@@ -2892,5 +2897,188 @@ p.first-detail {
 	}
 	.standings {
 		font-size: 0.82rem;
+	}
+}
+
+/* ── Crew cards ────────────────────────────────────────────────────────── */
+.crew-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1.25rem;
+	margin-top: 2rem;
+}
+.crew-card {
+	background: #f7f4ef;
+	border: 1px solid #e8e4de;
+	border-radius: 10px;
+	overflow: hidden;
+}
+.crew-card-photo {
+	margin: 0;
+	aspect-ratio: 1 / 1;
+	background: #e8e4de;
+}
+.crew-card-photo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+.crew-card .crew-card-name {
+	font-family: "Barlow Condensed", sans-serif;
+	font-style: italic;
+	font-weight: 900;
+	text-transform: uppercase;
+	font-size: 1.75rem;
+	line-height: 1;
+	color: #141414;
+	margin: 1.5rem 1.5rem 0.4rem;
+}
+.crew-card .crew-card-role {
+	font-size: 0.65rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: #888;
+	margin: 0 1.5rem 1rem;
+}
+.crew-card p:last-child {
+	font-size: 0.92rem;
+	line-height: 1.65;
+	color: #444;
+	margin: 0 1.5rem 1.75rem;
+}
+
+/* ── Crew hero ─────────────────────────────────────────────────────────── */
+.crew-hero {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 360px;
+	gap: 3.5rem;
+	align-items: center;
+}
+.crew-hero .page-h1 {
+	font-size: clamp(2.4rem, 4vw, 3.6rem);
+	margin: 0.75rem 0 1.5rem;
+}
+.crew-hero-img {
+	margin: 0;
+	border-radius: 12px;
+	overflow: hidden;
+	background: #e8e4de;
+}
+.crew-hero-img img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 3 / 4;
+	object-fit: cover;
+}
+
+/* ── Crew steps ────────────────────────────────────────────────────────── */
+.crew-steps {
+	display: flex;
+	flex-direction: column;
+	gap: 1.75rem;
+	margin-top: 2rem;
+}
+.crew-step {
+	display: flex;
+	gap: 1.25rem;
+	align-items: flex-start;
+}
+.crew-step-num {
+	flex: 0 0 auto;
+	width: 2.25rem;
+	height: 2.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: #c0392b;
+	color: #fff;
+	font-family: "Barlow Condensed", sans-serif;
+	font-weight: 900;
+	font-size: 1.15rem;
+	line-height: 1;
+}
+.crew-step h3 {
+	margin-bottom: 0.35rem;
+}
+
+/* ── Page forms ────────────────────────────────────────────────────────── */
+.page-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	margin-top: 2rem;
+	max-width: 640px;
+}
+.page-form-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+}
+.page-form-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.page-form-field label {
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #444;
+}
+.page-form-optional {
+	font-weight: 400;
+	text-transform: none;
+	letter-spacing: 0;
+	color: #999;
+}
+.page-form-input {
+	padding: 0.75rem 1rem;
+	border: 1px solid #e8e4de;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-family: inherit;
+	background: #f7f4ef;
+	color: #141414;
+	outline: none;
+	transition: border-color 0.15s;
+	width: 100%;
+}
+.page-form-input:focus {
+	border-color: #c0392b;
+}
+.page-form-textarea {
+	resize: vertical;
+	min-height: 120px;
+}
+.page-form-btn {
+	align-self: flex-start;
+	border: none;
+	cursor: pointer;
+	font-family: inherit;
+}
+
+@media (max-width: 900px) {
+	.crew-hero {
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+	}
+	.crew-hero-img img {
+		aspect-ratio: 16 / 10;
+	}
+}
+
+@media (max-width: 760px) {
+	.crew-grid {
+		grid-template-columns: 1fr;
+	}
+	.crew-card-photo {
+		aspect-ratio: 4 / 3;
+	}
+	.page-form-row {
+		grid-template-columns: 1fr;
 	}
 }
