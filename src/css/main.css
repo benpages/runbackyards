@@ -1030,6 +1030,10 @@ footer a:hover {
 .tip-row-text {
 	flex: 1;
 }
+/* Image on the left instead of the right. Mobile still stacks image-first. */
+.tip-row--flip {
+	flex-direction: row-reverse;
+}
 
 /* ── Tip number + subtitle ───────────────────────────────────────────── */
 .tip-num {
@@ -1285,6 +1289,11 @@ p.section-note {
 }
 .insta-cta-btn:hover {
 	background: #a93226;
+}
+/* .page-section a paints links red, which turns this button red on red. */
+.page-section a.insta-cta-btn {
+	color: #fff;
+	text-decoration: none;
 }
 
 /* ── Loop clock visual ───────────────────────────────────────────────────── */
