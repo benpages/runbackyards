@@ -1,0 +1,13 @@
+<!--
+	Per-race data credit. Renders only when a page sets `timer` in its front matter.
+	Front matter keys:
+	  timer     — name of the timing company that produced the results
+	  timerUrl  — optional link to that company
+-->
+{% if timer %}
+	<p class="race-credit">
+		Timing and results for {{ navLabel or title }} by
+		{% if timerUrl %}<a href="{{ timerUrl }}" target="_blank" rel="noopener">{{ timer }}</a>{% else %}{{ timer }}{% endif %},
+		published through <a href="https://raceresult.com" target="_blank" rel="noopener">raceresult.com</a>.
+	</p>
+{% endif %}

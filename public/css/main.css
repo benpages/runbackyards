@@ -510,6 +510,25 @@ main {
 	max-width: 780px;
 }
 
+/* ── Data credit (race pages) ──────────────────────────────────────────── */
+.race-credit {
+	max-width: 780px;
+	margin: 1.5rem auto 2.5rem;
+	padding: 0 2rem;
+	font-size: 0.75rem;
+	line-height: 1.6;
+	color: #777;
+	text-align: center;
+}
+.race-credit a {
+	color: #555;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.race-credit a:hover {
+	color: #c0392b;
+}
+
 /* ── Footer ────────────────────────────────────────────────────────────── */
 footer {
 	text-align: center;
