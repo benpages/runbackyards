@@ -2799,6 +2799,17 @@ p.first-detail {
 }
 
 /* ── Race standings table ────────────────────────────────────────────────── */
+/*
+ * Wraps the standings block on race pages. Those sit outside .page-wrap, so
+ * without this they run edge to edge while the narrative above them is
+ * centred at 800px. Matches .page-wrap's width and gutters.
+ */
+.standings-section {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 0 2rem 5rem;
+}
+
 .standings-wrap {
 	overflow-x: auto;
 	border-radius: 10px;
@@ -2862,6 +2873,9 @@ p.first-detail {
 }
 
 @media (max-width: 640px) {
+	.standings-section {
+		padding: 0 1.5rem 3.5rem;
+	}
 	.standings th,
 	.standings td {
 		padding-left: 0.6rem;
