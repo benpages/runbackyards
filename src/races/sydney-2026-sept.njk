@@ -1,0 +1,176 @@
+---
+layout: base.njk
+title: "Sydney's Backyard Ultra 2026 Results (September) | backyards.run"
+description: "Full results and lap-by-lap pacing for Sydney's Backyard Ultra, Sep 19 2026, St Ives Showground, Australia. Justin Makhlouf won with 66 loops, 442.6 km, over 631 starters."
+navLabel: "Sydney's Backyard Ultra — Sept 2026"
+---
+<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+<div class="race-hero">
+	<p class="race-event">September 19, 2026 &nbsp;·&nbsp; St Ives Showground, Australia</p>
+	<h1>Sydney's Backyard<br>Ultra 2026</h1>
+	<p class="race-tagline">6.7056km loop &nbsp;·&nbsp; Last one standing wins &nbsp;·&nbsp; Start: 8 am</p>
+	<div class="hero-stats">
+		<div>
+			<div class="hstat-val winner-val" id="heroWinner">—</div>
+			<div class="hstat-label">Winner</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroLoops">—</div>
+			<div class="hstat-label">Winning loops</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroDist">—</div>
+			<div class="hstat-label">Winning distance</div>
+		</div>
+		<div>
+			<div class="hstat-val" id="heroRunners">—</div>
+			<div class="hstat-label">Runners</div>
+		</div>
+	</div>
+</div>
+
+<!-- ── Static description (indexed by Google) ─────────────────────────────── -->
+<p class="race-desc">
+	Sydney's Backyard Ultra 2026 results, held September 19 at St Ives Showground in Sydney, Australia. Six hundred and thirty-one runners started at 8 am on a 6.7056km loop, one lap every hour until only one runner remained. Justin Makhlouf outlasted the field, completing 66 loops and covering 442.6 km. Below are the full results, lap pacing, and DNF breakdown.
+</p>
+
+{% include "race-analysis-charts.njk" %}
+
+<!-- ── How it unfolded ────────────────────────────────────────────────────── -->
+<div class="page-wrap page-wrap--no-bottom">
+	<div class="page-section">
+		<h2>Three hundred and forty-eight gone before the first night</h2>
+		<p>
+			Six hundred and thirty-one runners started at eight on Saturday morning. Three hundred and forty-eight of them completed 12 loops or fewer, done by eight that evening, all of it in daylight.
+		</p>
+		<p>
+			The single biggest hour of the whole race came that night: 98 runners completed loop 15 and did not go back out for loop 16.
+		</p>
+		<p>
+			By six on Sunday morning, 565 of the 631 starters were done. Sixty-six were still going.
+		</p>
+		<p>
+			The middle of the field thinned out from there:
+		</p>
+		<ul>
+			<li>Thirty runners completed 30 loops or more.</li>
+			<li>Eleven completed 36 or more.</li>
+			<li>Five completed 40 or more.</li>
+		</ul>
+
+		<h2>Five loops, two seconds apart</h2>
+		<p>
+			Rhys Comley, running third, finished with 59 loops. From loop 60 on, the race for the win was a two-runner contest between Justin Makhlouf and Lee Warren. </p>
+		<p>For five loops in a row, 58 through 62, they finished within two seconds of each other every single time: 53:32 and 53:32, 53:00 and 53:00, 49:50 and 49:49, 51:54 and 51:54, 53:21 and 53:20.
+		</p>
+		<p>
+			Loop 63 split them. Makhlouf ran 45:25. Warren ran 52:33, seven minutes and eight seconds slower.
+		</p>
+		<p>
+			Warren never closed the gap back up. He ran 54:59 on loop 64 and 55:21 on loop 65, his slowest loop of the race. He started loop 66 and did not finish it in time.
+		</p>
+		<p>
+			Makhlouf ran loop 66 alone, in 47:21, and won with 66 loops and 442.6 km.
+		</p>
+		<p>
+			Across the race, Makhlouf banked 11 hours 47 minutes of rest. Warren banked 10 hours 24 minutes.
+		</p>
+
+		<h2>Behind the leaders</h2>
+		<p>
+			Rhys Comley finished third with 59 loops, 395.6 km. Josh Graham was fourth with 51 loops. Chris Gulumian, racing under an Armenian flag, was fifth with 40 loops.
+		</p>
+		<p>
+			Kim Lueck was the top woman, finishing 37 loops for 7th place overall — the best result among the 107 women in the 631-runner field.
+		</p>
+	</div>
+</div>
+
+<!-- ── Full standings ─────────────────────────────────────────────────── -->
+<div class="standings-section">
+	<div class="section-header">
+		<div>
+			<div class="section-title">Final Standings</div>
+			<div class="section-desc">All {{ sydney2026sept.runners | length }} starters · loops, distance and time on course</div>
+		</div>
+	</div>
+	<div class="standings-wrap">
+		<table class="standings">
+			<thead>
+				<tr>
+					<th>Pl.</th>
+					<th>Runner</th>
+					<th>Loops</th>
+					<th>Distance</th>
+					<th>Total time</th>
+				</tr>
+			</thead>
+			<tbody id="standingsBody">
+				{% for runner in sydney2026sept.runners %}
+					<tr class="{% if loop.first %}is-winner{% endif %}{% if loop.index > 20 %} is-hidden{% endif %}">
+						<td class="st-place">{{ loop.index }}</td>
+						<td class="st-name">{{ runner.name }}</td>
+						<td class="st-loops">{{ runner.loops }}</td>
+						<td class="st-num">{{ (runner.loops * 6.7056) | fixed(1) }} km</td>
+						<td class="st-num">{{ runner.totalTime }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class="standings-more">
+		<button class="show-more-btn" id="standingsToggle" type="button">
+			Show all {{ sydney2026sept.runners | length }} runners
+		</button>
+	</div>
+</div>
+
+<script>
+	(function () {
+		const button = document.getElementById("standingsToggle");
+		const body = document.getElementById("standingsBody");
+		if (!button || !body) {
+			return;
+		}
+		let expanded = false;
+		const total = body
+			.querySelectorAll("tr")
+			.length;
+		button.addEventListener("click", function () {
+			expanded = !expanded;
+			body
+				.querySelectorAll("tr")
+				.forEach(function (row, index) {
+					row
+						.classList
+						.toggle("is-hidden", !expanded && index >= 20);
+				});
+			button.textContent = expanded
+				? "Show top 20 only"
+				: "Show all " + total + " runners";
+		});
+	})();
+</script>
+
+{% set includeDatalabels = true %}
+{% include "chart-scripts.njk" %}
+<script>
+	window
+		.BackyardCharts
+		.createRacePage({
+			race: {
+				id: "Sydney_2026_Sept",
+				label: "Sydney's Backyard Ultra 2026 (Sept)",
+				eventId: "420967",
+				host: "my4",
+				apiKey: "b71449a8ea7e021fe7593f3acc460ee9",
+				listname: "Laps",
+				page: "details1",
+				startHour: 8,
+				extraParams: "&r=all&l=0",
+				loopDistance: 6.7056,
+				distanceUnit: "km",
+				distanceDecimals: 1
+			}
+		});
+</script>

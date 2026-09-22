@@ -135,9 +135,10 @@
     "city": "Sydney",
     "region": "NSW",
     "country": "Australia",
-    "status": "open",
+    "status": "completed",
     "price": "AUD $275",
     "registrationUrl": "https://sydneysbackyardultra.au",
+    "resultsUrl": "/races/sydney-2026-sept/",
     "tags": ["silver-ticket"]
   },
   {

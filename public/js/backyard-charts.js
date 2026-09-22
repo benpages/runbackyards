@@ -130,7 +130,6 @@
 			}
 
 			let athleteName;
-			let totalLaps;
 
 			if (key.includes(" /// ")) {
 				const namePart = key.split(" /// ")[0]
@@ -149,8 +148,6 @@
 						? `${parts[parts.length - 1]} ${parts.slice(0, -1).join(" ")}`
 						: namePart);
 				}
-				const match = key.match(/(\d+) Laps?/i);
-				totalLaps = match ? parseInt(match[1], 10) : actualRows.length;
 			} else {
 				const parts = key.split("///");
 				const displayName = (parts[1] || "").trim();
@@ -166,55 +163,87 @@
 							? `${nameParts[nameParts.length - 1]} ${nameParts.slice(0, -1).join(" ")}`
 							: displayName;
 				}
-				const match = (parts[2] || "").match(/(\d+)/);
-				totalLaps = match ? parseInt(match[1], 10) : actualRows.length;
 			}
 
-			actualRows.forEach((row) => {
-				if (!Array.isArray(row)) {
-					return;
-				}
+			// Parse every row into a candidate lap first, without pushing yet. The
+			// key text's own "N Laps" (or "N Ronden") count is loops *started*, not
+			// completed — raceresult labels it that way even for a DNF whose last
+			// attempted loop never got a finish time. A runner's real total is the
+			// highest lap number that actually has one, so we compute totalLaps from
+			// the parsed rows themselves rather than trusting that label. (The
+			// winner is unaffected either way, since their last attempted loop is
+			// always their last completed one.)
+			const candidates = actualRows
+				.map((row) => {
+					if (!Array.isArray(row)) {
+						return null;
+					}
 
-				let lapNum;
-				let finishTime;
-				let restTime;
+					let lapNum;
+					let finishTime;
+					let restTime;
 
-				if (String(row[3]).startsWith("Yard")) {
-					// Sydney format: [bib, pid, flag, "Yard N", start, s1, s2, s3, finish, yardTime, ...]
-					lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
-					finishTime = row[9]; // "Yard Time" elapsed HH:MM:SS e.g. "00:43:58"
-					restTime = row[10];
-				} else if (row.length >= 7 && String(row[3]).startsWith("Lap")) {
-					// G1M format: [col, bib, flag, "LapN", cp, finishTime, rest]
-					lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
-					finishTime = row[5];
-					restTime = row[6];
-				} else if (row.length >= 6) {
-					// Big's format: [flag, bib, lapNum, cumulativeTime, finishTime, rest]
-					lapNum = parseInt(row[2], 10);
-					finishTime = row[4];
-					restTime = row[5];
-				} else if (row.length >= 5) {
-					// Two 5-column formats:
-					// Legends 2026: [bib, id, lapNum, finishTime, distance]
-					// Legends 2025: [bib, id, lapNum, distance, finishTime]
-					lapNum = parseInt(row[2], 10);
-					finishTime = String(row[3]).includes("km") ? row[4] : row[3];
-					restTime = null;
-				} else {
-					return;
-				}
+					if (String(row[3]).startsWith("Yard")) {
+						// Sydney format: [bib, pid, flag, "Yard N", start, s1, s2, s3, finish, yardTime, ...]
+						lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
+						finishTime = row[9]; // "Yard Time" elapsed HH:MM:SS e.g. "00:43:58"
+						restTime = row[10];
+					} else if (row.length >= 10 && /^\d+$/.test(String(row[3]))) {
+						// Sydney's Backyard Ultra Sept 2026 format (different raceresult host/list
+						// config than the April Sydney race above): [bib, id, flag, lapNum,
+						// loopStartClock, cp1, cp2, cp3, finishClock, lapSplit, cumDistanceKm, ...].
+						// lapNum here is a bare number, not "Yard N" or "LapN", so it's matched on
+						// shape: long row, numeric row[3]. finishTime is the lap split at row[9] —
+						// empty when the runner started this loop but didn't complete it in time,
+						// which correctly drops that row below (they get credit for loops actually
+						// finished, not loops merely started).
+						lapNum = parseInt(row[3], 10);
+						finishTime = row[9];
+						restTime = null;
+					} else if (row.length >= 7 && String(row[3]).startsWith("Lap")) {
+						// G1M format: [col, bib, flag, "LapN", cp, finishTime, rest]
+						lapNum = parseInt(String(row[3]).replace(/\D/g, ""), 10);
+						finishTime = row[5];
+						restTime = row[6];
+					} else if (row.length >= 6) {
+						// Big's format: [flag, bib, lapNum, cumulativeTime, finishTime, rest]
+						lapNum = parseInt(row[2], 10);
+						finishTime = row[4];
+						restTime = row[5];
+					} else if (row.length >= 5) {
+						// Two 5-column formats:
+						// Legends 2026: [bib, id, lapNum, finishTime, distance]
+						// Legends 2025: [bib, id, lapNum, distance, finishTime]
+						lapNum = parseInt(row[2], 10);
+						finishTime = String(row[3]).includes("km") ? row[4] : row[3];
+						restTime = null;
+					} else {
+						return null;
+					}
 
-				if (!isNaN(lapNum) && finishTime) {
-					rows.push({
-						athlete: athleteName,
-						race: race.id,
-						total_laps: totalLaps,
-						lap: `Lap${lapNum}`,
-						finish_time: finishTime,
-						rest_time: restTime,
-					});
-				}
+					if (isNaN(lapNum) || !finishTime) {
+						return null;
+					}
+
+					return { lapNum, finishTime, restTime };
+				})
+				.filter(Boolean);
+
+			if (!candidates.length) {
+				return;
+			}
+
+			const totalLaps = Math.max(...candidates.map((c) => c.lapNum));
+
+			candidates.forEach(({ lapNum, finishTime, restTime }) => {
+				rows.push({
+					athlete: athleteName,
+					race: race.id,
+					total_laps: totalLaps,
+					lap: `Lap${lapNum}`,
+					finish_time: finishTime,
+					rest_time: restTime,
+				});
 			});
 		});
 
@@ -574,20 +603,36 @@
 		const step = maxLap > 60 ? 10 : maxLap > 30 ? 5 : 1;
 		const plugins = window.ChartDataLabels ? [window.ChartDataLabels] : [];
 		const dataMax = Math.max(...data);
-		const nightAnnotations = buildNightAnnotations(race, maxLap, 0, dataMax + 5);
+		// Headroom above the tallest bar, sized so the WINNER tag's own pixel
+		// height always has room above it — a fixed "+5" data-unit margin works
+		// for a small field (Legends tops out around 16) but gets squeezed to a
+		// few pixels on a mass-participation field like this one, where the
+		// tallest bar is around 100: the tag was getting clipped at the top of
+		// the chart. Scale the margin with dataMax instead of a flat constant.
+		const headroom = Math.max(5, Math.ceil(dataMax * 0.12));
+		const nightAnnotations = buildNightAnnotations(race, maxLap, 0, dataMax + headroom);
 		// The winner's column is marked, not barred: a hairline accent rule rising
 		// from a dot that sits exactly on the axis, capped with a small "WINNER"
 		// tag. Nothing here has bar width, so it can't collide with its neighbour.
+		//
+		// winnerIndex (0-based) is numerically equal to the winner's own loop
+		// count — maxLap is winnerMaxLap + 1, so maxLap - 1 = winnerMaxLap — but
+		// as an ARRAY INDEX it points at labels[winnerIndex], which reads
+		// "L{winnerIndex + 1}", one loop past what the winner actually ran (there
+		// was no loop after the one they won on). Anywhere this column's loop
+		// number is displayed, use the literal value `winnerIndex`, not the
+		// label array or a "+1" index-to-loop conversion.
 		const winnerAnnotation = {
 			winnerLine: {
 				type: "line",
 				xMin: winnerIndex,
 				xMax: winnerIndex,
 				yMin: 0,
-				yMax: dataMax + 2.2,
+				yMax: dataMax + headroom * 0.55,
 				borderColor: "rgba(192, 57, 43, 0.35)",
 				borderWidth: 1,
 				borderDash: [3, 3],
+				clip: false,
 			},
 			winnerDot: {
 				type: "point",
@@ -603,7 +648,7 @@
 			winnerTag: {
 				type: "label",
 				xValue: winnerIndex,
-				yValue: dataMax + 2.2,
+				yValue: dataMax + headroom * 0.55,
 				content: "WINNER",
 				// The winner is always the last column, so hang the tag to the left
 				// of the rule rather than centred on it — keeps it inside the plot.
@@ -614,6 +659,11 @@
 				color: "#fff",
 				font: { size: 8, weight: "700", family: "Inter, sans-serif" },
 				padding: { top: 3, bottom: 3, left: 5, right: 5 },
+				// Never let the chart area clip this label — with a tall field
+				// (headroom is a small fraction of dataMax) it can otherwise sit
+				// close enough to the top that its own box height pokes past the
+				// canvas edge and gets cut off.
+				clip: false,
 			},
 		};
 
@@ -656,9 +706,12 @@
 					},
 					tooltip: {
 						callbacks: {
-							title: (ctx) =>
-								`Loop ${ctx[0].dataIndex + 1}` +
-								(race.startHour !== undefined ? ` · ${todStr(ctx[0].dataIndex + 1, race.startHour)}` : ""),
+							title: (ctx) => {
+								// winnerIndex is the winner's actual loop count, not
+								// (index + 1) — see comment above winnerAnnotation.
+								const lap = ctx[0].dataIndex === winnerIndex ? winnerIndex : ctx[0].dataIndex + 1;
+								return `Loop ${lap}` + (race.startHour !== undefined ? ` · ${todStr(lap, race.startHour)}` : "");
+							},
 							label: (ctx) => {
 								const count = ctx.parsed.y;
 								if (count === 0) {
@@ -689,7 +742,9 @@
 							autoSkip: false,
 							callback(_value, index) {
 								if (index === winnerIndex) {
-									return labels[index];
+									// winnerIndex *is* the winner's loop count (see comment
+									// above winnerAnnotation) — not an index into labels[].
+									return `L${winnerIndex}`;
 								}
 								return (index + 1) % step === 0 || index === 0 ? labels[index] : "";
 							},
@@ -697,7 +752,7 @@
 					},
 					y: {
 						beginAtZero: true,
-						max: Math.max(...data) + 5,
+						max: dataMax + headroom,
 						ticks: {
 							color: TEXT_COLOR,
 							font: { size: 10 },

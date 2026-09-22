@@ -48,11 +48,6 @@
     </url>
   
     <url>
-      <loc>https://backyards.run/races/sydney-2026/</loc>
-      <lastmod>2026-09-09T08:02:30.591Z</lastmod>
-    </url>
-  
-    <url>
       <loc>https://backyards.run/races/legends-2025/</loc>
       <lastmod>2026-09-09T08:27:04.519Z</lastmod>
     </url>
@@ -85,6 +80,16 @@
     <url>
       <loc>https://backyards.run/backyard-ultra-crew/</loc>
       <lastmod>2026-09-09T16:46:07.913Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/races/sydney-2026/</loc>
+      <lastmod>2026-09-22T08:50:43.624Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/races/sydney-2026-sept/</loc>
+      <lastmod>2026-09-22T08:51:12.193Z</lastmod>
     </url>
   
 </urlset>

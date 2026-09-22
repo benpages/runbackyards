@@ -1096,6 +1096,20 @@ footer a:hover {
 	margin-bottom: 1rem;
 	max-width: 660px;
 }
+.page-section ul {
+	font-size: 0.95rem;
+	color: #444;
+	line-height: 1.8;
+	margin: 0 0 1.5rem;
+	padding-left: 1.25rem;
+	max-width: 660px;
+}
+.page-section ul li {
+	margin-bottom: 0.25rem;
+}
+.page-section ul li:last-child {
+	margin-bottom: 0;
+}
 .page-section--last {
 	border-bottom: none;
 	margin-bottom: 0;
