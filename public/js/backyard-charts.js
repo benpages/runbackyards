@@ -37,6 +37,38 @@
 		return parts[0] + parts[1] / 60;
 	}
 
+	// ── Women vs men ──────────────────────────────────────────────────────
+	// Same rules as lib/gender.js (build time). Kept in step by hand: the
+	// browser cannot require() that file.
+	const GROUP_STYLE = {
+		F: { label: "Women", color: "#C0392B" },
+		M: { label: "Men", color: "#1A1A1A" },
+	};
+	// Fallback only. The page passes the real cutoff from lib/gender.js on the
+	// canvas as data-min-runners, so the copy and the chart always agree.
+	const MIN_RUNNERS_FOR_MEDIAN = 10;
+
+	function normSex(value) {
+		if (value == null) return null;
+		const s = String(value).trim().toLowerCase();
+		if (!s) return null;
+		if (["f", "w", "female", "women", "woman"].includes(s)) return "F";
+		if (["m", "male", "men", "man"].includes(s)) return "M";
+		return "X";
+	}
+
+	function median(values) {
+		const v = values.slice().sort((a, b) => a - b);
+		const mid = Math.floor(v.length / 2);
+		return v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2;
+	}
+
+	/** True when the rows carry both women and men, so the gender views make sense. */
+	function hasGender(rows) {
+		const seen = new Set(rows.map((row) => row.sex));
+		return seen.has("F") && seen.has("M");
+	}
+
 	function fmtMin(minutes) {
 		const mins = Math.floor(minutes);
 		const secs = Math.round((minutes - mins) * 60);
@@ -250,12 +282,19 @@
 		return rows;
 	}
 
+	// One key per runner. Lap files give every runner their own key, so two
+	// runners with the same name (Sydney Sept 2026 had two Jack Woods) stay
+	// two runners. Live raceresult rows fall back to the name.
+	const runnerKey = (row) => row.key || row.athlete;
+
 	function buildPaceData(rows) {
 		const athleteMap = {};
 
 		rows.forEach((row) => {
-			if (!athleteMap[row.athlete]) {
-				athleteMap[row.athlete] = {
+			const key = runnerKey(row);
+			if (!athleteMap[key]) {
+				athleteMap[key] = {
+					name: row.athlete,
 					total: +row.total_laps,
 					laps: {},
 				};
@@ -263,11 +302,14 @@
 
 			const lapNum = parseInt((row.lap || "").replace(/\D/g, ""), 10);
 			if (!isNaN(lapNum)) {
-				athleteMap[row.athlete].laps[lapNum] = toLapMin(row.finish_time);
+				athleteMap[key].laps[lapNum] = toLapMin(row.finish_time);
 			}
 		});
 
-		const sorted = Object.entries(athleteMap).sort(([, a], [, b]) => b.total - a.total);
+		// [name, athlete] pairs, most loops first.
+		const sorted = Object.values(athleteMap)
+			.sort((a, b) => b.total - a.total)
+			.map((athlete) => [athlete.name, athlete]);
 		const maxLap = Math.max(...sorted.map(([, athlete]) => athlete.total));
 		const labels = Array.from({ length: maxLap }, (_, i) => `L${i + 1}`);
 		const datasets = sorted.map(([name, athlete], index) => {
@@ -317,7 +359,7 @@
 `;
 	}
 
-	function buildNightAnnotations(race, maxLap, yMin = 38, yMax = 62) {
+	function buildNightAnnotations(race, maxLap, yMin = 38, yMax = 62, labelY = 61.3) {
 		const annotations = {};
 		if (race.startHour === undefined) {
 			return annotations;
@@ -339,7 +381,7 @@
 				annotations[`nightLabel${index}`] = {
 					type: "label",
 					xValue: mid,
-					yValue: 61.3,
+					yValue: labelY,
 					content: `Night ${index + 1}`,
 					font: { size: 9 },
 					color: "rgba(20,40,120,0.35)",
@@ -570,26 +612,40 @@
 		return { mi, km: mi * KM_PER_MI };
 	}
 
-	function renderDNFChart({ rows, race, canvas, existingChart, unitToggleId = "dnfUnitToggle" }) {
+	function renderDNFChart({ rows, race, canvas, existingChart, unitToggleId = "dnfUnitToggle", group = "all" }) {
 		// Use the highest lap number actually parsed per athlete (completed laps only),
 		// so DNF runners who started but didn't finish a lap don't get counted one loop too late.
 		const athleteMaxLap = {};
+		const athleteSex = {};
 		rows.forEach((row) => {
 			const lapNum = parseInt((row.lap || "").replace(/\D/g, ""), 10);
 			if (!isNaN(lapNum)) {
-				athleteMaxLap[row.athlete] = Math.max(athleteMaxLap[row.athlete] || 0, lapNum);
+				const key = runnerKey(row);
+				athleteMaxLap[key] = Math.max(athleteMaxLap[key] || 0, lapNum);
+				athleteSex[key] = row.sex;
 			}
 		});
 
+		// The x-axis always spans the whole race, whichever group is showing, so
+		// Women / Men / All line up bar for bar. Only the counts change.
 		const maxLap = Math.max(...Object.values(athleteMaxLap)) + 1;
+		const winnerLoops = maxLap - 1;
+		const inGroup = (name) => group === "all" || athleteSex[name] === group;
+		const groupNames = Object.keys(athleteMaxLap).filter(inGroup);
+		const groupSize = groupNames.length;
+		const winnerInGroup = groupNames.some((name) => athleteMaxLap[name] === winnerLoops);
+		const groupLabel = group === "all" ? null : GROUP_STYLE[group].label.toLowerCase();
 		const counts = {};
-		Object.values(athleteMaxLap).forEach((maxL) => {
+		groupNames.map((name) => athleteMaxLap[name]).forEach((maxL) => {
 			const bucket = maxL + 1;
 			counts[bucket] = (counts[bucket] || 0) + 1;
 		});
 
 		const { mi: loopMi, km: loopKm } = loopDistances(race);
-		let unit = "mi";
+		// Keep whichever unit the toggle already shows (the chart is rebuilt when
+		// the Women / Men / All filter changes).
+		const activeUnitBtn = document.querySelector(`#${unitToggleId} button.active`);
+		let unit = activeUnitBtn ? activeUnitBtn.dataset.unit : "mi";
 		// Distance completed when a runner's race ended at bar index `i` (Loop i+1):
 		// they finished i full loops (a DNF on Loop 1 means 0 loops completed).
 		const distanceAt = (index) => (unit === "km" ? index * loopKm : index * loopMi);
@@ -602,18 +658,13 @@
 		const colors = data.map((_value, i) => (i === winnerIndex ? "transparent" : "rgba(26,26,26,0.75)"));
 		const step = maxLap > 60 ? 10 : maxLap > 30 ? 5 : 1;
 		const plugins = window.ChartDataLabels ? [window.ChartDataLabels] : [];
-		const dataMax = Math.max(...data);
-		// Headroom above the tallest bar, sized so the WINNER tag's own pixel
-		// height always has room above it — a fixed "+5" data-unit margin works
-		// for a small field (Legends tops out around 16) but gets squeezed to a
-		// few pixels on a mass-participation field like this one, where the
-		// tallest bar is around 100: the tag was getting clipped at the top of
-		// the chart. Scale the margin with dataMax instead of a flat constant.
-		const headroom = Math.max(5, Math.ceil(dataMax * 0.12));
+		const dataMax = Math.max(1, ...data);
+		// Headroom above the tallest bar, for the count printed on top of it.
+		// The WINNER tag sits near the axis now, so it needs none.
+		const headroom = Math.max(2, Math.ceil(dataMax * 0.07));
 		const nightAnnotations = buildNightAnnotations(race, maxLap, 0, dataMax + headroom);
-		// The winner's column is marked, not barred: a hairline accent rule rising
-		// from a dot that sits exactly on the axis, capped with a small "WINNER"
-		// tag. Nothing here has bar width, so it can't collide with its neighbour.
+		// The winner's column is marked, not barred: a dot on the axis with a
+		// WINNER tag just above it, low enough to read with the axis label.
 		//
 		// winnerIndex (0-based) is numerically equal to the winner's own loop
 		// count — maxLap is winnerMaxLap + 1, so maxLap - 1 = winnerMaxLap — but
@@ -623,17 +674,6 @@
 		// number is displayed, use the literal value `winnerIndex`, not the
 		// label array or a "+1" index-to-loop conversion.
 		const winnerAnnotation = {
-			winnerLine: {
-				type: "line",
-				xMin: winnerIndex,
-				xMax: winnerIndex,
-				yMin: 0,
-				yMax: dataMax + headroom * 0.55,
-				borderColor: "rgba(192, 57, 43, 0.35)",
-				borderWidth: 1,
-				borderDash: [3, 3],
-				clip: false,
-			},
 			winnerDot: {
 				type: "point",
 				xValue: winnerIndex,
@@ -641,28 +681,26 @@
 				backgroundColor: "#C0392B",
 				borderColor: "#F7F4EF",
 				borderWidth: 1.5,
-				radius: 4,
+				radius: 5,
 				// Draw the full dot even though it straddles the axis line.
 				clip: false,
 			},
 			winnerTag: {
 				type: "label",
 				xValue: winnerIndex,
-				yValue: dataMax + headroom * 0.55,
+				yValue: 0,
 				content: "WINNER",
-				// The winner is always the last column, so hang the tag to the left
-				// of the rule rather than centred on it — keeps it inside the plot.
+				// Bottom-right corner of the tag sits just above and left of the dot.
+				// The winner is always the last column, so hanging left keeps it in the plot.
 				position: { x: "end", y: "end" },
-				xAdjust: -3,
+				xAdjust: -4,
+				// About two lines above the axis: clear of a 1-runner bar's count next door.
+				yAdjust: -26,
 				backgroundColor: "#C0392B",
 				borderRadius: 3,
 				color: "#fff",
-				font: { size: 8, weight: "700", family: "Inter, sans-serif" },
-				padding: { top: 3, bottom: 3, left: 5, right: 5 },
-				// Never let the chart area clip this label — with a tall field
-				// (headroom is a small fraction of dataMax) it can otherwise sit
-				// close enough to the top that its own box height pokes past the
-				// canvas edge and gets cut off.
+				font: { size: 11, weight: "700", family: "Inter, sans-serif" },
+				padding: { top: 4, bottom: 4, left: 7, right: 7 },
 				clip: false,
 			},
 		};
@@ -692,7 +730,8 @@
 				plugins: {
 					legend: { display: false },
 					annotation: {
-						annotations: { ...nightAnnotations, ...winnerAnnotation },
+						// The winner marker only shows when the winner is in the group on screen.
+						annotations: { ...nightAnnotations, ...(winnerInGroup ? winnerAnnotation : {}) },
 					},
 					datalabels: {
 						anchor: "end",
@@ -726,7 +765,12 @@
 								if (ctx.parsed.y === 0) {
 									return null;
 								}
-								return ` ${distanceAt(ctx.dataIndex).toFixed(1)} ${unit} completed`;
+								const lines = [` ${distanceAt(ctx.dataIndex).toFixed(1)} ${unit} completed`];
+								if (groupLabel) {
+									const share = ((ctx.parsed.y / groupSize) * 100).toFixed(1);
+									lines.push(` ${share}% of the ${groupSize} ${groupLabel}`);
+								}
+								return lines;
 							},
 							filter: (item) => item.parsed.y > 0,
 						},
@@ -736,8 +780,8 @@
 					x: {
 						grid: { display: false },
 						ticks: {
-							color: (ctx) => (ctx.index === winnerIndex ? "#C0392B" : TEXT_COLOR),
-							font: (ctx) => ({ size: 9, weight: ctx.index === winnerIndex ? "700" : "400" }),
+							color: (ctx) => (winnerInGroup && ctx.index === winnerIndex ? "#C0392B" : TEXT_COLOR),
+							font: (ctx) => ({ size: 9, weight: winnerInGroup && ctx.index === winnerIndex ? "700" : "400" }),
 							maxRotation: 0,
 							autoSkip: false,
 							callback(_value, index) {
@@ -781,6 +825,254 @@
 		}
 
 		return chart;
+	}
+
+	/**
+	 * Women vs men, loop by loop. Each point is the median loop time of every
+	 * runner in that group who finished that loop. A line stops at the first
+	 * loop that fewer than `minRunners` of them finished.
+	 */
+	function buildGroupMedians(rows, minRunners = MIN_RUNNERS_FOR_MEDIAN) {
+		const byGroupLoop = { F: {}, M: {} };
+		rows.forEach((row) => {
+			if (!byGroupLoop[row.sex]) {
+				return;
+			}
+			const lapNum = parseInt((row.lap || "").replace(/\D/g, ""), 10);
+			const minutes = toLapMin(row.finish_time);
+			if (isNaN(lapNum) || minutes == null) {
+				return;
+			}
+			(byGroupLoop[row.sex][lapNum] = byGroupLoop[row.sex][lapNum] || []).push(minutes);
+		});
+
+		const series = {};
+		Object.entries(byGroupLoop).forEach(([group, loops]) => {
+			const points = [];
+			for (let lap = 1; loops[lap] && loops[lap].length >= minRunners; lap++) {
+				points.push({ lap, median: median(loops[lap]), n: loops[lap].length });
+			}
+			series[group] = points;
+		});
+		return series;
+	}
+
+	function renderGenderPaceChart({ rows, race, canvas, keysEl, existingChart }) {
+		const series = buildGroupMedians(rows, Number(canvas.dataset.minRunners) || MIN_RUNNERS_FOR_MEDIAN);
+		const lastLap = Math.max(...Object.values(series).map((points) => points.length));
+		if (!lastLap) {
+			return null;
+		}
+		const labels = Array.from({ length: lastLap }, (_, i) => `L${i + 1}`);
+		const allMedians = Object.values(series).flat().map((p) => p.median);
+		const yMin = Math.floor(Math.min(...allMedians)) - 2;
+		const yMax = Math.ceil(Math.max(...allMedians)) + 2;
+
+		const datasets = ["F", "M"].map((group) => {
+			const byLap = {};
+			series[group].forEach((p) => {
+				byLap[p.lap] = p;
+			});
+			return {
+				label: GROUP_STYLE[group].label,
+				data: labels.map((_, i) => (byLap[i + 1] ? byLap[i + 1].median : null)),
+				counts: labels.map((_, i) => (byLap[i + 1] ? byLap[i + 1].n : null)),
+				borderColor: GROUP_STYLE[group].color,
+				backgroundColor: GROUP_STYLE[group].color,
+				borderWidth: 2.5,
+				pointRadius: 2,
+				pointHoverRadius: 5,
+				tension: 0.25,
+				spanGaps: false,
+			};
+		});
+
+		if (keysEl) {
+			keysEl.innerHTML = datasets
+				.map((d) => `<span class="chart-key"><span class="chart-key-line" style="background:${d.borderColor}"></span>${d.label}</span>`)
+				.join("");
+		}
+
+		if (existingChart) {
+			existingChart.destroy();
+		}
+
+		const step = chartStep(lastLap);
+		const hasStartTime = race.startHour !== undefined;
+
+		return new Chart(canvas, {
+			type: "line",
+			data: { labels, datasets },
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				animation: false,
+				interaction: { mode: "index", intersect: false },
+				plugins: {
+					legend: { display: false },
+					annotation: {
+						annotations: buildNightAnnotations(race, lastLap, yMin, yMax, yMax - 0.5),
+					},
+					tooltip: {
+						callbacks: {
+							title: (ctx) => {
+								const lap = ctx[0].dataIndex + 1;
+								return hasStartTime ? `Loop ${lap} · ${todStr(lap, race.startHour)}` : `Loop ${lap}`;
+							},
+							label: (ctx) => {
+								if (ctx.parsed.y == null) {
+									return null;
+								}
+								const n = ctx.dataset.counts[ctx.dataIndex];
+								return ` ${ctx.dataset.label}: ${fmtMin(ctx.parsed.y)}, middle time of ${n} runners`;
+							},
+							filter: (item) => item.parsed.y != null,
+						},
+					},
+				},
+				scales: {
+					x: {
+						ticks: {
+							color: TEXT_COLOR,
+							font: { size: 10 },
+							maxRotation: 0,
+							autoSkip: false,
+							callback(_value, index) {
+								return (index + 1) % step === 0 || index === 0 ? labels[index] : "";
+							},
+						},
+						grid: { color: GRID_COLOR },
+					},
+					y: {
+						min: yMin,
+						max: yMax,
+						title: {
+							display: true,
+							text: "Middle loop time (min)",
+							color: TEXT_COLOR,
+							font: { size: 11 },
+						},
+						ticks: {
+							color: TEXT_COLOR,
+							font: { size: 11 },
+							stepSize: 1,
+							callback: (value) => `${value} min`,
+						},
+						grid: { color: GRID_COLOR },
+					},
+				},
+			},
+		});
+	}
+
+	/** The winner and runner-up only, full race, with a colour key. */
+	function renderTopPaceChart({ rows, race, canvas, keysEl }) {
+		const paceData = buildPaceData(rows);
+		const datasets = paceData.datasets.slice(0, 2).map((d) => ({ ...d, pointRadius: 0 }));
+		if (keysEl) {
+			keysEl.innerHTML = datasets
+				.map((d, i) => `<span class="chart-key"><span class="chart-key-line" style="background:${d.borderColor}"></span>${fullDisplayName(paceData.sorted[i][0])}</span>`)
+				.join("");
+		}
+		const config = makePaceChartConfig({
+			labels: paceData.labels,
+			datasets,
+			race,
+			maxLap: paceData.maxLap,
+		});
+		config.options.scales.x.max = `L${paceData.maxLap}`;
+		return new Chart(canvas, config);
+	}
+
+	/**
+	 * Results table on template race pages: top 10, "show all", a name search
+	 * and an All / Women / Men switch. Rows are rendered at build time.
+	 */
+	const STANDINGS_INITIAL = 10;
+
+	function initStandings(root) {
+		const rows = Array.from(root.querySelectorAll("tbody tr"));
+		const search = root.querySelector(".standings-search");
+		const toggle = root.querySelector("[data-standings-toggle]");
+		const groupBar = root.querySelector("[data-standings-group]");
+		const empty = root.querySelector(".standings-empty");
+		let expanded = false;
+		let group = "all";
+
+		function apply() {
+			const term = search ? search.value.trim().toLowerCase() : "";
+			let shown = 0;
+			let matches = 0;
+			rows.forEach((row) => {
+				const match = (group === "all" || row.dataset.sex === group) && (!term || row.dataset.name.includes(term));
+				if (match) matches++;
+				// While searching, every match shows. Otherwise the top 10 of the group.
+				const visible = match && (expanded || term || shown < STANDINGS_INITIAL);
+				if (visible) shown++;
+				row.hidden = !visible;
+			});
+			if (empty) empty.hidden = matches > 0;
+			if (toggle) {
+				toggle.hidden = Boolean(term) || matches <= STANDINGS_INITIAL;
+				toggle.textContent = expanded ? `Show top ${STANDINGS_INITIAL} only` : `Show all ${matches} runners`;
+			}
+		}
+
+		if (search) search.addEventListener("input", apply);
+		if (toggle) {
+			toggle.addEventListener("click", () => {
+				expanded = !expanded;
+				apply();
+			});
+		}
+		if (groupBar) {
+			groupBar.querySelectorAll("button").forEach((btn) => {
+				btn.addEventListener("click", () => {
+					group = btn.dataset.group;
+					groupBar.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b === btn));
+					apply();
+				});
+			});
+		}
+		apply();
+	}
+
+	/**
+	 * Sticky "on this page" chips: highlight the section being read, which is
+	 * the last one whose top has passed a line 30% down the screen.
+	 */
+	function initToc(nav) {
+		const chips = Array.from(nav.querySelectorAll("a[href^='#']"));
+		const sections = chips.map((a) => document.getElementById(a.getAttribute("href").slice(1)));
+		let current = null;
+		let queued = false;
+
+		function update() {
+			queued = false;
+			const line = window.innerHeight * 0.3;
+			let index = -1;
+			sections.forEach((section, i) => {
+				if (section && section.getBoundingClientRect().top <= line) index = i;
+			});
+			// At the very bottom the last section may never reach the line.
+			if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+				index = sections.length - 1;
+			}
+			const chip = chips[index] || null;
+			if (chip === current) return;
+			current = chip;
+			chips.forEach((a) => a.classList.toggle("is-active", a === chip));
+			// Keep the active chip in view on phones, where the row scrolls sideways.
+			if (chip) nav.firstElementChild.scrollTo({ left: chip.offsetLeft - 16, behavior: "smooth" });
+		}
+
+		window.addEventListener("scroll", () => {
+			if (!queued) {
+				queued = true;
+				requestAnimationFrame(update);
+			}
+		}, { passive: true });
+		update();
 	}
 
 	function registerChartPlugins() {
@@ -848,7 +1140,7 @@
 	function expandLapFile(payload, race) {
 		const rows = [];
 
-		(payload.runners || []).forEach((runner) => {
+		(payload.runners || []).forEach((runner, runnerIndex) => {
 			const laps = runner.l || [];
 			const rests = runner.r || [];
 			laps.forEach((finishTime, index) => {
@@ -857,11 +1149,13 @@
 				}
 				rows.push({
 					athlete: runner.n,
+					key: `r${runnerIndex}`,
 					race: race.id,
 					total_laps: runner.t ?? laps.length,
 					lap: `Lap${index + 1}`,
 					finish_time: finishTime,
 					rest_time: rests[index] || null,
+					sex: normSex(runner.g),
 				});
 			});
 		});
@@ -908,6 +1202,11 @@
 		registerChartPlugins();
 		displayOverrides = race.displayNames || {};
 
+		// Template race pages (_includes/race-page.njk): build-time parts.
+		document.querySelectorAll("[data-standings]").forEach(initStandings);
+		document.querySelectorAll(".race-toc").forEach(initToc);
+
+		// Older race pages wrap the charts in #main and show #status while loading.
 		const statusEl = document.getElementById("status");
 		const mainEl = document.getElementById("main");
 		const statsEl = document.getElementById("statsRow");
@@ -917,6 +1216,8 @@
 			maxStatLabel: "Winning loops",
 		});
 		let dnfChart = null;
+		let topChart = null;
+		let genderChart = null;
 
 		fetchRows(race)
 			.then((rows) => {
@@ -944,11 +1245,64 @@
 					canvas: document.getElementById(dnfCanvasId),
 					existingChart: dnfChart,
 				});
-				statusEl.style.display = "none";
-				mainEl.style.display = "block";
+
+				// Women vs men. On when the race config opts in (genderViews: true)
+				// and its data carries both women and men. Opt-in so a race's
+				// gender field is checked before it is published.
+				if (race.genderViews && hasGender(rows)) {
+					const groupToggle = document.getElementById("dnfGroupToggle");
+					if (groupToggle) {
+						groupToggle.hidden = false;
+						groupToggle.querySelectorAll("button").forEach((btn) => {
+							btn.onclick = () => {
+								if (btn.classList.contains("active")) {
+									return;
+								}
+								groupToggle.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b === btn));
+								dnfChart = renderDNFChart({
+									rows,
+									race,
+									canvas: document.getElementById(dnfCanvasId),
+									existingChart: dnfChart,
+									group: btn.dataset.group,
+								});
+							};
+						});
+					}
+					const genderCanvas = document.getElementById("genderPaceChart");
+					if (genderCanvas) {
+						const card = document.getElementById("genderPaceCard");
+						// Show the card before drawing, so Chart.js measures a visible box.
+						if (card) card.hidden = false;
+						genderChart = renderGenderPaceChart({
+							rows,
+							race,
+							canvas: genderCanvas,
+							keysEl: document.getElementById("genderPaceKeys"),
+							existingChart: genderChart,
+						});
+					}
+				}
+
+				const topCanvas = document.getElementById("topPaceChart");
+				if (topCanvas && !topChart) {
+					topChart = renderTopPaceChart({
+						rows,
+						race,
+						canvas: topCanvas,
+						keysEl: document.getElementById("topPaceKeys"),
+					});
+				}
+
+				if (statusEl) statusEl.style.display = "none";
+				if (mainEl) mainEl.style.display = "block";
 			})
 			.catch((error) => {
-				showLoadError(statusEl, `Could not load data: ${error.message}.`, " Possible CORS issue - open from backyards.run.");
+				if (statusEl) {
+					showLoadError(statusEl, `Could not load data: ${error.message}.`, " Possible CORS issue - open from backyards.run.");
+				} else {
+					console.error("Could not load race data", error);
+				}
 			});
 	}
 

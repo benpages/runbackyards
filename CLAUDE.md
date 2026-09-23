@@ -1,5 +1,45 @@
 # backyards.run — Project Memory
 
+## Race pages: the template and the playbook (Sep 2026)
+
+Every race results page is built on one template. Sydney Sept 2026 is the reference page.
+Older race pages (Last Soul, Big's, Legends, G1M, Sydney April) still use the old layout
+until they are migrated one at a time.
+
+**Pieces**
+- `src/_data/raceData/<slug>.json`: the race's data, one standard shape for every race:
+  `{ meta, runners: [{ place, bib, name, sex, nation, loops, time, laps: [seconds…] }] }`.
+  loops = loops COMPLETED. laps[i] = seconds for loop i + 1. sex F / M / X (X is left out of both groups).
+- `lib/race.js`: the race model. Every number the page prints is worked out here (hero,
+  standings, rest banked, dropouts, milestones, day vs night, lap times). `lib/gender.js` does women and men.
+- `src/_includes/race-page.njk`: the page. Fixed section order, most important first:
+  hero (last man / last woman standing: name, loops, distance; then a race facts line) →
+  contents chips → Results (table only, no commentary) → How the race ended → When runners
+  dropped out → Women and men → Day vs night → Lap times → How a backyard ultra works.
+  Sections without data do not render.
+- `src/race-laps.njk`: writes `/races/<slug>/laps.json` for every file in raceData (the charts read it).
+- `src/js/backyard-charts.js`: charts, results search/filter, sticky contents chips.
+
+**Section format (Smart Brevity):** standard H2 (same on every race, written for search) →
+one bold takeaway line (race-specific, front matter `race.takeaways`: ending, dropouts, women,
+daynight, laptimes) → chart → "By the numbers" (worked out from data) → a little commentary
+(page blocks with the same names). No commentary that repeats a table or the hero.
+
+**Adding a race, in order**
+1. Fetch: write `scripts/fetch-<slug>.mjs` from `scripts/fetch-sydney-2026-sept.mjs`. It must write
+   the standard shape, take `place` from the official results order, and print PASS/FAIL checks
+   (split counts match results, every runner has a place). Ask Ben to run it and paste the output.
+2. Check the data: loops completed (not started), duplicate names, unnamed chips, gender counts
+   against the results site, and re-fetch before publishing (results stay "live" after a race).
+3. Page: `src/races/<slug>.njk` with `layout: base.njk`, `{% extends "race-page.njk" %}` and
+   `race:` front matter (slug, name, year, edition, date, dateLabel, location, startHour, loopKm,
+   loopLabel, unit, decimals, timer, timerUrl, takeaways). Ask Ben for the timer.
+4. Write the takeaways and commentary blocks: facts only, never causes, grade 4 reading level,
+   no em dashes. Use numbers from the rendered "By the numbers" where possible.
+5. Verify: build, check every number on the whole page against the data (both sides of every
+   loop boundary), render at 1440px and 390px, regression-check the other race pages.
+6. Add the race to the Race Results menu in `src/_includes/nav.njk`.
+
 ## What this is
 A static site for backyard ultra race analysis at backyards.run. Per-race pages with live lap pacing charts + DNF distribution charts, plus a standalone multi-race pace comparison tool.
 

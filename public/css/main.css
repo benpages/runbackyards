@@ -322,7 +322,8 @@ main {
 	margin-bottom: 0.85rem;
 	flex-wrap: wrap;
 }
-#runnerSearch {
+#runnerSearch,
+.standings-search {
 	flex: 0 0 auto;
 	width: 200px;
 	padding: 0.35rem 0.9rem;
@@ -334,11 +335,13 @@ main {
 	outline: none;
 	transition: border-color 0.15s;
 }
-#runnerSearch:focus {
+#runnerSearch:focus,
+.standings-search:focus {
 	border-color: #c0392b;
 	background: #fff;
 }
-#runnerSearch::placeholder {
+#runnerSearch::placeholder,
+.standings-search::placeholder {
 	color: #bbb;
 }
 
@@ -2817,7 +2820,8 @@ p.first-detail {
 	.dnf-chart-wrap {
 		height: 300px;
 	}
-	#runnerSearch {
+	#runnerSearch,
+	.standings-search {
 		width: 100%;
 	}
 	.legend-bar {
@@ -3110,5 +3114,244 @@ p.first-detail {
 	}
 	.page-form-row {
 		grid-template-columns: 1fr;
+	}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WOMEN AND MEN (race pages, shared: _includes/race-gender.njk)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Toggles in a chart's section header sit side by side. */
+.section-controls {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+/* .unit-toggle sets display:flex, which would beat the hidden attribute. */
+.unit-toggle[hidden] {
+	display: none;
+}
+
+/* ── Standout callout (e.g. last woman standing) ─────────────────────────── */
+.standout {
+	background: #141414;
+	border-radius: 10px;
+	padding: 1.75rem 1.75rem 1.5rem;
+	margin: 1.75rem 0 0.5rem;
+	max-width: 660px;
+}
+.standout-name {
+	font-size: clamp(2.4rem, 7vw, 3.5rem);
+	color: #fff;
+	margin: 0.6rem 0 0.4rem;
+}
+.standout-stat {
+	font-size: 1rem;
+	font-weight: 700;
+	color: #fff;
+	margin-bottom: 1rem;
+}
+/* Scoped under .page-section so it outranks `.page-section p`. */
+.page-section .standout p {
+	color: #bbb;
+	margin-bottom: 0.35rem;
+}
+
+/* ── Chart inside a page section ─────────────────────────────────────────── */
+.chart-card {
+	margin: 1.5rem 0;
+}
+.chart-keys {
+	display: flex;
+	gap: 1.25rem;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #333;
+}
+.chart-key {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+}
+.chart-key-line {
+	display: inline-block;
+	width: 22px;
+	height: 3px;
+	border-radius: 2px;
+}
+
+@media (max-width: 640px) {
+	.standout {
+		padding: 1.4rem 1.25rem 1.25rem;
+	}
+	.chart-card .chart-wrap {
+		height: 320px;
+	}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RACE PAGE TEMPLATE (_includes/race-page.njk)
+   Same frame for every race: hero, sticky contents chips, then standard
+   sections. Sections reuse .page-section, so spacing is identical throughout.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Hero content lines up with the sections below (.page-wrap--wide content box). */
+.race-hero-inner {
+	max-width: 1004px;
+	margin: 0 auto;
+}
+/* Last man / last woman standing: one row each, columns line up across rows. */
+.hero-standing {
+	display: grid;
+	grid-template-columns: max-content max-content max-content;
+	column-gap: 3rem;
+	row-gap: 1.5rem;
+	margin-top: 0.5rem;
+}
+.hero-row {
+	display: contents;
+}
+/* Race facts under the standings: one quiet line. */
+.race-facts {
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem 1.75rem;
+	margin-top: 2rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid #333;
+	font-size: 0.85rem;
+	color: #999;
+}
+.race-facts strong {
+	color: #fff;
+	font-weight: 600;
+}
+.race-facts a {
+	color: #fff;
+}
+
+/* ── Sticky contents chips ───────────────────────────────────────────────── */
+.race-toc {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	background: rgba(237, 234, 228, 0.94);
+	backdrop-filter: blur(6px);
+	border-bottom: 1px solid #e0dad2;
+}
+.race-toc-inner {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0.6rem 3rem;
+	display: flex;
+	gap: 0.4rem;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+.race-toc-inner::-webkit-scrollbar {
+	display: none;
+}
+.race-toc-chip {
+	flex: 0 0 auto;
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: #555;
+	text-decoration: none;
+	padding: 0.35rem 0.85rem;
+	border: 1px solid #d5d0c8;
+	border-radius: 20px;
+	background: #f7f4ef;
+	white-space: nowrap;
+	transition:
+		background 0.12s,
+		color 0.12s,
+		border-color 0.12s;
+}
+.race-toc-chip:hover {
+	background: #e8e4de;
+}
+.race-toc-chip.is-active {
+	background: #141414;
+	border-color: #141414;
+	color: #fff;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+.race-body {
+	padding-top: 3rem;
+}
+.race-body .page-section {
+	scroll-margin-top: 4rem;
+}
+/* One bold line under every heading: the story of the section. */
+.page-section p.takeaway {
+	font-size: 1.15rem;
+	font-weight: 600;
+	line-height: 1.5;
+	color: #141414;
+	margin-bottom: 1.5rem;
+}
+.by-numbers {
+	margin: 1.75rem 0;
+}
+.page-section p.by-numbers-label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #c0392b;
+	margin-bottom: 0.5rem;
+}
+.chart-title {
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: #141414;
+}
+.page-section p.chart-note {
+	font-size: 0.78rem;
+	color: #888;
+	margin: 0.75rem 0 0;
+}
+
+/* ── Results table ───────────────────────────────────────────────────────── */
+.standings-block {
+	margin: 1.5rem 0;
+}
+.page-section p.standings-empty {
+	padding: 1rem;
+	margin: 0;
+	color: #888;
+}
+
+@media (max-width: 600px) {
+	.race-toc-inner {
+		padding: 0.55rem 1rem;
+	}
+	.race-body.page-wrap--wide {
+		padding-left: 1rem;
+		padding-right: 1rem;
+		padding-top: 2rem;
+	}
+	.page-section p.takeaway {
+		font-size: 1.05rem;
+	}
+	/* Standings rows: name across the top, loops and distance under it. */
+	.hero-standing {
+		grid-template-columns: 1fr 1fr;
+		column-gap: 1.5rem;
+		row-gap: 0.9rem;
+	}
+	.hero-who {
+		grid-column: 1 / -1;
+		margin-top: 0.6rem;
+	}
+	.race-hero-inner .hstat-val {
+		font-size: 1.7rem;
+	}
+	/* Distance is loops times the loop, so it is the column to drop. */
+	.standings .st-dist {
+		display: none;
 	}
 }

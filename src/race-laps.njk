@@ -1,0 +1,10 @@
+---
+# One compact lap file per race in src/_data/raceData/, read by the charts.
+pagination:
+  data: raceData
+  size: 1
+  alias: slug
+permalink: "/races/{{ slug }}/laps.json"
+eleventyExcludeFromCollections: true
+---
+{{ raceData[slug] | lapFile | dump | safe }}
