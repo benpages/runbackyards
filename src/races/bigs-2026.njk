@@ -1,0 +1,79 @@
+---
+layout: base.njk
+title: "Big's Backyard Ultra 2026 (USA) Results | backyards.run"
+description: "Big's Backyard Ultra 2026 (USA) results and lap-by-lap pacing. Mark Dowdle won with 107 loops, 445.8 miles, at the US race of the team world championship. All 15 Team USA runners, every split. Bell Buckle, TN."
+navLabel: "Big's Backyard Ultra 2026 (USA)"
+race:
+  slug: bigs-2026
+  name: "Big's Backyard Ultra"
+  year: "2026 (USA)"
+  edition: "Team USA"
+  date: "2026-10-17"
+  dateLabel: "October 17, 2026"
+  location: "Bell Buckle, Tennessee, USA"
+  startHour: 7
+  loopKm: 6.7056
+  loopLabel: "4.167 miles (6.7 km)"
+  unit: mi
+  decimals: 1
+  timer: "MCM Timing and Results LLC"
+  timerUrl: "https://www.mcmtiming.com"
+  # 3 women in a field of 15: a cut-off of 10 would hide the women's line entirely.
+  genderMinRunners: 3
+  winnerHistory: mark-dowdle
+  takeaways:
+    ending: "On loop 102, Dowdle finished with less than 20 seconds to spare. Five loops later, he won."
+    dropouts: "Nobody stopped in the first 42 loops. That is 175 miles."
+    women: "The women's middle time was slower than the men's on every loop from 41 to 49."
+    daynight: "Six of the 14 runners who stopped did it at a night bell. Night bells were only a third of the race."
+    laptimes: "Find any of the 15 runners and see every loop they ran."
+    winner: "Mark Dowdle has not lost a backyard ultra since 2024. Eight races, eight wins."
+---
+{% extends "race-page.njk" %}
+
+{% block ending %}
+	<p>Loop 95 started at 5 am on Wednesday. Dowdle and Noll were the last two.</p>
+	<p>Dowdle was faster on loops 95 to 99. Then he slowed.</p>
+	<p>Loop 100 took him 59:00. Loop 102 took 59:44. He had less than 20 seconds before the next bell. Noll ran those two loops in 55:19 and 54:44.</p>
+	<p>Dowdle never went over 58 minutes again. Noll ran loop 106 in 56:07, his slowest since loop 92.</p>
+	<p>Noll started loop 107 and did not finish it inside the hour. Dowdle ran it in 51:17 and won.</p>
+	<p>Over the whole race, their rest was less than seven minutes apart.</p>
+{% endblock %}
+
+{% block dropouts %}
+	<p>In 2026, Big's was the US race of the team world championship. Each country ran its own race at home. Each team had 15 runners. Every loop a runner finished counted for the team. Team USA finished 1,120 loops.</p>
+	<p>The first stop came at the 1 am bell on Monday, in the second night.</p>
+	<p>No two runners stopped at the same bell. Each bar on the chart is one runner.</p>
+	<p>The timer notes how each race ended. Seven runners started a loop and did not finish it. Four finished a loop, but over the hour. Three did not start the next loop.</p>
+{% endblock %}
+
+{% block women %}
+	<p>Only three women ran. So the women's middle time is just the time of the woman in the middle.</p>
+	<p>On 22 of the first 36 loops, the women's middle time was faster than the men's.</p>
+	<p>The biggest gap came on loop 37. The women's middle time was almost five minutes slower.</p>
+	<p>Loop 49 was the last loop all three women finished. The women's line ends there.</p>
+{% endblock %}
+
+{% block daynight %}
+	<p>Big's has two loops: a trail loop and a road loop. Both are 4.167 miles. All 15 runners ran the same loop each hour.</p>
+	<p>The two loops do not climb the same. Dowdle puts the trail at about 450 feet of climbing per loop and the road at about 90. By his count, that adds up to about 6,400 feet every 24 hours.</p>
+	<p>The lap data does not say which loop was run each hour. So this page does not split loop times by trail and road.</p>
+{% endblock %}
+
+{% block winner %}
+	<p>Mark Dowdle is 29. He is from St. Paul, Minnesota.</p>
+	<p>His first three backyard ultras did not end with a win. He stopped before 24 loops all three times.</p>
+	<p>Then came WausaUltra in 2024. 34 loops and his first win. The streak started there.</p>
+	<p>His 2026 so far:</p>
+	<ul>
+		<li>April: <a href="/races/g1m-2026/">Go One More</a>, 73 loops</li>
+		<li>May: WausaUltra, 31 loops</li>
+		<li>August: <a href="/races/last-soul-2026/">Last Soul Ultra</a>, 94 loops</li>
+		<li>October: Big's, 107 loops</li>
+	</ul>
+	<p>That is 305 loops in one year. About 1,270 miles.</p>
+	<p>Last Soul ended in August. Two months later he was back on a start line, and he ran 13 more loops than he did in Germany.</p>
+	<p>Big's was also his first time past 100 loops, joining the 100-yard club. Only 21 other runners in the world have gone past 100. Phil Gore, Sam Harvey and Łukasz Wróbel are among them.</p>
+	<p>His 107 is a new personal best. It ties him for 16th on the world list, with Ihor Verys of Canada.</p>
+{% endblock %}
+

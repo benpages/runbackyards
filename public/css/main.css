@@ -3158,6 +3158,117 @@ p.first-detail {
 	margin-bottom: 0.35rem;
 }
 
+/* ── Career strip inside the winner standout (race-page.njk) ─────────────── */
+/* One column per backyard ultra, oldest first. Columns, not a time axis. */
+.career-strip {
+	list-style: none;
+	display: flex;
+	align-items: stretch;
+	gap: 4px;
+	margin: 1.5rem 0 0;
+	padding-top: 1.25rem;
+	border-top: 1px solid #2c2c2c;
+}
+.career-col {
+	flex: 1 1 0;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	color: #777;
+}
+.career-col.is-new-year {
+	border-left: 1px solid #2c2c2c;
+	padding-left: 4px;
+}
+.career-loops {
+	font-size: 0.85rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	color: #bbb;
+}
+.career-col.is-win .career-loops {
+	color: #fff;
+}
+.career-mark {
+	margin: 0.3rem 0 0.35rem;
+	font-size: 0.6rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	line-height: 1;
+	padding: 0.2rem 0.3rem;
+	border-radius: 3px;
+	color: #888;
+	border: 1px solid #444;
+}
+.career-col.is-win .career-mark {
+	color: #fff;
+	background: #c0392b;
+	border-color: #c0392b;
+}
+.career-bar {
+	height: 120px;
+	width: 100%;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	border-bottom: 1px solid #444;
+}
+.career-stem {
+	width: 4px;
+	border-radius: 2px 2px 0 0;
+	background: #555;
+}
+.career-col.is-win .career-stem {
+	background: #c0392b;
+}
+.career-race {
+	margin-top: 0.45rem;
+	font-size: 0.68rem;
+	line-height: 1.25;
+	text-align: center;
+	min-height: 2.5em;
+	overflow-wrap: anywhere;
+}
+.career-year {
+	margin-top: 0.2rem;
+	font-size: 0.75rem;
+	font-weight: 700;
+	color: #ddd;
+	min-height: 1.2em;
+}
+/* Scoped under .page-section so it outranks `.page-section p`. */
+.page-section .standout .career-note {
+	margin: 0.9rem 0 0;
+	font-size: 0.75rem;
+	color: #888;
+}
+@media (max-width: 640px) {
+	.career-strip {
+		gap: 2px;
+	}
+	.career-col.is-new-year {
+		padding-left: 2px;
+	}
+	.career-loops {
+		font-size: 0.7rem;
+	}
+	.career-mark {
+		font-size: 0.5rem;
+		padding: 0.15rem 0.15rem;
+	}
+	.career-bar {
+		height: 90px;
+	}
+	/* Names do not fit 11 columns on a phone; the title attribute keeps them. */
+	.career-race {
+		display: none;
+	}
+	.career-year {
+		font-size: 0.65rem;
+	}
+}
+
 /* ── Chart inside a page section ─────────────────────────────────────────── */
 .chart-card {
 	margin: 1.5rem 0;
