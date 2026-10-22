@@ -3,46 +3,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
-      <loc>https://backyards.run/feedback/</loc>
-      <lastmod>2026-05-12T11:05:55.173Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/learn/what-is-backyard-ultra/</loc>
-      <lastmod>2026-05-12T16:21:08.541Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/records/</loc>
-      <lastmod>2026-05-13T08:42:45.527Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/learn/pacing-strategy/</loc>
-      <lastmod>2026-05-21T09:30:16.189Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/list-your-event/</loc>
-      <lastmod>2026-05-22T12:42:55.147Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/backyard-ultra-finder/</loc>
-      <lastmod>2026-05-22T13:12:53.360Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/races-near-you/</loc>
-      <lastmod>2026-05-22T13:13:02.330Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/learn/crewing-tips/</loc>
-      <lastmod>2026-07-27T11:42:23.717Z</lastmod>
-    </url>
-  
-    <url>
       <loc>https://backyards.run/races/g1m-2026/</loc>
       <lastmod>2026-09-09T08:02:29.926Z</lastmod>
     </url>
@@ -63,38 +23,78 @@
     </url>
   
     <url>
-      <loc>https://backyards.run/learn/</loc>
-      <lastmod>2026-09-09T11:01:46.442Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/learn/backyard-ultra-training/</loc>
-      <lastmod>2026-09-09T11:37:36.415Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/</loc>
-      <lastmod>2026-09-09T11:44:53.788Z</lastmod>
-    </url>
-  
-    <url>
-      <loc>https://backyards.run/backyard-ultra-crew/</loc>
-      <lastmod>2026-09-09T16:46:07.913Z</lastmod>
-    </url>
-  
-    <url>
       <loc>https://backyards.run/races/sydney-2026/</loc>
       <lastmod>2026-09-22T08:50:43.624Z</lastmod>
     </url>
   
     <url>
-      <loc>https://backyards.run/races/sydney-2026-sept/</loc>
-      <lastmod>2026-09-23T10:23:57.420Z</lastmod>
+      <loc>https://backyards.run/races/bigs-2026/</loc>
+      <lastmod>2026-10-22T15:32:49.691Z</lastmod>
     </url>
   
     <url>
-      <loc>https://backyards.run/races/bigs-2026/</loc>
-      <lastmod>2026-10-22T08:20:00.384Z</lastmod>
+      <loc>https://backyards.run/races/sydney-2026-sept/</loc>
+      <lastmod>2026-10-22T15:36:18.850Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/records/</loc>
+      <lastmod>2026-10-22T15:49:43.978Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/learn/what-is-backyard-ultra/</loc>
+      <lastmod>2026-10-22T15:49:44.310Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/learn/backyard-ultra-training/</loc>
+      <lastmod>2026-10-22T15:49:44.622Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/backyard-ultra-crew/</loc>
+      <lastmod>2026-10-22T15:49:44.930Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/feedback/</loc>
+      <lastmod>2026-10-22T15:49:45.222Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/list-your-event/</loc>
+      <lastmod>2026-10-22T15:49:45.561Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/races-near-you/</loc>
+      <lastmod>2026-10-22T15:49:45.944Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/backyard-ultra-finder/</loc>
+      <lastmod>2026-10-22T15:49:46.255Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/learn/</loc>
+      <lastmod>2026-10-22T15:49:46.563Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/learn/pacing-strategy/</loc>
+      <lastmod>2026-10-22T15:49:46.882Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/learn/crewing-tips/</loc>
+      <lastmod>2026-10-22T15:49:47.255Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/</loc>
+      <lastmod>2026-10-22T15:50:36.900Z</lastmod>
     </url>
   
 </urlset>

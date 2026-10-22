@@ -36,7 +36,9 @@
 				<div class="hero-row">
 					<div class="hero-who">
 						<div class="hstat-val{% if row.won %} winner-val{% endif %}">{{ row.names | join(" and ") }}</div>
-						<div class="hstat-label">{{ row.label }}{% if row.won and row.label != "Winner" %} · Winner{% endif %}</div>
+						<div class="hstat-label">{{ row.label }}
+							{% if row.won and row.label != "Winner" %} · Winner{% endif %}
+						</div>
 					</div>
 					<div>
 						<div class="hstat-val">{{ row.loops }}</div>
@@ -44,23 +46,37 @@
 					</div>
 					<div>
 						{% set km = row.loops * race.loopKm %}
-						{% set places = race.decimals if race.decimals is defined else 1 %}
+						{% set places = race.decimals if race.decimals is defined else 
+							1 %}
 						<div class="hstat-val">{{ row.distance }}</div>
-						<div class="hstat-label">{% if race.unit == "km" %}{{ (km / 1.609344) | fixed(places) }} mi{% else %}{{ km | fixed(places) }} km{% endif %}</div>
+						<div class="hstat-label">
+							{% if race.unit == "km" %}{{ (km / 1.609344) | fixed(places) }} mi{% else %}{{ km | fixed(places) }} km{% endif %}
+						</div>
 					</div>
 				</div>
 			{% endfor %}
 		</div>
 
-		{% if r.winner %}<figure class="hero-ring" data-hero-ring="{{ r.winner.name }}" hidden></figure>{% endif %}
+		{% if r.winner %}
+			<figure class="hero-ring" data-hero-ring="{{ r.winner.name }}" hidden></figure>
+		{% endif %}
 
 		<ul class="race-facts">
-			<li><strong>{{ r.starters }}</strong> runners</li>
-			<li>First loop <strong>{{ r.startLabel }}</strong></li>
-			<li><strong>{{ race.loopLabel or r.loopDistance }}</strong> loop</li>
-			<li><strong>{{ r.laps.totalLoops }}</strong> loops run</li>
+			<li>
+				<strong>{{ r.starters }}</strong> runners</li>
+			<li>First loop <strong>{{ r.startLabel }}</strong>
+			</li>
+			<li>
+				<strong>{{ race.loopLabel or r.loopDistance }}</strong> loop</li>
+			<li>
+				<strong>{{ r.laps.totalLoops }}</strong> loops run</li>
 			{% if race.timer %}
-				<li>Timing {% if race.timerUrl %}<a href="{{ race.timerUrl }}" target="_blank" rel="noopener">{{ race.timer }}</a>{% else %}<strong>{{ race.timer }}</strong>{% endif %}</li>
+				<li>Timing {% if race.timerUrl %}
+						<a href="{{ race.timerUrl }}" target="_blank" rel="noopener">{{ race.timer }}</a>
+					{% else %}
+						<strong>{{ race.timer }}</strong>
+					{% endif %}
+				</li>
 			{% endif %}
 		</ul>
 	</div>
@@ -69,7 +85,11 @@
 {# ── On this page ───────────────────────────────────────────────────────── #}
 <nav class="race-toc" aria-label="On this page">
 	<div class="race-toc-inner">
-		{% for s in sections %}{% if s.show %}<a class="race-toc-chip" href="#{{ s.id }}">{{ s.label }}</a>{% endif %}{% endfor %}
+		{% for s in sections %}
+			{% if s.show %}
+				<a class="race-toc-chip" href="#{{ s.id }}">{{ s.label }}</a>
+			{% endif %}
+		{% endfor %}
 	</div>
 </nav>
 
@@ -77,7 +97,8 @@
 
 	{# ── Results ────────────────────────────────────────────────────────── #}
 	<section class="page-section" id="results">
-		<h2>{{ race.name }} {{ race.year }} results</h2>
+		<h2>{{ race.name }}
+			{{ race.year }} results</h2>
 
 		<div class="standings-block" data-standings>
 			<div class="legend-bar">
@@ -93,7 +114,13 @@
 			<div class="standings-wrap">
 				<table class="standings">
 					<thead>
-						<tr><th>Pl.</th><th>Runner</th><th>Loops</th><th class="st-dist">Distance</th><th>Time on course</th></tr>
+						<tr>
+							<th>Pl.</th>
+							<th>Runner</th>
+							<th>Loops</th>
+							<th class="st-dist">Distance</th>
+							<th>Time on course</th>
+						</tr>
 					</thead>
 					<tbody>
 						{% for s in r.standings %}
@@ -119,7 +146,9 @@
 	{% if r.duel %}
 		<section class="page-section" id="how-it-ended">
 			<h2>How the race ended</h2>
-			{% if tk.ending %}<p class="takeaway">{{ tk.ending }}</p>{% endif %}
+			{% if tk.ending %}
+				<p class="takeaway">{{ tk.ending }}</p>
+			{% endif %}
 
 			<div class="card chart-card">
 				<div class="chart-keys" id="topPaceKeys"></div>
@@ -127,14 +156,18 @@
 					<canvas id="topPaceChart" role="img" aria-label="Line chart of loop times for the winner and the runner-up."></canvas>
 				</div>
 				{# The full runner picker lives in #lap-times, far down the page. Point to it. #}
-				<p class="chart-note"><a href="#lap-times">Compare any of the {{ r.starters }} runners, loop by loop &rarr;</a></p>
+				<p class="chart-note">
+					<a href="#lap-times">Compare any of the {{ r.starters }} runners, loop by loop &rarr;</a>
+				</p>
 			</div>
 
 			<div class="by-numbers">
 				<p class="by-numbers-label">By the numbers</p>
 				<ul>
 					{% for d in r.duel %}
-						<li><strong>{{ d.name }}:</strong> {{ d.loops }} loops, {{ d.distance }}. {{ d.rest }} of rest banked.</li>
+						<li>
+							<strong>{{ d.name }}:</strong>
+							{{ d.loops }} loops, {{ d.distance }}. {{ d.rest }} of rest banked.</li>
 					{% endfor %}
 				</ul>
 				<p class="section-note">Rest banked is the time left over each hour after the loop, added up across the race.</p>
@@ -156,16 +189,23 @@
 			<div class="standout">
 
 				{# Every backyard the winner has run, oldest first (src/_data/runnerHistory.js). #}
-				{% set hist = runnerHistory[race.winnerHistory] if race.winnerHistory else null %}
+				{% set hist = runnerHistory[race.winnerHistory] if race.winnerHistory else 
+					null %}
 				{% if hist %}
 					<ol class="career-strip" aria-label="{{ hist.name }}'s backyard ultras: {{ hist.starts }} starts, {{ hist.wins }} wins">
 						{% for c in hist.races %}
 							<li class="career-col{% if c.win %} is-win{% endif %}{% if c.newYear and not loop.first %} is-new-year{% endif %}" aria-label="{{ c.race }} {{ c.year }}: {{ c.loops }} loops{% if c.win %}, won{% endif %}">
 								<span class="career-loops">{{ c.loops }}</span>
-								<span class="career-mark">{% if c.win %}W{% else %}DNF{% endif %}</span>
-								<span class="career-bar"><span class="career-stem" style="height: {{ c.pct }}%"></span></span>
+								<span class="career-mark">
+									{% if c.win %}W{% else %}DNF{% endif %}
+								</span>
+								<span class="career-bar">
+									<span class="career-stem" style="height: {{ c.pct }}%"></span></span>
 								<span class="career-race">{{ c.race }}</span>
-								<span class="career-year">{% if c.newYear %}{{ c.year }}{% endif %}</span>
+								<span class="career-year">
+									{% if c.newYear %}{{ c.year }}
+									{% endif %}
+								</span>
 							</li>
 						{% endfor %}
 					</ol>
@@ -173,14 +213,14 @@
 				{% endif %}
 			</div>
 
-			<div class="by-numbers">
+			{# <div class="by-numbers">
 				<p class="by-numbers-label">By the numbers</p>
 				<ul>
 					{% if w.time %}<li><strong>Time on course:</strong> {{ w.time }}.</li>{% endif %}
 					{% if w.averageLoop %}<li><strong>Average loop:</strong> {{ w.averageLoop }}.</li>{% endif %}
 					{% if w.slowestLoop %}<li><strong>Slowest loop:</strong> {{ w.slowestLoop }}, on loop {{ w.slowestLoopNumber }}.</li>{% endif %}
 				</ul>
-			</div>
+			</div> #}
 
 			{% block winner %}{% endblock %}
 		</section>
@@ -189,7 +229,9 @@
 	{# ── When runners dropped out ───────────────────────────────────────── #}
 	<section class="page-section" id="dropouts">
 		<h2>When runners dropped out</h2>
-		{% if tk.dropouts %}<p class="takeaway">{{ tk.dropouts }}</p>{% endif %}
+		{% if tk.dropouts %}
+			<p class="takeaway">{{ tk.dropouts }}</p>
+		{% endif %}
 
 		<div class="card chart-card">
 			<div class="legend-bar">
@@ -214,11 +256,16 @@
 			<ul>
 				{#- Only a real cluster counts: when every exit is one runner, there is no "biggest". -#}
 				{%- if r.dropouts.biggest.stopped > 1 %}
-					<li><strong>Biggest single exit:</strong> {{ r.dropouts.biggest.stopped }} runners stopped after loop {{ r.dropouts.biggest.loop }}, {{ r.dropouts.biggest.distance }}.</li>
+					<li>
+						<strong>Biggest single exit:</strong>
+						{{ r.dropouts.biggest.stopped }} runners stopped after loop {{ r.dropouts.biggest.loop }}, {{ r.dropouts.biggest.distance }}.</li>
 				{% endif %}
-				<li><strong>Half the field:</strong> more than half the runners stopped at {{ r.dropouts.halfLoops }} loops or fewer.</li>
+				<li>
+					<strong>Half the field:</strong> more than half the runners stopped at {{ r.dropouts.halfLoops }} loops or fewer.</li>
 				{% for m in r.dropouts.milestones %}
-					<li><strong>{{ m.label }}:</strong> {{ m.reached }} runners reached it at loop {{ m.loop }}, {{ m.distance }}. {{ m.stopped }} of them stopped right there ({{ m.share }}%).</li>
+					<li>
+						<strong>{{ m.label }}:</strong>
+						{{ m.reached }} runners reached it at loop {{ m.loop }}, {{ m.distance }}. {{ m.stopped }} of them stopped right there ({{ m.share }}%).</li>
 				{% endfor %}
 			</ul>
 		</div>
@@ -234,11 +281,14 @@
 		{% set minRun = race.genderMinRunners or g.minRunners %}
 		<section class="page-section" id="women-and-men">
 			<h2>Women and men</h2>
-			{% if tk.women %}<p class="takeaway">{{ tk.women }}</p>{% endif %}
+			{% if tk.women %}
+				<p class="takeaway">{{ tk.women }}</p>
+			{% endif %}
 			<p>Of the {{ g.starters }} starters, {{ g.women }} were women and {{ g.men }} were men.</p>
 
 			<div class="standout">
-				<p>{{ lw.names | join(" and ") }} {% if lw.names.length > 1 %}were the last women{% else %}was the last woman{% endif %} standing, with {{ lw.loops }} loops{% if lw.names.length > 1 %} each{% endif %}, {{ lw.distance }}.</p>
+				<p>{{ lw.names | join(" and ") }}
+					{% if lw.names.length > 1 %}were the last women{% else %}was the last woman{% endif %} standing, with {{ lw.loops }} loops{% if lw.names.length > 1 %} each{% endif %}, {{ lw.distance }}.</p>
 				{% if lw.wonRace %}
 					<p>She won the whole race.</p>
 				{% elif lw.runnersFurther == 0 %}
@@ -279,17 +329,28 @@
 		{% set dn = r.dayNight %}
 		<section class="page-section" id="day-vs-night">
 			<h2>Day vs night loops</h2>
-			{% if tk.daynight %}<p class="takeaway">{{ tk.daynight }}</p>{% endif %}
+			{% if tk.daynight %}
+				<p class="takeaway">{{ tk.daynight }}</p>
+			{% endif %}
 
 			<div class="by-numbers">
 				<p class="by-numbers-label">By the numbers</p>
 				<ul>
-					<li><strong>Before the first night:</strong> {{ dn.beforeFirstNight }} runners stopped.</li>
-					<li><strong>The first night</strong> ({{ dn.firstNightFrom }} to {{ dn.firstNightTo }}): {{ dn.duringFirstNight }} stopped.</li>
-					<li><strong>Through the first night:</strong> {{ dn.stillInAfterFirstNight }} runners finished its last loop.</li>
-					<li><strong>Whole race:</strong> {{ dn.stopsDay }} stopped on a day loop, {{ dn.stopsNight }} on a night loop.</li>
-					<li><strong>Hours:</strong> the race ran {{ dn.dayHours }} day loops and {{ dn.nightHours }} night loops.</li>
-					<li><strong>Per hour:</strong> about {{ dn.perDayHour }} runners stopped each day hour, {{ dn.perNightHour }} each night hour.</li>
+					<li>
+						<strong>Before the first night:</strong>
+						{{ dn.beforeFirstNight }} runners stopped.</li>
+					<li>
+						<strong>The first night</strong> ({{ dn.firstNightFrom }} to {{ dn.firstNightTo }}): {{ dn.duringFirstNight }} stopped.</li>
+					<li>
+						<strong>Through the first night:</strong>
+						{{ dn.stillInAfterFirstNight }} runners finished its last loop.</li>
+					<li>
+						<strong>Whole race:</strong>
+						{{ dn.stopsDay }} stopped on a day loop, {{ dn.stopsNight }} on a night loop.</li>
+					<li>
+						<strong>Hours:</strong> the race ran {{ dn.dayHours }} day loops and {{ dn.nightHours }} night loops.</li>
+					<li>
+						<strong>Per hour:</strong> about {{ dn.perDayHour }} runners stopped each day hour, {{ dn.perNightHour }} each night hour.</li>
 				</ul>
 				<p class="section-note">A night loop is one that starts between 9 pm and 5 am.</p>
 			</div>
@@ -301,7 +362,9 @@
 	{# ── Lap times ──────────────────────────────────────────────────────── #}
 	<section class="page-section" id="lap-times">
 		<h2>Lap times for every runner</h2>
-		{% if tk.laptimes %}<p class="takeaway">{{ tk.laptimes }}</p>{% endif %}
+		{% if tk.laptimes %}
+			<p class="takeaway">{{ tk.laptimes }}</p>
+		{% endif %}
 
 		<div class="card chart-card">
 			<div class="legend-bar">
@@ -321,7 +384,8 @@
 		<div class="by-numbers">
 			<p class="by-numbers-label">By the numbers</p>
 			<ul>
-				<li><strong>Middle runner:</strong> averaged {{ r.laps.middleRunnerAverage }} a loop. Half the field averaged faster, half slower.</li>
+				<li>
+					<strong>Middle runner:</strong> averaged {{ r.laps.middleRunnerAverage }} a loop. Half the field averaged faster, half slower.</li>
 			</ul>
 		</div>
 
@@ -332,27 +396,33 @@
 	<section class="page-section page-section--last" id="how-it-works">
 		<h2>How a backyard ultra works</h2>
 		<p>Every runner starts a {{ r.loopDistance }} loop at the top of each hour. Finish it inside the hour and the time left over is your rest. Miss the next start and your race is over. The last runner to finish a loop alone wins.</p>
-		<p><a href="/learn/what-is-backyard-ultra/">More on how a backyard ultra works</a></p>
+		<p>
+			<a href="/learn/what-is-backyard-ultra/">More on how a backyard ultra works</a>
+		</p>
 	</section>
 </div>
 
 {% set includeDatalabels = true %}
 {% include "chart-scripts.njk" %}
 <script>
-	window.BackyardCharts.createRacePage({
-		race: {
-			id: "{{ race.slug }}",
-			label: "{{ race.name }} {{ race.year }}",
-			dataUrl: "/races/{{ race.slug }}/laps.json",
-			startHour: {{ race.startHour }},
-			loopDistance: {{ race.loopKm if race.unit == "km" else (race.loopKm / 1.609344) }},
-			distanceUnit: "{{ race.unit or 'mi' }}",
-			distanceDecimals: {{ race.decimals if race.decimals is defined else 1 }},
-			genderViews: {{ "true" if r.gender.has else "false" }}
-		}
-	});
+	window
+		.BackyardCharts
+		.createRacePage({
+			race: {
+				id: "{{ race.slug }}",
+				label: "{{ race.name }} {{ race.year }}",
+				dataUrl: "/races/{{ race.slug }}/laps.json",
+				startHour: {{ race.startHour }},
+				loopDistance: {{ race.loopKm if race.unit == "km" else (race.loopKm / 1.609344) }},
+				distanceUnit: "{{ race.unit or 'mi' }}",
+				distanceDecimals: {{ race.decimals if race.decimals is defined else 1 }},
+				genderViews: {{ "true" if r.gender.has else "false" }}
+			}
+		});
 </script>
 <script src="/js/hour-rings.js"></script>
 <script>
-	window.HourRings.init({ dataUrl: "/races/{{ race.slug }}/laps.json", startHour: {{ race.startHour or 0 }}, raceLabel: {{ (race.name + " " + race.year) | dump | safe }} });
+	window
+		.HourRings
+		.init({dataUrl: "/races/{{ race.slug }}/laps.json", startHour: {{ race.startHour or 0 }}, raceLabel: {{ (race.name + " " + race.year) | dump | safe }}});
 </script>
