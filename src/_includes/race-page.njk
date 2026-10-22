@@ -16,6 +16,7 @@
 {% set sections = [
 	{ id: "results", label: "Results", show: true },
 	{ id: "how-it-ended", label: "How it ended", show: r.duel },
+	{ id: "winner", label: "The winner", show: r.winner and tk.winner },
 	{ id: "dropouts", label: "Dropouts", show: true },
 	{ id: "women-and-men", label: "Women and men", show: r.gender.has },
 	{ id: "day-vs-night", label: "Day vs night", show: race.startHour is defined },
@@ -121,6 +122,8 @@
 				<div class="chart-wrap">
 					<canvas id="topPaceChart" role="img" aria-label="Line chart of loop times for the winner and the runner-up."></canvas>
 				</div>
+				{# The full runner picker lives in #lap-times, far down the page. Point to it. #}
+				<p class="chart-note"><a href="#lap-times">Compare any of the {{ r.starters }} runners, loop by loop &rarr;</a></p>
 			</div>
 
 			<div class="by-numbers">
@@ -134,6 +137,51 @@
 			</div>
 
 			{% block ending %}{% endblock %}
+		</section>
+	{% endif %}
+
+	{# ── The winner ─────────────────────────────────────────────────────── #}
+	{# Shows when the race has a winner and front matter sets takeaways.winner.
+	   The story goes in the page's `winner` block; numbers come from the data. #}
+	{% if r.winner and tk.winner %}
+		{% set w = r.winner %}
+		<section class="page-section" id="winner">
+			<h2>Who is {{ w.name }}?</h2>
+			<p class="takeaway">{{ tk.winner }}</p>
+
+			<div class="standout">
+				<div class="eyebrow">{{ race.name }} {{ race.year }} winner</div>
+				<div class="standout-name display">{{ w.name }}</div>
+				<div class="standout-stat">{{ w.loops }} loops &nbsp;·&nbsp; {{ w.distance }}</div>
+
+				{# Every backyard the winner has run, oldest first (src/_data/runnerHistory.js). #}
+				{% set hist = runnerHistory[race.winnerHistory] if race.winnerHistory else null %}
+				{% if hist %}
+					<ol class="career-strip" aria-label="{{ hist.name }}'s backyard ultras: {{ hist.starts }} starts, {{ hist.wins }} wins">
+						{% for c in hist.races %}
+							<li class="career-col{% if c.win %} is-win{% endif %}{% if c.newYear and not loop.first %} is-new-year{% endif %}" title="{{ c.race }} {{ c.year }}: {{ c.loops }} loops{% if c.win %}, won{% endif %}">
+								<span class="career-loops">{{ c.loops }}</span>
+								<span class="career-mark">{% if c.win %}W{% else %}DNF{% endif %}</span>
+								<span class="career-bar"><span class="career-stem" style="height: {{ c.pct }}%"></span></span>
+								<span class="career-race">{{ c.race }}</span>
+								<span class="career-year">{% if c.newYear %}{{ c.year }}{% endif %}</span>
+							</li>
+						{% endfor %}
+					</ol>
+					<p class="career-note">Every backyard ultra he has run. Loops completed.</p>
+				{% endif %}
+			</div>
+
+			<div class="by-numbers">
+				<p class="by-numbers-label">By the numbers</p>
+				<ul>
+					{% if w.time %}<li><strong>Time on course:</strong> {{ w.time }}.</li>{% endif %}
+					{% if w.averageLoop %}<li><strong>Average loop:</strong> {{ w.averageLoop }}.</li>{% endif %}
+					{% if w.slowestLoop %}<li><strong>Slowest loop:</strong> {{ w.slowestLoop }}, on loop {{ w.slowestLoopNumber }}.</li>{% endif %}
+				</ul>
+			</div>
+
+			{% block winner %}{% endblock %}
 		</section>
 	{% endif %}
 
@@ -167,7 +215,10 @@
 		<div class="by-numbers">
 			<p class="by-numbers-label">By the numbers</p>
 			<ul>
-				<li><strong>Biggest single exit:</strong> {{ r.dropouts.biggest.stopped }} runners stopped after loop {{ r.dropouts.biggest.loop }}, {{ r.dropouts.biggest.distance }}.</li>
+				{#- Only a real cluster counts: when every exit is one runner, there is no "biggest". -#}
+				{%- if r.dropouts.biggest.stopped > 1 %}
+					<li><strong>Biggest single exit:</strong> {{ r.dropouts.biggest.stopped }} runners stopped after loop {{ r.dropouts.biggest.loop }}, {{ r.dropouts.biggest.distance }}.</li>
+				{% endif %}
 				<li><strong>Half the field:</strong> more than half the runners stopped at {{ r.dropouts.halfLoops }} loops or fewer.</li>
 				{% for m in r.dropouts.milestones %}
 					<li><strong>{{ m.label }}:</strong> {{ m.reached }} runners reached it at loop {{ m.loop }}, {{ m.distance }}. {{ m.stopped }} of them stopped right there ({{ m.share }}%).</li>
@@ -182,6 +233,8 @@
 	{% if r.gender.has %}
 		{% set g = r.gender %}
 		{% set lw = g.lastWoman %}
+		{# Small fields (Big's team year: 3 women) can lower the line cut-off per race. #}
+		{% set minRun = race.genderMinRunners or g.minRunners %}
 		<section class="page-section" id="women-and-men">
 			<h2>Women and men</h2>
 			{% if tk.women %}<p class="takeaway">{{ tk.women }}</p>{% endif %}
@@ -208,12 +261,12 @@
 			<h3>Loop by loop</h3>
 			<p>Each point on this chart is one loop. It shows the middle time of everyone who finished that loop. Half of them ran it faster. Half ran it slower. That middle time is called the median.</p>
 			<p>We only put women next to men on the same loop. Same heat, same rain, same dark.</p>
-			<p>A line stops when fewer than {{ g.minRunners }} runners are left on it. After that, one runner can swing the number too much. You can still follow each runner in <a href="#lap-times">lap times for every runner</a>.</p>
+			<p>A line stops when fewer than {{ minRun }} runners are left on it. After that, one runner can swing the number too much. You can still follow each runner in <a href="#lap-times">lap times for every runner</a>.</p>
 
 			<div class="card chart-card" id="genderPaceCard" hidden>
 				<div class="chart-keys" id="genderPaceKeys"></div>
 				<div class="chart-wrap">
-					<canvas id="genderPaceChart" data-min-runners="{{ g.minRunners }}" role="img" aria-label="Line chart of the median loop time for women and for men, loop by loop."></canvas>
+					<canvas id="genderPaceChart" data-min-runners="{{ minRun }}" role="img" aria-label="Line chart of the median loop time for women and for men, loop by loop."></canvas>
 				</div>
 			</div>
 
