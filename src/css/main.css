@@ -254,7 +254,7 @@ header.tool-header {
 	font-size: 0.9rem;
 	padding: 0.35rem 0.65rem;
 	border: 1px solid var(--line);
-	border-radius: 6px;
+	border-radius: 10px;
 	background: var(--tint);
 	cursor: pointer;
 }
@@ -648,17 +648,17 @@ footer a:hover {
 .cta-primary {
 	display: inline-block;
 	padding: 0.7rem 1.5rem;
-	background: var(--accent);
-	color: var(--on-accent);
+	background: var(--ink);
+	color: var(--paper);
 	text-decoration: none;
 	font-size: 0.88rem;
-	font-weight: 700;
-	letter-spacing: 0.02em;
-	border-radius: 6px;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	border-radius: 999px;
 	transition: background 0.15s;
 }
 .cta-primary:hover {
-	background: var(--accent-hover);
+	background: #000;
 }
 .cta-ghost {
 	color: #aaa;
@@ -953,7 +953,7 @@ footer a:hover {
 .h-signup-input {
 	padding: 0.75rem 1rem;
 	border: 1px solid var(--line);
-	border-radius: 6px;
+	border-radius: 10px;
 	font-size: 0.9rem;
 	font-family: inherit;
 	background: var(--card);
@@ -974,10 +974,10 @@ footer a:hover {
 	border: none;
 	border-radius: 999px;
 	font-size: 0.9rem;
-	font-weight: 700;
+	font-weight: 600;
 	font-family: inherit;
 	cursor: pointer;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.01em;
 	transition: background 0.15s;
 }
 .h-signup-btn:hover {
@@ -1192,7 +1192,7 @@ p.section-note {
 	min-width: 200px;
 	padding: 0.75rem 1rem;
 	border: 1px solid var(--line);
-	border-radius: 6px;
+	border-radius: 10px;
 	font-size: 0.9rem;
 	font-family: inherit;
 	background: #fff;
@@ -1208,20 +1208,20 @@ p.section-note {
 }
 .page-newsletter-btn {
 	padding: 0.75rem 1.5rem;
-	background: var(--accent);
-	color: var(--on-accent);
+	background: var(--ink);
+	color: var(--paper);
 	border: none;
-	border-radius: 6px;
+	border-radius: 999px;
 	font-size: 0.9rem;
-	font-weight: 700;
+	font-weight: 600;
 	font-family: inherit;
 	cursor: pointer;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.01em;
 	transition: background 0.15s;
 	white-space: nowrap;
 }
 .page-newsletter-btn:hover {
-	background: var(--accent-hover);
+	background: #000;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1272,27 +1272,23 @@ p.section-note {
 	align-items: center;
 	flex-wrap: wrap;
 	gap: 0.4rem 0.75rem;
-	padding: 1rem 1.25rem;
-	background: var(--tint);
-	border: 1px solid var(--line);
-	border-radius: 8px;
+	padding: 0.9rem 0;
+	border-top: 1px solid var(--line);
 	margin-top: 2rem;
 }
 .learn-toc-label {
-	font-size: 0.7rem;
-	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: 0.1em;
+	font-size: 0.85rem;
+	font-weight: 600;
 	color: var(--ink-3);
 	margin-right: 0.25rem;
 }
 .learn-toc a {
-	font-size: 0.8rem;
 	font-weight: 500;
 	color: var(--ink);
 	text-decoration: none;
-	padding: 0.2rem 0.5rem;
-	border-radius: 4px;
+	font-size: 0.85rem;
+	padding: 0.25rem 0.65rem;
+	border-radius: 999px;
 	transition:
 		background 0.15s,
 		color 0.15s;
@@ -1332,21 +1328,21 @@ p.section-note {
 	align-items: center;
 	gap: 0.5rem;
 	padding: 0.85rem 1.75rem;
-	background: var(--accent);
-	color: var(--on-accent);
-	border-radius: 6px;
+	background: var(--ink);
+	color: var(--paper);
+	border-radius: 999px;
 	font-size: 0.9rem;
-	font-weight: 700;
+	font-weight: 600;
 	text-decoration: none;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.01em;
 	transition: background 0.15s;
 }
 .insta-cta-btn:hover {
-	background: var(--accent-hover);
+	background: #000;
 }
 /* .page-section a paints links red, which turns this button red on red. */
 .page-section a.insta-cta-btn {
-	color: #fff;
+	color: var(--paper);
 	text-decoration: none;
 }
 
@@ -1994,7 +1990,7 @@ p.first-detail {
 	font-size: 0.88rem;
 	padding: 0.35rem 0.65rem;
 	border: 1px solid var(--line);
-	border-radius: 6px;
+	border-radius: 10px;
 	background: #fff;
 	color: var(--ink);
 	cursor: pointer;
@@ -2013,18 +2009,18 @@ p.first-detail {
 .finder-list-cta {
 	display: inline-block;
 	padding: 0.5rem 1.1rem;
-	background: var(--accent);
-	color: var(--on-accent);
+	background: var(--ink);
+	color: var(--paper);
 	text-decoration: none;
 	font-size: 0.82rem;
-	font-weight: 700;
-	letter-spacing: 0.02em;
-	border-radius: 6px;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	border-radius: 999px;
 	white-space: nowrap;
 	transition: background 0.15s;
 	flex-shrink: 0;
 }
-.finder-list-cta:hover { background: var(--accent-hover); }
+.finder-list-cta:hover { background: #000; }
 
 /* ── Race list container ─────────────────────────────────────────────────── */
 .finder-wrap {
@@ -2104,19 +2100,19 @@ p.first-detail {
 	display: inline-block;
 	padding: 0.4rem 0.9rem;
 	background: none;
-	border: 1.5px solid #1a1a1a;
+	border: 1px solid var(--ink);
 	color: var(--ink);
 	text-decoration: none;
 	font-size: 0.78rem;
-	font-weight: 700;
-	letter-spacing: 0.02em;
-	border-radius: 6px;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	border-radius: 999px;
 	transition: background 0.15s, color 0.15s;
 	white-space: nowrap;
 }
 .finder-cta:hover {
-	background: var(--night);
-	color: #fff;
+	background: var(--ink);
+	color: var(--paper);
 }
 .finder-cta--disabled {
 	background: none;
@@ -2227,7 +2223,7 @@ p.first-detail {
 	width: 100%;
 	padding: 0.65rem 0.85rem;
 	border: 1px solid var(--line);
-	border-radius: 6px;
+	border-radius: 10px;
 	font-size: 0.9rem;
 	font-family: inherit;
 	background: #fff;
@@ -2293,18 +2289,18 @@ p.first-detail {
 }
 .lye-submit {
 	padding: 0.8rem 2rem;
-	background: var(--accent);
-	color: var(--on-accent);
+	background: var(--ink);
+	color: var(--paper);
 	border: none;
-	border-radius: 6px;
+	border-radius: 999px;
 	font-size: 0.95rem;
-	font-weight: 700;
+	font-weight: 600;
 	font-family: inherit;
 	cursor: pointer;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.01em;
 	transition: background 0.15s;
 }
-.lye-submit:hover { background: var(--accent-hover); }
+.lye-submit:hover { background: #000; }
 .lye-submit-note {
 	font-size: 0.8rem;
 	color: var(--ink-3);
@@ -3042,8 +3038,8 @@ p.first-detail {
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-	background: var(--accent);
-	color: var(--on-accent);
+	background: var(--ink);
+	color: var(--paper);
 	font-family: var(--font-display);
 	font-weight: var(--display-weight);
 	font-size: calc(1.15rem * var(--display-scale));
@@ -3088,7 +3084,7 @@ p.first-detail {
 .page-form-input {
 	padding: 0.75rem 1rem;
 	border: 1px solid var(--line);
-	border-radius: 6px;
+	border-radius: 10px;
 	font-size: 0.9rem;
 	font-family: inherit;
 	background: var(--tint);

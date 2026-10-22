@@ -43,8 +43,10 @@
 						<div class="hstat-label">Loops</div>
 					</div>
 					<div>
+						{% set km = row.loops * race.loopKm %}
+						{% set places = race.decimals if race.decimals is defined else 1 %}
 						<div class="hstat-val">{{ row.distance }}</div>
-						<div class="hstat-label">Distance</div>
+						<div class="hstat-label">{% if race.unit == "km" %}{{ (km / 1.609344) | fixed(places) }} mi{% else %}{{ km | fixed(places) }} km{% endif %}</div>
 					</div>
 				</div>
 			{% endfor %}
@@ -198,10 +200,6 @@
 						<button type="button" class="active" data-group="all">All</button>
 						<button type="button" data-group="F">Women</button>
 						<button type="button" data-group="M">Men</button>
-					</div>
-					<div class="unit-toggle" id="dnfUnitToggle">
-						<button type="button"{% if race.unit != "km" %} class="active"{% endif %} data-unit="mi">mi</button>
-						<button type="button"{% if race.unit == "km" %} class="active"{% endif %} data-unit="km">km</button>
 					</div>
 				</div>
 			</div>

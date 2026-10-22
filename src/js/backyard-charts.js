@@ -653,10 +653,13 @@
 		// Keep whichever unit the toggle already shows (the chart is rebuilt when
 		// the Women / Men / All filter changes).
 		const activeUnitBtn = document.querySelector(`#${unitToggleId} button.active`);
-		let unit = activeUnitBtn ? activeUnitBtn.dataset.unit : "mi";
+		// Race pages without the toggle use the race's own unit, and the tooltip
+		// shows the other unit next to it.
+		let unit = activeUnitBtn ? activeUnitBtn.dataset.unit : race.distanceUnit || "mi";
 		// Distance completed when a runner's race ended at bar index `i` (Loop i+1):
 		// they finished i full loops (a DNF on Loop 1 means 0 loops completed).
-		const distanceAt = (index) => (unit === "km" ? index * loopKm : index * loopMi);
+		const distanceIn = (index, u) => (u === "km" ? index * loopKm : index * loopMi);
+		const distanceAt = (index) => distanceIn(index, unit);
 
 		const labels = Array.from({ length: maxLap }, (_, i) => `L${i + 1}`);
 		const data = labels.map((_, i) => counts[i + 1] || 0);
@@ -773,7 +776,8 @@
 								if (ctx.parsed.y === 0) {
 									return null;
 								}
-								const lines = [` ${distanceAt(ctx.dataIndex).toFixed(1)} ${unit} completed`];
+								const other = unit === "km" ? "mi" : "km";
+								const lines = [` ${distanceAt(ctx.dataIndex).toFixed(1)} ${unit} (${distanceIn(ctx.dataIndex, other).toFixed(1)} ${other}) completed`];
 								if (groupLabel) {
 									const share = ((ctx.parsed.y / groupSize) * 100).toFixed(1);
 									lines.push(` ${share}% of the ${groupSize} ${groupLabel}`);
