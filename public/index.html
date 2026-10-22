@@ -18,281 +18,122 @@
     <script data-goatcounter="https://backyards.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   </head>
   <body>
-    <nav class="site-nav">
+    
+<nav class="site-nav">
   <a href="/" class="brand">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <path d="M10 3.5 A6.5 6.5 0 1 1 6.75 4.37" stroke="currentColor" stroke-width="4" stroke-linecap="butt"/>
     </svg>
-    <span class="brand-wordmark">
-      <span class="brand-b">Backyards</span>
-      <span class="brand-d" style="padding-left:0.25em;">.run</span>
-    </span>
+    <span class="brand-b">Backyards</span>
   </a>
-  
   <div class="nav-right">
-    <details class="nav-dropdown" name="nav-menu">
-      <summary>Learn</summary>
-      <div class="nav-dropdown-menu">
-        <a href="/learn/what-is-backyard-ultra/">What is a Backyard Ultra?</a>
-        <a href="/learn/crewing-tips/">Crewing Tips</a>
-        <a href="/learn/pacing-strategy/">Pacing Strategy</a>
-        <a href="/learn/backyard-ultra-training/">Training</a>
-      </div>
-    </details>
-    <details class="nav-dropdown" name="nav-menu">
-      <summary>Race Results</summary>
-      <div class="nav-dropdown-menu">
-        <a href="/races/bigs-2026/">Big's 2026 (USA)</a>
-        <a href="/races/sydney-2026-sept/">Sydney's Backyard Ultra (Sept 2026)</a>
-        <a href="/races/last-soul-2026/">Last Soul Ultra 2026</a>
-        <a href="/races/sydney-2026/">Sydney's Backyard Ultra (Apr 2026)</a>
-        <a href="/races/g1m-2026/">Go One More 2026</a>
-        <a href="/races/bigs-2025/">Big's 2025</a>
-        <a href="/races/legends-2025/">Legends 2025</a>
-      </div>
-    </details>
-    <a href="/backyard-ultra-finder/">Race Finder</a>
+    <a href="/#races">Races</a>
+    <a href="/learn/">Learn</a>
+    <a href="/backyard-ultra-finder/">Race finder</a>
     <a href="/records/">Records</a>
-    <a href="/backyard-ultra-crew/" class="nav-cta">Hire a crew</a>
-    
-
+    <a href="/backyard-ultra-crew/">Hire a crew</a>
   </div>
 </nav>
 
-<script>
-  document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") {
-      return;
-    }
-
-    document
-      .querySelectorAll(".site-nav .nav-dropdown[open]")
-      .forEach((dropdown) => {
-        const summary = dropdown.querySelector("summary");
-        dropdown.open = false;
-        if (summary) {
-          summary.focus();
-        }
-      });
-  });
-</script>
     
 <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
-<section class="h-hero">
-	<div class="h-hero-inner">
-		<p class="eyebrow">Backyard Ultra</p>
-		<h1 class="display h-headline">
-			<span class="h-line1">Every loop</span>
-			<span class="h-line2">tells a story.</span>
-		</h1>
+<section class="h-hero h-wrap">
+	<div class="h-hero-text">
+		<h1 class="h-headline">Every loop tells a story.</h1>
 		<p class="h-sub">4.167 miles. Every hour. Until one remains.<br>Built for the people who keep going.</p>
 	</div>
-	<div class="h-format-bar">
-		<div class="h-format-item">
-			<span class="h-format-num">4.167</span>
-			<span class="h-format-label">miles per loop</span>
-		</div>
-		<div class="h-format-div"></div>
-		<div class="h-format-item">
-			<span class="h-format-num">1</span>
-			<span class="h-format-label">hour per loop</span>
-		</div>
-		<div class="h-format-div"></div>
-		<div class="h-format-item">
-			<span class="h-format-num">1</span>
-			<span class="h-format-label">winner. ever.</span>
-		</div>
-		<div class="h-format-div"></div>
-		<div class="h-format-item">
-			<span class="h-format-num">∞</span>
-			<span class="h-format-label">loops to go</span>
-		</div>
-	</div>
+	<figure class="h-hero-photo">
+		<img src="/assets/img/byu-tip-camp-night-scene-vertical.jpeg" alt="A runner with a headlamp walks back through camp at night, crew around her" width="600" height="750">
+		<figcaption>Photo by <a href="https://www.instagram.com/romanxlang/" target="_blank" rel="nofollow noopener noreferrer">Roman Lang</a></figcaption>
+	</figure>
 </section>
 
 <!-- ── Featured ──────────────────────────────────────────────────────────── -->
-<section class="h-featured">
-	<div class="h-featured-inner">
-		<div class="h-feat-grid">
+<section class="h-featured h-wrap">
+	<a href="/learn/backyard-ultra-training/" class="h-feat" data-goatcounter-click="training-plan-cta-home" data-goatcounter-title="Training plan card (homepage)">
+		<h2 class="h-feat-title">Backyard ultra training plan</h2>
+		<p class="h-feat-desc">A free 2-week plan built with ultrarunner and coach Alyssa McClellan. For your first backyard.</p>
+	</a>
+	<a href="/learn/pacing-strategy/" class="h-feat">
+		<h2 class="h-feat-title">How to pace a backyard ultra</h2>
+		<p class="h-feat-desc">We tracked top finishers from six races to find the ideal loop time. The answer might surprise you.</p>
+	</a>
+	<a href="/learn/crewing-tips/" class="h-feat">
+		<h2 class="h-feat-title">Crewing tips</h2>
+		<p class="h-feat-desc">Ten minutes between loops. Here's how to make every one of them count.</p>
+	</a>
+</section>
 
-			<a href="/learn/backyard-ultra-training/" class="h-feat-card" data-goatcounter-click="training-plan-cta-home" data-goatcounter-title="Training plan card (homepage)">
-				<div>
-					<p class="h-feat-eyebrow">Free download</p>
-					<h2 class="h-feat-title">Backyard Ultra Training Plan</h2>
-					<p class="h-feat-desc">A free 2-week plan built with ultrarunner and coach Alyssa McClellan. For your first backyard.</p>
-				</div>
-				<span class="h-feat-arrow">→</span>
-			</a>
-
-			<a href="/learn/pacing-strategy/" class="h-feat-card">
-				<div>
-					<p class="h-feat-eyebrow">Learn</p>
-					<h2 class="h-feat-title">How to Pace a Backyard Ultra</h2>
-					<p class="h-feat-desc">We tracked top finishers from six races to find the ideal loop time. The answer might surprise you.</p>
-				</div>
-				<span class="h-feat-arrow">→</span>
-			</a>
-
-			<a href="/learn/crewing-tips/" class="h-feat-card">
-				<div>
-					<p class="h-feat-eyebrow">Learn</p>
-					<h2 class="h-feat-title">Crewing Tips</h2>
-					<p class="h-feat-desc">Ten minutes between loops. Here's how to make every one of them count.</p>
-				</div>
-				<span class="h-feat-arrow">→</span>
-			</a>
-
-		</div>
+<!-- ── Latest race ───────────────────────────────────────────────────────── -->
+<section class="h-latest h-wrap">
+	<div class="h-latest-text">
+		<p class="h-label">Latest race</p>
+		<h2 class="h-latest-headline">Big's Backyard Ultra 2026</h2>
+		<p class="h-latest-meta">Mark Dowdle won with 107 loops, 445.8 miles. October 2026, Bell Buckle, Tennessee.</p>
+		<a href="/races/bigs-2026/" class="h-latest-link">Read the race</a>
 	</div>
+	<figure class="hero-ring" data-hero-ring="Mark Dowdle" hidden></figure>
 </section>
 
 <!-- ── Races ─────────────────────────────────────────────────────────────── -->
-<section class="h-races" id="races">
-	<div class="h-races-inner">
-		<p class="eyebrow" style="margin-bottom: 2rem;">Races</p>
-		<div class="h-race-grid">
-
-			<a href="/races/last-soul-2026/" class="h-race-card h-race-card--dim">
-				<div class="h-race-top">
-					<div>
-						<p class="h-race-eyebrow">August 14–18, 2026 · Fürstenau, Germany</p>
-						<h2 class="display h-race-name">Last Soul<br>Ultra</h2>
-					</div>
-					<span class="h-race-arrow">→</span>
-				</div>
-				<div class="h-race-stats">
-					<div class="h-race-stat">
-						<span class="h-race-num">94</span>
-						<span class="h-race-slabel">loops</span>
-					</div>
-					<div class="h-race-stat">
-						<span class="h-race-num">391<span class="h-race-unit">mi</span></span>
-						<span class="h-race-slabel">winning distance</span>
-					</div>
-					<div class="h-race-stat winner-stat">
-						<span class="h-race-num">Mark Dowdle</span>
-						<span class="h-race-slabel">winner</span>
-					</div>
-				</div>
-				<div class="h-race-note">Lap-by-lap pacing · DNF breakdown · Loop 87</div>
-			</a>
-
-			<a href="/races/sydney-2026/" class="h-race-card h-race-card--dim">
-				<div class="h-race-top">
-					<div>
-						<p class="h-race-eyebrow">April 18, 2026 · St Ives, Australia</p>
-						<h2 class="display h-race-name">Sydney<br>Backyard<br>Ultra</h2>
-					</div>
-					<span class="h-race-arrow">→</span>
-				</div>
-				<div class="h-race-stats">
-					<div class="h-race-stat">
-						<span class="h-race-num">75</span>
-						<span class="h-race-slabel">loops</span>
-					</div>
-					<div class="h-race-stat">
-						<span class="h-race-num">313<span class="h-race-unit">mi</span></span>
-						<span class="h-race-slabel">winning distance</span>
-					</div>
-					<div class="h-race-stat winner-stat">
-						<span class="h-race-num">Tim Kacprzak</span>
-						<span class="h-race-slabel">winner</span>
-					</div>
-				</div>
-				<div class="h-race-note">Lap-by-lap pacing · DNF breakdown · Live data</div>
-			</a>
-
-			<a href="/races/g1m-2026/" class="h-race-card h-race-card--dim">
-				<div class="h-race-top">
-					<div>
-						<p class="h-race-eyebrow">BPN · April 10, 2026 · Liberty Hill, TX</p>
-						<h2 class="display h-race-name">Go One<br>More<br>Ultra</h2>
-					</div>
-					<span class="h-race-arrow">→</span>
-				</div>
-				<div class="h-race-stats">
-					<div class="h-race-stat">
-						<span class="h-race-num">73</span>
-						<span class="h-race-slabel">loops</span>
-					</div>
-					<div class="h-race-stat">
-						<span class="h-race-num">304<span class="h-race-unit">mi</span></span>
-						<span class="h-race-slabel">winning distance</span>
-					</div>
-					<div class="h-race-stat winner-stat">
-						<span class="h-race-num">Mark Dowdle</span>
-						<span class="h-race-slabel">winner</span>
-					</div>
-				</div>
-				<div class="h-race-note">Lap-by-lap pacing · DNF breakdown · Live data</div>
-			</a>
-
-			<a href="/races/bigs-2025/" class="h-race-card h-race-card--dim">
-				<div class="h-race-top">
-					<div>
-						<p class="h-race-eyebrow">October 18, 2025 · Bell Buckle, TN</p>
-						<h2 class="display h-race-name">Big's<br>Backyard<br>Ultra</h2>
-					</div>
-					<span class="h-race-arrow">→</span>
-				</div>
-				<div class="h-race-stats">
-					<div class="h-race-stat">
-						<span class="h-race-num">114</span>
-						<span class="h-race-slabel">loops</span>
-					</div>
-					<div class="h-race-stat">
-						<span class="h-race-num">475<span class="h-race-unit">mi</span></span>
-						<span class="h-race-slabel">winning distance</span>
-					</div>
-					<div class="h-race-stat winner-stat">
-						<span class="h-race-num">Phil Gore</span>
-						<span class="h-race-slabel">winner</span>
-					</div>
-				</div>
-				<div class="h-race-note">Lap-by-lap pacing · DNF breakdown · Live data</div>
-			</a>
-
-			<a href="/races/legends-2025/" class="h-race-card h-race-card--dim">
-				<div class="h-race-top">
-					<div>
-						<p class="h-race-eyebrow">April 26, 2025 · Retie, Belgium</p>
-						<h2 class="display h-race-name">Legends<br>Backyard<br>Ultra</h2>
-					</div>
-					<span class="h-race-arrow">→</span>
-				</div>
-				<div class="h-race-stats">
-					<div class="h-race-stat">
-						<span class="h-race-num">116</span>
-						<span class="h-race-slabel">loops</span>
-					</div>
-					<div class="h-race-stat">
-						<span class="h-race-num">483<span class="h-race-unit">mi</span></span>
-						<span class="h-race-slabel">winning distance</span>
-					</div>
-					<div class="h-race-stat winner-stat">
-						<span class="h-race-num">Łukasz Wróbel</span>
-						<span class="h-race-slabel">winner</span>
-					</div>
-				</div>
-				<div class="h-race-note">Lap-by-lap pacing · DNF breakdown · Live data</div>
-			</a>
-
-		</div>
-	</div>
+<section class="h-races h-wrap" id="races">
+	<p class="h-label">All races</p>
+	<ul class="h-race-list">
+			<li><a href="/races/bigs-2026/" class="h-race-row">
+				<span class="h-race-date">October 2026</span>
+				<span class="h-race-what"><span class="h-race-name">Big's Backyard Ultra</span><span class="h-race-place">Bell Buckle, Tennessee · Team USA</span></span>
+				<span class="h-race-winner">Mark Dowdle<span class="h-race-loops">won with 107 loops</span></span>
+				<span class="h-race-arrow" aria-hidden="true">→</span>
+			</a></li>
+			<li><a href="/races/sydney-2026-sept/" class="h-race-row">
+				<span class="h-race-date">September 2026</span>
+				<span class="h-race-what"><span class="h-race-name">Sydney's Backyard Ultra</span><span class="h-race-place">St Ives, Australia</span></span>
+				<span class="h-race-winner">Justin Makhlouf<span class="h-race-loops">won with 66 loops</span></span>
+				<span class="h-race-arrow" aria-hidden="true">→</span>
+			</a></li>
+			<li><a href="/races/last-soul-2026/" class="h-race-row">
+				<span class="h-race-date">August 2026</span>
+				<span class="h-race-what"><span class="h-race-name">Last Soul Ultra</span><span class="h-race-place">Fürstenau, Germany</span></span>
+				<span class="h-race-winner">Mark Dowdle<span class="h-race-loops">won with 94 loops</span></span>
+				<span class="h-race-arrow" aria-hidden="true">→</span>
+			</a></li>
+			<li><a href="/races/sydney-2026/" class="h-race-row">
+				<span class="h-race-date">April 2026</span>
+				<span class="h-race-what"><span class="h-race-name">Sydney's Backyard Ultra</span><span class="h-race-place">St Ives, Australia</span></span>
+				<span class="h-race-winner">Tim Kacprzak<span class="h-race-loops">won with 75 loops</span></span>
+				<span class="h-race-arrow" aria-hidden="true">→</span>
+			</a></li>
+			<li><a href="/races/g1m-2026/" class="h-race-row">
+				<span class="h-race-date">April 2026</span>
+				<span class="h-race-what"><span class="h-race-name">Go One More Ultra</span><span class="h-race-place">Liberty Hill, Texas</span></span>
+				<span class="h-race-winner">Mark Dowdle<span class="h-race-loops">won with 73 loops</span></span>
+				<span class="h-race-arrow" aria-hidden="true">→</span>
+			</a></li>
+			<li><a href="/races/bigs-2025/" class="h-race-row">
+				<span class="h-race-date">October 2025</span>
+				<span class="h-race-what"><span class="h-race-name">Big's Backyard Ultra</span><span class="h-race-place">Bell Buckle, Tennessee</span></span>
+				<span class="h-race-winner">Phil Gore<span class="h-race-loops">won with 114 loops</span></span>
+				<span class="h-race-arrow" aria-hidden="true">→</span>
+			</a></li>
+			<li><a href="/races/legends-2025/" class="h-race-row">
+				<span class="h-race-date">April 2025</span>
+				<span class="h-race-what"><span class="h-race-name">Legends Backyard Ultra</span><span class="h-race-place">Retie, Belgium</span></span>
+				<span class="h-race-winner">Łukasz Wróbel<span class="h-race-loops">won with 116 loops</span></span>
+				<span class="h-race-arrow" aria-hidden="true">→</span>
+			</a></li>
+	</ul>
 </section>
 
 <!-- ── About + signup ─────────────────────────────────────────────────────── -->
-<section class="h-bottom">
+<section class="h-bottom h-wrap">
 	<div class="h-about">
-		<p class="eyebrow" style="margin-bottom: 1.25rem;">What is this</p>
-		<h2 class="display h-about-h2">Built for<br>the obsessed.</h2>
-		<p class="h-about-body">Whether you're preparing for your first backyard ultra or you've already lost count of how many you've run, BACKYARDS exists to help you go further.</p>
+		<h2 class="h-about-h2">Built for<br>the obsessed.</h2>
+		<p class="h-about-body">Whether you're preparing for your first backyard ultra or you've already lost count of how many you've run, Backyards exists to help you go further.</p>
 		<p class="h-about-body">We're obsessed with what makes certain runners keep going when everyone else has stopped. This is everything we've learned from the best in the sport, built for ourselves first, and now for you.</p>
 	</div>
 
 	<div class="h-signup">
-		<p class="eyebrow" style="margin-bottom: 1.25rem;">Stay in the loop</p>
-		<h2 class="display h-signup-h2">Every loop<br>counts.</h2>
+		<h2 class="h-signup-h2">Every loop<br>counts.</h2>
 		<p class="h-signup-body">New race analyses and tools as they land. One email when something real is ready.</p>
 		<form
 			name="waitlist"
@@ -318,6 +159,10 @@
 		<p class="h-signup-note">More races coming. More tools coming.<br>This is the beginning.</p>
 	</div>
 </section>
+
+<script src="/js/hour-rings.js"></script>
+<script>window.HourRings.init({ dataUrl: "/races/bigs-2026/laps.json", startHour: 7, raceLabel: "Big's Backyard Ultra 2026" });</script>
+
     <!--
 	Per-race data credit. Renders only when a page sets `timer` in its front matter.
 	Front matter keys:

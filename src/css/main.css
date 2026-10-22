@@ -33,7 +33,7 @@ html {
 	--night-line: #3a3a3c;
 	--night-rgb: 29 29 31;
 }
-.h-hero, .wr-card--highlight, .pa-card-crossrace {
+.wr-card--highlight, .pa-card-crossrace {
 	--accent: var(--accent-night);
 	--accent-rgb: var(--accent-night-rgb);
 	--on-accent: var(--night);
@@ -94,122 +94,59 @@ blockquote::before {
 }
 
 /* ── Brand / Nav ───────────────────────────────────────────────────────── */
+/* Plain words on paper. No bar, no blur, no pill: it scrolls away with the page. */
 .site-nav {
-	background: rgb(248 248 247 / 0.86);
-	padding: 0.9rem 2rem;
+	padding: 1.5rem 2rem;
 	display: flex;
 	align-items: center;
-	gap: 0.75rem;
+	gap: 1rem 2rem;
 	flex-wrap: wrap;
-	border-bottom: 1px solid var(--line);
-	backdrop-filter: saturate(180%) blur(20px);
-	-webkit-backdrop-filter: saturate(180%) blur(20px);
-	position: sticky;
-	top: 0;
-	z-index: 30;
 }
 .brand {
 	display: flex;
 	align-items: center;
-	gap: 0.55rem;
+	gap: 0.5rem;
 	text-decoration: none;
-	color: inherit;
+	color: var(--ink);
 	flex-shrink: 0;
 }
-.brand-wordmark {
-	display: flex;
-	align-items: baseline;
-}
 .brand-b {
-	font-size: 0.95rem;
+	font-size: 1.15rem;
 	font-weight: 700;
-	letter-spacing: -0.02em;
-	color: var(--ink);
-}
-.brand-d {
-	font-size: 0.95rem;
-	font-weight: 400;
-	letter-spacing: -0.01em;
-	color: var(--ink-3);
-}
-.site-nav .sep {
-	color: var(--ink-3);
-	font-size: 0.8rem;
-}
-.site-nav .current {
-	color: var(--ink);
-	font-weight: 500;
-	font-size: 0.8rem;
+	letter-spacing: -0.03em;
 }
 .site-nav .nav-right {
 	margin-left: auto;
 	display: flex;
 	align-items: center;
-	gap: 1.25rem;
+	gap: 1.75rem;
 }
-.site-nav .nav-right a,
-.site-nav .nav-dropdown summary {
-	color: var(--ink-2);
+.site-nav .nav-right a {
+	color: var(--ink);
 	text-decoration: none;
-	font-size: 0.85rem;
+	font-size: 0.95rem;
 	font-weight: 500;
+	white-space: nowrap;
+	text-underline-offset: 6px;
+	text-decoration-thickness: 2px;
 }
 .site-nav .nav-right a:hover,
-.site-nav .nav-dropdown summary:hover {
-	color: var(--ink);
+.site-nav .nav-right a[aria-current="page"] {
+	text-decoration-line: underline;
 }
-.site-nav .nav-right a.nav-cta {
-	background: var(--ink);
-	color: var(--paper);
-	padding: 0.35rem 0.9rem;
-	border-radius: 999px;
-	font-size: 0.78rem;
-	font-weight: 600;
-	letter-spacing: 0.01em;
-	line-height: 1.4;
-	white-space: nowrap;
-	transition: background 0.15s;
-}
-.site-nav .nav-right a.nav-cta:hover {
-	background: #000;
-	color: var(--paper);
-}
-.site-nav .nav-dropdown {
-	position: relative;
-}
-.site-nav .nav-dropdown summary {
-	cursor: pointer;
-	list-style: none;
-}
-.site-nav .nav-dropdown summary::-webkit-details-marker {
-	display: none;
-}
-.site-nav .nav-dropdown summary::after {
-	content: "▾";
-	font-size: 0.65rem;
-	margin-left: 0.35rem;
-}
-.site-nav .nav-dropdown-menu {
-	background: var(--card);
-	border: 1px solid var(--line);
-	border-radius: 12px;
-	box-shadow: 0 12px 32px rgb(0 0 0 / 0.08);
-	display: grid;
-	gap: 0.2rem;
-	min-width: 170px;
-	padding: 0.45rem;
-	position: absolute;
-	right: 0;
-	top: calc(100% + 0.6rem);
-	z-index: 10;
-}
-.site-nav .nav-dropdown-menu a {
-	border-radius: 6px;
-	padding: 0.45rem 0.55rem;
-	white-space: nowrap;
-}
-.site-nav .nav-dropdown-menu a:hover {
-	background: var(--tint);
+@media (max-width: 700px) {
+	.site-nav {
+		padding: 1rem;
+	}
+	.site-nav .nav-right {
+		margin-left: 0;
+		width: 100%;
+		justify-content: space-between;
+		gap: 0.75rem;
+	}
+	.site-nav .nav-right a {
+		font-size: 0.9rem;
+	}
 }
 
 /* ── Pace tool header (index page) ────────────────────────────────────── */
@@ -596,55 +533,296 @@ footer a:hover {
 	color: var(--accent);
 }
 
-/* ── Hero ──────────────────────────────────────────────────────────────── */
-.h-hero {
-	background:
-		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"),
-		linear-gradient(90deg, rgb(var(--night-rgb) / 0.88) 0%, rgb(var(--night-rgb) / 0.62) 55%, rgb(var(--night-rgb) / 0.35) 100%),
-		url("/assets/img/bakcyard-runner-hero-image.jpeg");
-	background-size:
-		300px 300px,
-		cover,
-		cover;
-	background-position:
-		top left,
-		center,
-		center;
-	background-blend-mode: overlay, normal, normal;
-	color: #fff;
+/* ── Homepage ──────────────────────────────────────────────────────────────
+   Same rules as the race pages: paper, one typeface, whitespace and thin
+   lines instead of boxes, color only for data. */
+.h-wrap {
+	width: min(1036px, calc(100% - 4rem));
+	margin-left: auto;
+	margin-right: auto;
 }
-.h-hero-inner {
-	padding: 5rem 3rem 4rem;
-	max-width: 820px;
+.h-label {
+	font-size: 1.05rem;
+	font-weight: 600;
+	color: var(--accent-text);
+	margin-bottom: 0.75rem;
+}
+
+/* Hero: words left, a real photo right. */
+.h-hero {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+	column-gap: 4rem;
+	align-items: center;
+	padding-top: 5rem;
+	padding-bottom: 5rem;
+}
+.h-kicker {
+	font-size: 1.05rem;
+	font-weight: 600;
+	color: var(--ink-2);
+	margin-bottom: 1.25rem;
 }
 .h-headline {
-	font-size: clamp(3.5rem, 8.5vw, 7.5rem);
-	color: #fff;
-	margin: 1rem 0 1.75rem;
+	font-family: var(--font-display);
+	font-weight: var(--display-weight);
+	font-size: clamp(3rem, 6.4vw, 5.75rem);
+	line-height: 0.96;
 	letter-spacing: -0.05em;
-	line-height: 0.95;
-}
-.h-line1 {
-	display: block;
-	color: #fff;
-}
-.h-line2 {
-	display: block;
-	color: var(--accent);
+	color: var(--ink);
+	max-width: 10ch;
+	text-wrap: balance;
 }
 .h-sub {
-	font-size: 1.05rem;
-	color: rgb(255 255 255 / 0.7);
-	line-height: 1.65;
-	max-width: 480px;
-	margin-bottom: 0;
+	font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+	line-height: 1.45;
+	color: var(--ink-2);
+	margin-top: 2rem;
+	max-width: 34ch;
 }
-.h-ctas {
-	display: flex;
+.h-hero-photo {
+	margin: 0;
+}
+.h-hero-photo figcaption {
+	margin-top: 0.6rem;
+	font-size: 0.8rem;
+	color: var(--ink-3);
+}
+.h-hero-photo figcaption a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+.h-hero-photo figcaption a:hover {
+	color: var(--ink);
+}
+.h-hero-photo img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 4 / 5;
+	object-fit: cover;
+	border-radius: 18px;
+}
+
+/* Guides: three columns under one thin line. */
+.h-featured {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 3rem;
+	border-top: 1px solid var(--line);
+	padding-top: 2rem;
+}
+.h-feat {
+	display: block;
+	color: inherit;
+	text-decoration: none;
+}
+.h-feat-eyebrow {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--ink-3);
+	margin-bottom: 0.5rem;
+}
+.h-feat-title {
+	font-family: var(--font-display);
+	font-weight: var(--display-weight);
+	font-size: 1.5rem;
+	line-height: 1.12;
+	letter-spacing: -0.025em;
+	color: var(--ink);
+	margin-bottom: 0.6rem;
+}
+.h-feat:hover .h-feat-title {
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 4px;
+}
+.h-feat-desc {
+	font-size: 1rem;
+	line-height: 1.55;
+	color: var(--ink-2);
+}
+
+/* Latest race: the story first, the winner's rings beside it. */
+.h-latest {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 340px;
+	column-gap: 4rem;
 	align-items: center;
-	gap: 1.5rem;
-	flex-wrap: wrap;
+	padding-top: 8rem;
 }
+.h-latest-headline {
+	font-family: var(--font-display);
+	font-weight: var(--display-weight);
+	font-size: clamp(2rem, 4.2vw, 3.25rem);
+	line-height: 1.06;
+	letter-spacing: -0.035em;
+	color: var(--ink);
+	max-width: 22ch;
+	text-wrap: balance;
+}
+.h-latest-meta {
+	font-size: 1rem;
+	color: var(--ink-2);
+	margin-top: 1.75rem;
+}
+.h-latest-link {
+	display: inline-block;
+	margin-top: 1.25rem;
+	font-weight: 600;
+	color: var(--ink);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 4px;
+}
+.h-latest-link::after {
+	content: " →";
+}
+.h-latest .hero-ring {
+	width: 340px;
+	margin: 0;
+}
+
+/* All races: one row each, thin lines between. */
+.h-races {
+	padding-top: 7rem;
+}
+.h-race-list {
+	list-style: none;
+	border-top: 1px solid var(--ink);
+	margin-top: 1rem;
+}
+.h-race-list li {
+	border-bottom: 1px solid var(--line);
+}
+.h-race-row {
+	display: grid;
+	grid-template-columns: 9rem minmax(0, 1fr) 14rem 1.5rem;
+	column-gap: 2rem;
+	align-items: baseline;
+	padding: 1.35rem 0;
+	color: inherit;
+	text-decoration: none;
+}
+.h-race-date {
+	font-size: 0.95rem;
+	color: var(--ink-3);
+}
+.h-race-what,
+.h-race-winner {
+	display: grid;
+	gap: 0.15rem;
+}
+.h-race-name {
+	font-size: 1.35rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	color: var(--ink);
+}
+.h-race-place,
+.h-race-loops {
+	font-size: 0.95rem;
+	font-weight: 400;
+	color: var(--ink-3);
+}
+.h-race-winner {
+	font-size: 1.05rem;
+	font-weight: 600;
+	color: var(--ink);
+}
+.h-race-arrow {
+	color: var(--ink-3);
+	justify-self: end;
+	transition: transform 0.15s, color 0.15s;
+}
+.h-race-row:hover .h-race-name {
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 4px;
+}
+.h-race-row:hover .h-race-arrow {
+	color: var(--ink);
+	transform: translateX(3px);
+}
+
+/* About and signup: two columns, no panel. */
+.h-bottom {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: 4rem;
+	margin-top: 8rem;
+	padding-top: 3rem;
+	padding-bottom: 7rem;
+	border-top: 1px solid var(--line);
+}
+.h-about-h2,
+.h-signup-h2 {
+	font-family: var(--font-display);
+	font-weight: var(--display-weight);
+	font-size: clamp(2rem, 4.2vw, 3.25rem);
+	line-height: 1.06;
+	letter-spacing: -0.035em;
+	color: var(--ink);
+	margin-bottom: 1.5rem;
+}
+.h-about-body,
+.h-signup-body {
+	font-size: 1.05rem;
+	line-height: 1.6;
+	color: var(--ink-2);
+	max-width: 42ch;
+}
+.h-about-body + .h-about-body {
+	margin-top: 1rem;
+}
+.h-signup-form {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	margin-top: 1.75rem;
+	max-width: 380px;
+}
+.h-signup-input {
+	padding: 0.8rem 1rem;
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	background: var(--card);
+	font-size: 1rem;
+	font-family: inherit;
+	color: var(--ink);
+	outline: none;
+}
+.h-signup-input:focus {
+	border-color: var(--ink-3);
+}
+.h-signup-input::placeholder {
+	color: var(--ink-3);
+}
+.h-signup-btn {
+	padding: 0.8rem 1rem;
+	background: var(--ink);
+	color: var(--paper);
+	border: none;
+	border-radius: 999px;
+	font-size: 0.95rem;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	letter-spacing: 0.01em;
+	transition: background 0.15s;
+}
+.h-signup-btn:hover {
+	background: #000;
+}
+.h-signup-note {
+	font-size: 0.85rem;
+	color: var(--ink-3);
+	line-height: 1.6;
+	margin-top: 0.75rem;
+}
+
+/* Shared buttons (also used outside the homepage). */
 .cta-primary {
 	display: inline-block;
 	padding: 0.7rem 1.5rem;
@@ -659,335 +837,6 @@ footer a:hover {
 }
 .cta-primary:hover {
 	background: #000;
-}
-.cta-ghost {
-	color: #aaa;
-	text-decoration: none;
-	font-size: 0.88rem;
-	font-weight: 500;
-	transition: color 0.15s;
-}
-.cta-ghost:hover {
-	color: #fff;
-}
-
-/* ── Format bar ────────────────────────────────────────────────────────── */
-.h-format-bar {
-	border-top: 1px solid var(--night-line);
-	padding: 1.5rem 3rem;
-	display: flex;
-	align-items: center;
-	gap: 0;
-	flex-wrap: wrap;
-}
-.h-format-item {
-	display: flex;
-	flex-direction: column;
-	gap: 0.2rem;
-	padding: 0.5rem 2rem 0.5rem 0;
-}
-.h-format-num {
-	font-family: var(--font-display);
-	font-weight: var(--display-weight);
-	font-size: calc(2rem * var(--display-scale));
-	color: #fff;
-	line-height: 1;
-	letter-spacing: var(--display-tracking);
-}
-.h-format-label {
-	font-size: 0.68rem;
-	color: rgb(255 255 255 / 0.58);
-	text-transform: uppercase;
-	letter-spacing: 0.1em;
-}
-.h-format-div {
-	width: 1px;
-	height: 2rem;
-	background: var(--night-2);
-	margin: 0 2rem 0 0;
-	flex-shrink: 0;
-}
-
-/* ── Featured content ──────────────────────────────────────────────────── */
-.h-featured {
-	background: var(--paper);
-	padding: 4rem 0 2rem;
-}
-.h-featured-inner {
-	padding: 0 3rem;
-}
-.h-feat-grid {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 1.5rem;
-}
-.h-feat-card {
-	display: flex;
-	flex-direction: column;
-	padding: 2rem;
-	background: var(--card);
-	-webkit-
-	border: none;
-	border-radius: 18px;
-	text-decoration: none;
-	box-shadow: none;
-	transition:
-		border-color 0.2s,
-		background 0.2s,
-		box-shadow 0.2s,
-		transform 0.2s;
-}
-.h-feat-card:hover {
-	background: var(--card);
-	transform: none;
-	box-shadow: 0 8px 30px rgb(0 0 0 / 0.06);
-}
-.h-feat-eyebrow {
-	font-size: 0.85rem;
-	font-weight: 500;
-	color: var(--ink-2);
-	margin-bottom: 0.75rem;
-}
-.h-feat-title {
-	font-family: var(--font-display);
-	font-weight: var(--display-weight);
-	font-size: calc(clamp(1.8rem, 2.5vw, 2.4rem) * var(--display-scale));
-	color: var(--ink);
-	line-height: 0.95;
-	margin-bottom: 1rem;
-	letter-spacing: var(--display-tracking);
-}
-.h-feat-desc {
-	font-size: 0.88rem;
-	color: var(--ink-2);
-	line-height: 1.65;
-	flex: 1;
-}
-.h-feat-arrow {
-	display: block;
-	font-size: 1.1rem;
-	color: #bbb;
-	margin-top: 1.75rem;
-	transition:
-		color 0.15s,
-		transform 0.15s;
-}
-.h-feat-card:hover .h-feat-arrow {
-	color: var(--accent);
-	transform: translateX(4px);
-}
-
-/* ── Races ─────────────────────────────────────────────────────────────── */
-.h-races {
-	background: var(--paper);
-	padding: 4rem 0;
-}
-.h-races-inner {
-	padding: 0 3rem;
-}
-.h-race-grid {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 1.5rem;
-}
-.h-race-card {
-	display: flex;
-	flex-direction: column;
-	gap: 2rem;
-	padding: 2rem;
-	background: var(--card);
-	border-radius: 18px;
-	text-decoration: none;
-	transition:
-		transform 0.2s,
-		box-shadow 0.2s;
-	position: relative;
-	overflow: hidden;
-}
-.h-race-card::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	background: linear-gradient(
-		135deg,
-		rgb(var(--accent-rgb) / 0.08) 0%,
-		transparent 60%
-	);
-	opacity: 0;
-	transition: opacity 0.2s;
-	display: none;
-}
-.h-race-card:hover {
-	transform: none;
-	box-shadow: 0 8px 30px rgb(0 0 0 / 0.06);
-}
-.h-race-card:hover::before {
-	opacity: 1;
-}
-.h-race-card--dim {
-	background: var(--card);
-}
-.h-race-top {
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-}
-.h-race-eyebrow {
-	font-size: 0.85rem;
-	font-weight: 600;
-	color: var(--ink-2);
-	margin-bottom: 0.75rem;
-}
-.h-race-name {
-	font-size: calc(clamp(2.2rem, 4vw, 3rem) * var(--display-scale));
-	color: var(--ink);
-	line-height: 0.92;
-}
-.h-race-arrow {
-	font-size: 1.25rem;
-	color: var(--ink-3);
-	transition:
-		color 0.15s,
-		transform 0.15s;
-}
-.h-race-card:hover .h-race-arrow {
-	color: var(--accent);
-	transform: translateX(4px);
-}
-.h-race-stats {
-	display: flex;
-	gap: 2rem;
-	flex-wrap: wrap;
-}
-.h-race-stat {
-	display: flex;
-	flex-direction: column;
-	gap: 0.2rem;
-}
-.h-race-num {
-	font-family: var(--font-display);
-	font-weight: var(--display-weight);
-	font-size: calc(1.8rem * var(--display-scale));
-	color: var(--ink);
-	line-height: 1;
-	letter-spacing: var(--display-tracking);
-}
-.h-race-unit {
-	font-size: 1rem;
-	font-weight: 600;
-	margin-left: 0.1rem;
-}
-.h-race-slabel {
-	font-size: 0.8rem;
-	color: var(--ink-3);
-}
-.winner-stat .h-race-num {
-	font-size: 1.1rem;
-	font-family: var(--font-body);
-	font-weight: 700;
-	color: var(--accent-text);
-	font-style: normal;
-}
-.h-race-note {
-	font-size: 0.8rem;
-	color: var(--ink-3);
-	border-top: 1px solid var(--line);
-	padding-top: 1.25rem;
-}
-
-/* ── About + signup ────────────────────────────────────────────────────── */
-.h-bottom {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	background: var(--tint);
-}
-.h-about {
-	padding: 5rem 3rem 5rem;
-	border-right: 1px solid var(--line);
-}
-.h-about-h2 {
-	font-size: calc(clamp(3rem, 5vw, 4.5rem) * var(--display-scale));
-	color: var(--ink);
-	margin-bottom: 2rem;
-}
-.h-about-body {
-	font-size: 0.9rem;
-	color: var(--ink-2);
-	line-height: 1.75;
-	margin-bottom: 1rem;
-	max-width: 460px;
-}
-.h-about-link {
-	display: inline-block;
-	margin-top: 1rem;
-	font-size: 0.82rem;
-	font-weight: 600;
-	color: var(--ink);
-	text-decoration: underline;
-}
-.h-about-link:hover {
-	text-decoration: underline;
-}
-
-.h-signup {
-	padding: 5rem 3rem 5rem;
-}
-.h-signup-h2 {
-	font-size: calc(clamp(3rem, 5vw, 4.5rem) * var(--display-scale));
-	color: var(--ink);
-	margin-bottom: 1.5rem;
-}
-.h-signup-body {
-	font-size: 0.9rem;
-	color: var(--ink-2);
-	line-height: 1.65;
-	margin-bottom: 2rem;
-	max-width: 360px;
-}
-.h-signup-form {
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-	max-width: 360px;
-}
-.h-signup-input {
-	padding: 0.75rem 1rem;
-	border: 1px solid var(--line);
-	border-radius: 10px;
-	font-size: 0.9rem;
-	font-family: inherit;
-	background: var(--card);
-	color: var(--ink);
-	outline: none;
-	transition: border-color 0.15s;
-}
-.h-signup-input:focus {
-	border-color: var(--ink);
-}
-.h-signup-input::placeholder {
-	color: var(--ink-3);
-}
-.h-signup-btn {
-	padding: 0.75rem 1rem;
-	background: var(--ink);
-	color: var(--paper);
-	border: none;
-	border-radius: 999px;
-	font-size: 0.9rem;
-	font-weight: 600;
-	font-family: inherit;
-	cursor: pointer;
-	letter-spacing: 0.01em;
-	transition: background 0.15s;
-}
-.h-signup-btn:hover {
-	background: #000;
-}
-.h-signup-note {
-	font-size: 0.75rem;
-	color: var(--ink-3);
-	line-height: 1.6;
-	margin-top: 0.5rem;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -2757,57 +2606,68 @@ p.first-detail {
 }
 
 /* ── Homepage responsive ───────────────────────────────────────────────────── */
-@media (max-width: 780px) {
-	.h-hero-inner {
-		padding: 3.5rem 1.5rem 2.5rem;
-	}
-	.h-format-bar {
-		padding: 1.25rem 1.5rem;
-		gap: 0;
-	}
-	.h-format-item {
-		padding-right: 1.25rem;
-	}
-	.h-format-div {
-		margin-right: 1.25rem;
-	}
-	.h-featured-inner {
-		padding: 0 1.5rem;
-	}
-	.h-feat-grid {
+@media (max-width: 900px) {
+	.h-hero,
+	.h-latest {
 		grid-template-columns: 1fr;
+		row-gap: 2.5rem;
 	}
-	.h-races-inner {
-		padding: 0 1.5rem;
+	.h-hero-photo {
+		max-width: 420px;
 	}
-	.h-race-grid {
+	.h-latest .hero-ring {
+		width: min(320px, 100%);
+		justify-self: center;
+	}
+	.h-featured {
 		grid-template-columns: 1fr;
+		gap: 2.25rem;
 	}
 	.h-bottom {
 		grid-template-columns: 1fr;
+		gap: 3.5rem;
 	}
-	.h-about {
-		padding: 3.5rem 1.5rem 3rem;
-		border-right: none;
-		border-bottom: 1px solid var(--night-line);
+	.h-race-row {
+		grid-template-columns: minmax(0, 1fr) 1.5rem;
+		row-gap: 0.35rem;
 	}
-	.h-signup {
-		padding: 3rem 1.5rem 4rem;
+	.h-race-date {
+		grid-column: 1;
 	}
-	.h-about-body {
-		max-width: 100%;
+	.h-race-what,
+	.h-race-winner {
+		grid-column: 1;
 	}
-	.h-signup-form,
-	.h-signup-body {
-		max-width: 100%;
+	.h-race-winner {
+		display: block;
+		font-size: 0.95rem;
+	}
+	.h-race-winner .h-race-loops {
+		margin-left: 0.35rem;
+	}
+	.h-race-arrow {
+		grid-column: 2;
+		grid-row: 1 / span 3;
+		align-self: center;
 	}
 }
-@media (min-width: 781px) and (max-width: 1100px) {
-	.h-feat-grid {
-		grid-template-columns: 1fr 1fr;
+@media (max-width: 600px) {
+	.h-wrap {
+		width: calc(100% - 2rem);
 	}
-	.h-race-grid {
-		grid-template-columns: 1fr 1fr;
+	.h-hero {
+		padding-top: 3rem;
+		padding-bottom: 3rem;
+	}
+	.h-latest {
+		padding-top: 5rem;
+	}
+	.h-races {
+		padding-top: 5rem;
+	}
+	.h-bottom {
+		margin-top: 5rem;
+		padding-bottom: 4rem;
 	}
 }
 
