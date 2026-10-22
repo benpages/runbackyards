@@ -134,6 +134,18 @@ blockquote::before {
 .site-nav .nav-right a[aria-current="page"] {
 	text-decoration-line: underline;
 }
+.site-nav .nav-right a.nav-cta {
+	background: var(--ink);
+	color: var(--paper);
+	padding: 0.45rem 1rem;
+	border-radius: 999px;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background 0.15s;
+}
+.site-nav .nav-right a.nav-cta:hover {
+	background: #000;
+}
 @media (max-width: 700px) {
 	.site-nav {
 		padding: 1rem;
@@ -146,6 +158,9 @@ blockquote::before {
 	}
 	.site-nav .nav-right a {
 		font-size: 0.9rem;
+	}
+	.site-nav .nav-right a.nav-cta {
+		padding: 0.4rem 0.8rem;
 	}
 }
 

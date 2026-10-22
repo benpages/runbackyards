@@ -11,6 +11,6 @@
     <a href="/learn/"{% if u.startsWith("/learn/") %} aria-current="page"{% endif %}>Learn</a>
     <a href="/backyard-ultra-finder/"{% if u.startsWith("/backyard-ultra-finder/") or u.startsWith("/races-near-you/") %} aria-current="page"{% endif %}>Race finder</a>
     <a href="/records/"{% if u.startsWith("/records/") %} aria-current="page"{% endif %}>Records</a>
-    <a href="/backyard-ultra-crew/"{% if u.startsWith("/backyard-ultra-crew/") %} aria-current="page"{% endif %}>Hire a crew</a>
+    <a href="/backyard-ultra-crew/" class="nav-cta"{% if u.startsWith("/backyard-ultra-crew/") %} aria-current="page"{% endif %}>Hire a crew</a>
   </div>
 </nav>
