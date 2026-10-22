@@ -3131,29 +3131,67 @@ p.first-detail {
 	font-size: 0.75rem;
 	color: var(--ink-3);
 }
+/* On a phone the columns turn into rows, so every race keeps its name:
+   year, race, a horizontal bar, loops, W or DNF. */
 @media (max-width: 640px) {
 	.career-strip {
-		gap: 2px;
+		flex-direction: column;
+		gap: 0;
+	}
+	.career-col {
+		display: grid;
+		grid-template-columns: 2.6rem minmax(0, 8.5rem) minmax(0, 1fr) 2rem 2.4rem;
+		grid-template-areas: "year race bar loops mark";
+		align-items: center;
+		column-gap: 0.6rem;
+		padding: 0.4rem 0;
 	}
 	.career-col.is-new-year {
-		padding-left: 2px;
+		border-left: none;
+		padding-left: 0;
+		border-top: 1px solid var(--line);
 	}
-	.career-loops {
-		font-size: 0.7rem;
-	}
-	.career-mark {
-		font-size: 0.5rem;
-		padding: 0.15rem 0.15rem;
-	}
-	.career-bar {
-		height: 90px;
-	}
-	/* Names do not fit 11 columns on a phone; the title attribute keeps them. */
-	.career-race {
-		display: none;
+	.career-col.is-new-year:first-child {
+		border-top: none;
 	}
 	.career-year {
-		font-size: 0.65rem;
+		grid-area: year;
+		margin: 0;
+		font-size: 0.8rem;
+		min-height: 0;
+	}
+	.career-race {
+		grid-area: race;
+		margin: 0;
+		min-height: 0;
+		font-size: 0.85rem;
+		text-align: left;
+		color: var(--ink-2);
+		line-height: 1.2;
+		overflow-wrap: normal;
+	}
+	.career-bar {
+		grid-area: bar;
+		height: 10px;
+		border-bottom: none;
+		justify-content: flex-start;
+		align-items: center;
+	}
+	.career-stem {
+		height: 10px !important;
+		width: var(--pct);
+		border-radius: 0 3px 3px 0;
+	}
+	.career-loops {
+		grid-area: loops;
+		font-size: 0.85rem;
+		text-align: right;
+	}
+	.career-mark {
+		grid-area: mark;
+		margin: 0;
+		justify-self: start;
+		font-size: 0.55rem;
 	}
 }
 

@@ -200,7 +200,7 @@
 									{% if c.win %}W{% else %}DNF{% endif %}
 								</span>
 								<span class="career-bar">
-									<span class="career-stem" style="height: {{ c.pct }}%"></span></span>
+									<span class="career-stem" style="height: {{ c.pct }}%; --pct: {{ c.pct }}%"></span></span>
 								<span class="career-race">{{ c.race }}</span>
 								<span class="career-year">
 									{% if c.newYear %}{{ c.year }}
