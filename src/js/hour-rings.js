@@ -4,11 +4,13 @@
  * time. The gap before 12 is the rest. Loop 1 is the smallest ring.
  *
  * Draws the winner's rings in the race hero, and any runner's rings when their
- * row in the results table is opened. Reads the same laps.json as the charts.
+ * row in the results table is opened. Any ring opens larger, with the key, in
+ * a dialog. Reads the same laps.json as the charts.
  */
 (function () {
 	const NS = "http://www.w3.org/2000/svg";
 	const css = (name, fallback) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+	const NIGHT = "#b8b8bd";
 
 	// "53:24" or "1:02:10" -> seconds
 	function toSeconds(t) {
@@ -29,15 +31,21 @@
 		return h ? `${h} h ${m} min` : `${m} min`;
 	}
 
-	// Same night rule as the charts: a loop that starts from 9 pm to before 6 am.
+	// Same night rule as the charts: a loop that starts from 9 pm to 5 am.
 	const isNight = (startHour, i) => {
 		const h = (startHour + i) % 24;
 		return h >= 21 || h < 6;
 	};
 
+	function el(tag, cls, text) {
+		const e = document.createElement(tag);
+		if (cls) e.className = cls;
+		if (text != null) e.textContent = text;
+		return e;
+	}
+
 	function drawRings(laps, startHour, size) {
 		const ink = css("--ink", "#1d1d1f");
-		const night = "#b8b8bd";
 		const accent = css("--accent", "#d9822b");
 		const n = laps.length;
 		const c = size / 2;
@@ -59,7 +67,7 @@
 			const path = document.createElementNS(NS, "path");
 			path.setAttribute("d", `M ${c} ${c - r} A ${r} ${r} 0 ${frac > 0.5 ? 1 : 0} 1 ${x.toFixed(2)} ${y.toFixed(2)}`);
 			path.setAttribute("fill", "none");
-			path.setAttribute("stroke", i === n - 1 ? accent : isNight(startHour, i) ? night : ink);
+			path.setAttribute("stroke", i === n - 1 ? accent : isNight(startHour, i) ? NIGHT : ink);
 			path.setAttribute("stroke-width", i === n - 1 ? Math.max(width * 1.8, 1.5) : width);
 			svg.appendChild(path);
 		});
@@ -73,18 +81,92 @@
 		return { rest, slowest: laps[slow], slowestLoop: slow + 1 };
 	}
 
-	function ringFigure(runner, startHour, size, caption) {
-		const fig = document.createElement("figure");
-		fig.className = "ring-figure";
-		const svg = drawRings(runner.laps, startHour, size);
+	// One loop, drawn large and labeled: the picture that explains all the others.
+	function exampleLoop() {
+		const ink = css("--ink", "#1d1d1f");
+		const muted = css("--ink-3", "#86868b");
+		const svg = document.createElementNS(NS, "svg");
+		svg.setAttribute("viewBox", "0 0 150 128");
+		svg.setAttribute("class", "ring-example");
+		svg.setAttribute("aria-hidden", "true");
+		const c = 64, r = 38, frac = 50 / 60;
+		const a = 2 * Math.PI * frac;
+		svg.innerHTML =
+			`<path d="M ${c} ${c - r} A ${r} ${r} 0 1 1 ${(c + r * Math.sin(a)).toFixed(2)} ${(c - r * Math.cos(a)).toFixed(2)}" fill="none" stroke="${ink}" stroke-width="5"/>` +
+			`<line x1="${c}" y1="${c - r - 9}" x2="${c}" y2="${c - r + 6}" stroke="${ink}" stroke-width="1.5"/>` +
+			`<text x="${c}" y="${c - r - 13}" text-anchor="middle" font-size="11" font-weight="600" fill="${ink}">Bell</text>` +
+			`<text x="${c + r + 10}" y="${c + 4}" font-size="11" fill="${muted}">Running</text>` +
+			`<text x="${c - r - 6}" y="${c - r + 4}" text-anchor="end" font-size="11" fill="${muted}">Rest</text>` +
+			`<text x="${c}" y="${c + 4}" text-anchor="middle" font-size="11" fill="${muted}">50 min</text>`;
+		return svg;
+	}
+
+	function key(full) {
+		const box = el("div", "ring-key");
+		if (full) {
+			box.appendChild(el("p", "ring-key-title", "How to read the rings"));
+			const row = el("div", "ring-key-example");
+			row.appendChild(exampleLoop());
+			row.appendChild(el("p", "ring-key-text", "Each ring is one loop. The line starts at the bell at the top and shows the time spent running. The gap before the top is the rest before the next bell."));
+			box.appendChild(row);
+			box.appendChild(el("p", "ring-key-text", "Loop 1 is the small ring in the middle. Every loop after it is one ring further out."));
+		}
+		const list = el("ul", "ring-key-list");
+		[["Day loop", css("--ink", "#1d1d1f")], ["Night loop, from 9 pm to 5 am", NIGHT], ["Last loop", css("--accent", "#d9822b")]].forEach(([label, color]) => {
+			const li = el("li");
+			const sw = el("span", "ring-swatch");
+			sw.style.background = color;
+			li.appendChild(sw);
+			li.appendChild(document.createTextNode(label));
+			list.appendChild(li);
+		});
+		box.appendChild(list);
+		return box;
+	}
+
+	// ── The larger view ──────────────────────────────────────────────────────
+	let dialog;
+	function openLarge(runner, startHour, raceLabel) {
+		if (!dialog) {
+			dialog = el("dialog", "ring-dialog");
+			dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+			document.body.appendChild(dialog);
+		}
+		dialog.replaceChildren();
+		const s = summary(runner.laps);
+		const close = el("button", "ring-close", "Close");
+		close.type = "button";
+		close.addEventListener("click", () => dialog.close());
+		const ring = el("div", "ring-large");
+		const svg = drawRings(runner.laps, startHour, 720);
 		svg.setAttribute("role", "img");
 		svg.setAttribute("aria-label", `${runner.name}: ${runner.laps.length} loops, one ring per loop`);
-		fig.appendChild(svg);
-		if (caption) {
-			const cap = document.createElement("figcaption");
-			cap.textContent = caption;
-			fig.appendChild(cap);
-		}
+		ring.appendChild(svg);
+		const side = el("div", "ring-side");
+		side.appendChild(el("p", "ring-dialog-race", raceLabel));
+		side.appendChild(el("h2", "ring-dialog-name", runner.name));
+		side.appendChild(el("p", "ring-dialog-stats", `${runner.laps.length} loops. ${restLabel(s.rest)} of rest banked. Slowest loop ${clock(s.slowest)}, on loop ${s.slowestLoop}.`));
+		side.appendChild(key(true));
+		dialog.append(close, ring, side);
+		dialog.showModal();
+		close.focus();
+	}
+
+	function ringFigure(runner, opts, size, caption) {
+		const fig = el("figure", "ring-figure");
+		const btn = el("button", "ring-open");
+		btn.type = "button";
+		btn.setAttribute("aria-label", `See ${runner.name}'s rings larger, with the key`);
+		btn.appendChild(drawRings(runner.laps, opts.startHour, size));
+		btn.addEventListener("click", (e) => { e.stopPropagation(); openLarge(runner, opts.startHour, opts.raceLabel); });
+		fig.appendChild(btn);
+		const cap = el("figcaption");
+		if (caption) cap.appendChild(el("span", "ring-caption", caption));
+		const more = el("button", "ring-more", "See it larger, with the key");
+		more.type = "button";
+		more.addEventListener("click", (e) => { e.stopPropagation(); openLarge(runner, opts.startHour, opts.raceLabel); });
+		cap.appendChild(more);
+		fig.appendChild(cap);
 		return fig;
 	}
 
@@ -99,12 +181,12 @@
 			if (laps.length) byName.set(name.toLowerCase(), { name, laps });
 		});
 
-		// 1. Winner in the hero.
+		// 1. The winner, in the hero.
 		const hero = document.querySelector("[data-hero-ring]");
 		if (hero) {
 			const runner = byName.get((hero.dataset.heroRing || "").toLowerCase());
 			if (runner) {
-				hero.appendChild(ringFigure(runner, opts.startHour, 360, `${runner.name}'s race. One ring per loop, the first in the middle. The gap before the top is rest.`));
+				hero.appendChild(ringFigure(runner, opts, 360, `${runner.name}'s ${runner.laps.length} loops.`));
 				hero.hidden = false;
 			}
 		}
@@ -130,25 +212,21 @@
 				closeAll();
 				if (open) return;
 				const s = summary(runner.laps);
-				const tr = document.createElement("tr");
-				tr.className = "ring-row";
-				const td = document.createElement("td");
+				const tr = el("tr", "ring-row");
+				const td = el("td");
 				td.colSpan = cols;
-				const wrap = document.createElement("div");
-				wrap.className = "ring-detail";
-				wrap.appendChild(ringFigure(runner, opts.startHour, 220));
-				const facts = document.createElement("dl");
-				facts.className = "ring-facts";
+				const wrap = el("div", "ring-detail");
+				wrap.appendChild(ringFigure(runner, opts, 220));
+				const side = el("div", "ring-detail-side");
+				const facts = el("dl", "ring-facts");
 				[["Loops", runner.laps.length], ["Rest banked", restLabel(s.rest)], ["Slowest loop", `${clock(s.slowest)}, on loop ${s.slowestLoop}`]].forEach(([k, v]) => {
-					const d = document.createElement("div");
-					d.innerHTML = `<dt>${k}</dt><dd>${v}</dd>`;
+					const d = el("div");
+					d.append(el("dt", null, k), el("dd", null, String(v)));
 					facts.appendChild(d);
 				});
-				const note = document.createElement("p");
-				note.className = "ring-note";
-				note.textContent = "One ring per loop, the first in the middle. The gap before the top is rest. Gray rings are night loops.";
-				facts.appendChild(note);
-				wrap.appendChild(facts);
+				side.appendChild(facts);
+				side.appendChild(key(false));
+				wrap.appendChild(side);
 				td.appendChild(wrap);
 				tr.appendChild(td);
 				row.after(tr);
@@ -156,12 +234,15 @@
 				row.setAttribute("aria-expanded", "true");
 			};
 			row.addEventListener("click", toggle);
-			row.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+			row.addEventListener("keydown", (e) => {
+				if (e.target !== row) return;
+				if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+			});
 		});
 
 		// Filtering or showing more rows closes any open ring.
-		document.querySelectorAll(".standings-search, [data-standings-group] button, [data-standings-toggle]").forEach((el) => {
-			el.addEventListener(el.matches("input") ? "input" : "click", closeAll);
+		document.querySelectorAll(".standings-search, [data-standings-group] button, [data-standings-toggle]").forEach((node) => {
+			node.addEventListener(node.matches("input") ? "input" : "click", closeAll);
 		});
 	}
 

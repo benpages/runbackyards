@@ -505,7 +505,7 @@ main {
 .race-hero {
 	background: var(--paper);
 	color: var(--ink);
-	padding: 7rem 2rem 4rem;
+	padding: 4.5rem 2rem 3rem;
 }
 .race-event {
 	font-size: 1.05rem;
@@ -516,9 +516,9 @@ main {
 .race-hero h1 {
 	font-family: var(--font-display);
 	font-weight: var(--display-weight);
-	font-size: clamp(3rem, 7.4vw, 6.25rem);
+	font-size: clamp(2.6rem, 4.6vw, 4.25rem);
 	line-height: 0.98;
-	margin-bottom: 2.5rem;
+	margin-bottom: 2rem;
 	letter-spacing: -0.045em;
 	max-width: 18ch;
 }
@@ -3344,7 +3344,7 @@ p.first-detail {
 .race-hero-inner > .hero-ring {
 	grid-column: 2;
 	grid-row: 1 / span 3;
-	align-self: end;
+	align-self: center;
 	width: 340px;
 	margin: 0;
 }
@@ -3357,11 +3357,163 @@ p.first-detail {
 	height: auto;
 }
 .ring-figure figcaption {
+	display: grid;
+	justify-items: center;
+	gap: 0.35rem;
+	margin: 0.85rem auto 0;
 	font-size: 0.85rem;
 	line-height: 1.45;
-	color: var(--ink-3);
-	margin-top: 0.75rem;
-	max-width: 30ch;
+	color: var(--ink-2);
+	text-align: center;
+	max-width: 32ch;
+}
+.ring-open {
+	display: block;
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: zoom-in;
+	border-radius: 50%;
+}
+.ring-open:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 6px;
+}
+.ring-more {
+	justify-self: center;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	font-weight: 600;
+	color: var(--ink);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 1px;
+	cursor: pointer;
+}
+
+/* The key: one loop drawn large, then the colors. */
+.ring-key {
+	display: grid;
+	gap: 0.9rem;
+}
+.ring-key-title {
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: var(--ink);
+	margin: 0;
+}
+.ring-key-example {
+	display: grid;
+	grid-template-columns: 130px minmax(0, 1fr);
+	gap: 1rem;
+	align-items: center;
+}
+.ring-example {
+	width: 130px;
+	height: auto;
+	overflow: visible;
+	font-family: var(--font-body);
+}
+.ring-key-text,
+.page-section p.ring-key-text {
+	font-size: 0.9rem;
+	line-height: 1.5;
+	color: var(--ink-2);
+	margin: 0;
+}
+.ring-key-list,
+.page-section ul.ring-key-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem 1.25rem;
+	font-size: 0.85rem;
+	line-height: 1.4;
+	color: var(--ink-2);
+}
+.ring-key-list li {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+	margin: 0;
+}
+.ring-swatch {
+	width: 18px;
+	height: 3px;
+	border-radius: 2px;
+	flex: none;
+}
+
+/* The larger view. */
+.ring-dialog {
+	position: fixed;
+	inset: 0;
+	margin: auto;
+	height: fit-content;
+	width: min(1040px, 94vw);
+	max-height: 92vh;
+	padding: 2.5rem;
+	border: 0;
+	border-radius: 20px;
+	background: var(--card);
+	color: var(--ink);
+	box-shadow: 0 30px 80px rgb(0 0 0 / 0.18);
+}
+.ring-dialog[open] {
+	display: grid;
+	grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+	gap: 3rem;
+	align-items: center;
+}
+.ring-dialog::backdrop {
+	background: rgb(29 29 31 / 0.4);
+	backdrop-filter: blur(6px);
+}
+.ring-close {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	padding: 0.4rem 0.9rem;
+	border: 1px solid var(--line);
+	border-radius: 999px;
+	background: var(--card);
+	font: inherit;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--ink);
+	cursor: pointer;
+}
+.ring-large .ring-svg {
+	width: 100%;
+	max-height: 78vh;
+}
+.ring-side {
+	display: grid;
+	gap: 1rem;
+	align-content: center;
+}
+.ring-dialog-race {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--accent-text);
+	margin: 0;
+}
+.ring-dialog-name {
+	font-size: clamp(1.8rem, 3vw, 2.6rem);
+	line-height: 1.05;
+	letter-spacing: -0.035em;
+	margin: 0;
+}
+.ring-dialog-stats {
+	font-size: 1rem;
+	line-height: 1.5;
+	color: var(--ink-2);
+	margin: 0 0 0.75rem;
 }
 .standings tr.has-ring {
 	cursor: pointer;
@@ -3390,6 +3542,10 @@ p.first-detail {
 	width: 220px;
 	flex: none;
 }
+.ring-detail-side {
+	display: grid;
+	gap: 1.5rem;
+}
 .ring-facts {
 	display: grid;
 	gap: 1rem;
@@ -3406,14 +3562,6 @@ p.first-detail {
 	letter-spacing: -0.02em;
 	color: var(--ink);
 }
-.page-section p.ring-note,
-.ring-note {
-	font-size: 0.85rem;
-	line-height: 1.45;
-	color: var(--ink-3);
-	max-width: 34ch;
-	margin: 0;
-}
 @media (max-width: 760px) {
 	.race-hero-inner {
 		grid-template-columns: minmax(0, 1fr);
@@ -3423,6 +3571,17 @@ p.first-detail {
 		grid-row: auto;
 		width: min(260px, 100%);
 		margin-top: 2.5rem;
+	}
+	.ring-dialog {
+		padding: 3.5rem 1.25rem 1.5rem;
+	}
+	.ring-dialog[open] {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1.5rem;
+		overflow-y: auto;
+	}
+	.ring-large .ring-svg {
+		max-height: none;
 	}
 	.ring-detail {
 		flex-direction: column;

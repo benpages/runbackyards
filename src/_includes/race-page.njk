@@ -356,5 +356,5 @@
 </script>
 <script src="/js/hour-rings.js"></script>
 <script>
-	window.HourRings.init({ dataUrl: "/races/{{ race.slug }}/laps.json", startHour: {{ race.startHour or 0 }} });
+	window.HourRings.init({ dataUrl: "/races/{{ race.slug }}/laps.json", startHour: {{ race.startHour or 0 }}, raceLabel: {{ (race.name + " " + race.year) | dump | safe }} });
 </script>
