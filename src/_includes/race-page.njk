@@ -50,6 +50,8 @@
 			{% endfor %}
 		</div>
 
+		{% if r.winner %}<figure class="hero-ring" data-hero-ring="{{ r.winner.name }}" hidden></figure>{% endif %}
+
 		<ul class="race-facts">
 			<li><strong>{{ r.starters }}</strong> runners</li>
 			<li>First loop <strong>{{ r.startLabel }}</strong></li>
@@ -150,16 +152,13 @@
 			<p class="takeaway">{{ tk.winner }}</p>
 
 			<div class="standout">
-				<div class="eyebrow">{{ race.name }} {{ race.year }} winner</div>
-				<div class="standout-name display">{{ w.name }}</div>
-				<div class="standout-stat">{{ w.loops }} loops &nbsp;·&nbsp; {{ w.distance }}</div>
 
 				{# Every backyard the winner has run, oldest first (src/_data/runnerHistory.js). #}
 				{% set hist = runnerHistory[race.winnerHistory] if race.winnerHistory else null %}
 				{% if hist %}
 					<ol class="career-strip" aria-label="{{ hist.name }}'s backyard ultras: {{ hist.starts }} starts, {{ hist.wins }} wins">
 						{% for c in hist.races %}
-							<li class="career-col{% if c.win %} is-win{% endif %}{% if c.newYear and not loop.first %} is-new-year{% endif %}" title="{{ c.race }} {{ c.year }}: {{ c.loops }} loops{% if c.win %}, won{% endif %}">
+							<li class="career-col{% if c.win %} is-win{% endif %}{% if c.newYear and not loop.first %} is-new-year{% endif %}" aria-label="{{ c.race }} {{ c.year }}: {{ c.loops }} loops{% if c.win %}, won{% endif %}">
 								<span class="career-loops">{{ c.loops }}</span>
 								<span class="career-mark">{% if c.win %}W{% else %}DNF{% endif %}</span>
 								<span class="career-bar"><span class="career-stem" style="height: {{ c.pct }}%"></span></span>
@@ -241,9 +240,7 @@
 			<p>Of the {{ g.starters }} starters, {{ g.women }} were women and {{ g.men }} were men.</p>
 
 			<div class="standout">
-				<div class="eyebrow">Last woman standing</div>
-				<div class="standout-name display">{{ lw.names | join(" and ") }}</div>
-				<div class="standout-stat">{{ lw.loops }} loops{% if lw.names.length > 1 %} each{% endif %} &nbsp;·&nbsp; {{ lw.distance }}</div>
+				<p>{{ lw.names | join(" and ") }} {% if lw.names.length > 1 %}were the last women{% else %}was the last woman{% endif %} standing, with {{ lw.loops }} loops{% if lw.names.length > 1 %} each{% endif %}, {{ lw.distance }}.</p>
 				{% if lw.wonRace %}
 					<p>She won the whole race.</p>
 				{% elif lw.runnersFurther == 0 %}
@@ -356,4 +353,8 @@
 			genderViews: {{ "true" if r.gender.has else "false" }}
 		}
 	});
+</script>
+<script src="/js/hour-rings.js"></script>
+<script>
+	window.HourRings.init({ dataUrl: "/races/{{ race.slug }}/laps.json", startHour: {{ race.startHour or 0 }} });
 </script>

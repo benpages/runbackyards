@@ -1,7 +1,15 @@
 (function () {
+	// Brand colors come from the CSS tokens in main.css, so the charts follow the site.
+	const css = (name, fallback) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+	const ACCENT = css("--accent", "#2952e3");
+	const INK = css("--ink", "#1d1d1f");
+	const MUTED = "#a1a1a6";
+	const FONT = css("--font-body", "sans-serif");
+	if (window.Chart) Chart.defaults.font.family = FONT;
+
 	const PALETTE = [
-		{ color: "#C0392B", dash: [] },
-		{ color: "#922B21", dash: [6, 3] },
+		{ color: ACCENT, dash: [] },
+		{ color: MUTED, dash: [] },
 		{ color: "#1A5276", dash: [] },
 		{ color: "#2471A3", dash: [5, 3] },
 		{ color: "#D35400", dash: [] },
@@ -18,7 +26,7 @@
 	];
 
 	const LEGEND_INITIAL = 15;
-	const TEXT_COLOR = "#999";
+	const TEXT_COLOR = "#86868b";
 	const GRID_COLOR = "rgba(0,0,0,0.06)";
 
 	function toLapMin(time) {
@@ -41,8 +49,8 @@
 	// Same rules as lib/gender.js (build time). Kept in step by hand: the
 	// browser cannot require() that file.
 	const GROUP_STYLE = {
-		F: { label: "Women", color: "#C0392B" },
-		M: { label: "Men", color: "#1A1A1A" },
+		F: { label: "Women", color: ACCENT },
+		M: { label: "Men", color: INK },
 	};
 	// Fallback only. The page passes the real cutoff from lib/gender.js on the
 	// canvas as data-min-runners, so the copy and the chart always agree.
@@ -678,8 +686,8 @@
 				type: "point",
 				xValue: winnerIndex,
 				yValue: 0,
-				backgroundColor: "#C0392B",
-				borderColor: "#F7F4EF",
+				backgroundColor: ACCENT,
+				borderColor: "#f8f8f7",
 				borderWidth: 1.5,
 				radius: 5,
 				// Draw the full dot even though it straddles the axis line.
@@ -696,10 +704,10 @@
 				xAdjust: -4,
 				// About two lines above the axis: clear of a 1-runner bar's count next door.
 				yAdjust: -26,
-				backgroundColor: "#C0392B",
+				backgroundColor: ACCENT,
 				borderRadius: 3,
 				color: "#fff",
-				font: { size: 11, weight: "700", family: "Inter, sans-serif" },
+				font: { size: 11, weight: "700", family: FONT },
 				padding: { top: 4, bottom: 4, left: 7, right: 7 },
 				clip: false,
 			},
@@ -780,7 +788,7 @@
 					x: {
 						grid: { display: false },
 						ticks: {
-							color: (ctx) => (winnerInGroup && ctx.index === winnerIndex ? "#C0392B" : TEXT_COLOR),
+							color: (ctx) => (winnerInGroup && ctx.index === winnerIndex ? ACCENT : TEXT_COLOR),
 							font: (ctx) => ({ size: 9, weight: winnerInGroup && ctx.index === winnerIndex ? "700" : "400" }),
 							maxRotation: 0,
 							autoSkip: false,
