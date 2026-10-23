@@ -38,11 +38,6 @@
     </url>
   
     <url>
-      <loc>https://backyards.run/records/</loc>
-      <lastmod>2026-10-22T15:49:43.978Z</lastmod>
-    </url>
-  
-    <url>
       <loc>https://backyards.run/learn/what-is-backyard-ultra/</loc>
       <lastmod>2026-10-22T15:49:44.310Z</lastmod>
     </url>
@@ -95,6 +90,11 @@
     <url>
       <loc>https://backyards.run/</loc>
       <lastmod>2026-10-22T15:50:36.900Z</lastmod>
+    </url>
+  
+    <url>
+      <loc>https://backyards.run/records/</loc>
+      <lastmod>2026-10-23T11:49:09.613Z</lastmod>
     </url>
   
 </urlset>
